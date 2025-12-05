@@ -1,0 +1,19 @@
+{
+    "name": "portfolio-website",
+    "version": "1.0.0",
+    "description": "Personal portfolio website - Static HTML version for Vercel deployment",
+    "scripts": {
+        "dev": "npx serve .",
+        "deploy": "vercel --prod"
+    },
+    "keywords": [
+        "portfolio",
+        "website",
+        "static",
+        "html",
+        "css",
+        "javascript"
+    ],
+    "author": "Portfolio",
+    "license": "MIT"
+}
