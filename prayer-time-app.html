@@ -106,6 +106,44 @@
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
+        .location-wrapper {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .location-wrapper select {
+            flex: 1;
+        }
+
+        .detect-btn {
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 15px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .detect-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .detect-btn:active {
+            transform: translateY(0);
+        }
+
+        .detect-btn i {
+            font-size: 18px;
+        }
+
         .current-time {
             text-align: center;
             margin-bottom: 30px;
@@ -280,7 +318,7 @@
                 </div>
             </div>
 
-            <div class="location-selector">
+            <div class="location-wrapper">
                 <select id="city-select">
                     <option value="">Pilih Kota...</option>
                     <option value="Jakarta">Jakarta</option>
@@ -296,6 +334,9 @@
                     <option value="Yogyakarta">Yogyakarta</option>
                     <option value="Malang">Malang</option>
                 </select>
+                <button class="detect-btn" id="detect-location" title="Deteksi Lokasi Otomatis">
+                    <i class="fas fa-location-crosshairs"></i>
+                </button>
             </div>
 
             <div class="current-time">
@@ -466,9 +507,113 @@
             }
         });
 
-        // Initialize
-        document.getElementById('city-select').value = 'Jakarta';
-        loadPrayerTimes('Jakarta');
+        // Function to find nearest city
+        function findNearestCity(lat, lng) {
+            let nearestCity = 'Jakarta';
+            let minDistance = Infinity;
+
+            for (const [city, coords] of Object.entries(cityCoordinates)) {
+                // Calculate distance using Haversine formula (simplified)
+                const latDiff = Math.abs(coords.lat - lat);
+                const lngDiff = Math.abs(coords.lng - lng);
+                const distance = Math.sqrt(latDiff * latDiff + lngDiff * lngDiff);
+
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    nearestCity = city;
+                }
+            }
+
+            return nearestCity;
+        }
+
+        // Auto-detect location
+        function detectLocation() {
+            const btn = document.getElementById('detect-location');
+            const originalHTML = btn.innerHTML;
+
+            if (!navigator.geolocation) {
+                alert('Geolocation tidak didukung oleh browser Anda');
+                return;
+            }
+
+            // Show loading state
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            btn.disabled = true;
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+
+                    // Find nearest city
+                    const nearestCity = findNearestCity(lat, lng);
+
+                    // Update dropdown and load prayer times
+                    document.getElementById('city-select').value = nearestCity;
+                    loadPrayerTimes(nearestCity);
+
+                    // Show success
+                    btn.innerHTML = '<i class="fas fa-check"></i>';
+                    setTimeout(() => {
+                        btn.innerHTML = originalHTML;
+                        btn.disabled = false;
+                    }, 2000);
+                },
+                (error) => {
+                    console.error('Geolocation error:', error);
+                    let message = 'Gagal mendeteksi lokasi. ';
+
+                    switch (error.code) {
+                        case error.PERMISSION_DENIED:
+                            message += 'Izinkan akses lokasi di browser Anda.';
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            message += 'Informasi lokasi tidak tersedia.';
+                            break;
+                        case error.TIMEOUT:
+                            message += 'Permintaan timeout.';
+                            break;
+                        default:
+                            message += 'Terjadi kesalahan.';
+                    }
+
+                    alert(message);
+                    btn.innerHTML = originalHTML;
+                    btn.disabled = false;
+                }
+            );
+        }
+
+        // Detect location button
+        document.getElementById('detect-location').addEventListener('click', detectLocation);
+
+        // Auto-detect on first load (optional)
+        function autoDetectOnLoad() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        const nearestCity = findNearestCity(lat, lng);
+
+                        document.getElementById('city-select').value = nearestCity;
+                        loadPrayerTimes(nearestCity);
+                    },
+                    () => {
+                        // Silently fail and use default Jakarta
+                        document.getElementById('city-select').value = 'Jakarta';
+                        loadPrayerTimes('Jakarta');
+                    }
+                );
+            } else {
+                document.getElementById('city-select').value = 'Jakarta';
+                loadPrayerTimes('Jakarta');
+            }
+        }
+
+        // Initialize - auto-detect location on load
+        autoDetectOnLoad();
         updateCurrentTime();
 
         // Update every second
