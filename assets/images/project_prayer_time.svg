@@ -1,0 +1,57 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="cardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="600" fill="url(#bgGradient)"/>
+  
+  <!-- Main Card -->
+  <rect x="150" y="50" width="500" height="500" rx="30" fill="white" opacity="0.95"/>
+  
+  <!-- Mosque Icon -->
+  <text x="400" y="120" font-family="Arial" font-size="40" fill="#667eea" text-anchor="middle">🕌</text>
+  
+  <!-- Title -->
+  <text x="400" y="160" font-family="Inter, Arial" font-size="32" font-weight="bold" fill="#667eea" text-anchor="middle">Waktu Solat</text>
+  
+  <!-- Location -->
+  <text x="400" y="190" font-family="Inter, Arial" font-size="16" fill="#666" text-anchor="middle">📍 Jakarta</text>
+  
+  <!-- Current Time Card -->
+  <rect x="200" y="210" width="400" height="80" rx="20" fill="url(#cardGradient)"/>
+  <text x="400" y="250" font-family="Inter, Arial" font-size="36" font-weight="bold" fill="white" text-anchor="middle">11:45:26</text>
+  <text x="400" y="275" font-family="Inter, Arial" font-size="14" fill="white" text-anchor="middle" opacity="0.9">Kamis, 5 Desember 2025</text>
+  
+  <!-- Next Prayer Info -->
+  <rect x="220" y="310" width="360" height="60" rx="15" fill="#f8f9ff"/>
+  <text x="400" y="335" font-family="Inter, Arial" font-size="12" fill="#666" text-anchor="middle">Waktu Solat Berikutnya</text>
+  <text x="400" y="360" font-family="Inter, Arial" font-size="20" font-weight="bold" fill="#667eea" text-anchor="middle">Dzuhur - 00:14:34</text>
+  
+  <!-- Prayer Times List -->
+  <!-- Subuh -->
+  <rect x="200" y="390" width="400" height="50" rx="15" fill="white" stroke="#f0f0f0" stroke-width="2"/>
+  <text x="230" y="420" font-family="Inter, Arial" font-size="16" font-weight="600" fill="#333">🌙 Subuh</text>
+  <text x="570" y="420" font-family="Inter, Arial" font-size="18" font-weight="bold" fill="#333" text-anchor="end">04:45</text>
+  
+  <!-- Dzuhur (Active) -->
+  <rect x="200" y="450" width="400" height="50" rx="15" fill="url(#cardGradient)"/>
+  <text x="230" y="480" font-family="Inter, Arial" font-size="16" font-weight="600" fill="white">☀️ Dzuhur</text>
+  <text x="570" y="480" font-family="Inter, Arial" font-size="18" font-weight="bold" fill="white" text-anchor="end">12:00</text>
+  
+  <!-- Ashar -->
+  <rect x="200" y="510" width="400" height="50" rx="15" fill="white" stroke="#f0f0f0" stroke-width="2"/>
+  <text x="230" y="540" font-family="Inter, Arial" font-size="16" font-weight="600" fill="#333">🌤️ Ashar</text>
+  <text x="570" y="540" font-family="Inter, Arial" font-size="18" font-weight="bold" fill="#333" text-anchor="end">15:15</text>
+  
+  <!-- Footer -->
+  <text x="400" y="590" font-family="Inter, Arial" font-size="12" fill="white" text-anchor="middle" opacity="0.8">Prayer Time App - Portfolio Project</text>
+</svg>
