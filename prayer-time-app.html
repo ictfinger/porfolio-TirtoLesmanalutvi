@@ -7,8 +7,9 @@
     <title>Waktu Solat - Prayer Time App</title>
 
     <!-- SEO Meta Tags -->
-    <meta name="description" content="Aplikasi waktu solat dengan tampilan modern dan akurat untuk seluruh Indonesia">
-    <meta name="keywords" content="waktu solat, prayer time, jadwal sholat, adzan">
+    <meta name="description"
+        content="Aplikasi waktu solat dengan tampilan modern dan akurat menggunakan GPS untuk seluruh Indonesia">
+    <meta name="keywords" content="waktu solat, prayer time, jadwal sholat, adzan, GPS">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -76,19 +77,21 @@
 
         .header .location {
             color: #666;
-            font-size: 16px;
+            font-size: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
         }
 
-        .location-selector {
+        .location-wrapper {
+            display: flex;
+            gap: 10px;
             margin-bottom: 30px;
         }
 
-        .location-selector select {
-            width: 100%;
+        .location-wrapper select {
+            flex: 1;
             padding: 15px 20px;
             border: 2px solid #e0e0e0;
             border-radius: 15px;
@@ -100,20 +103,10 @@
             transition: all 0.3s;
         }
 
-        .location-selector select:focus {
+        .location-wrapper select:focus {
             outline: none;
             border-color: #667eea;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .location-wrapper {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-        }
-
-        .location-wrapper select {
-            flex: 1;
         }
 
         .detect-btn {
@@ -291,6 +284,17 @@
             text-decoration: underline;
         }
 
+        .gps-badge {
+            display: inline-block;
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
         @media (max-width: 480px) {
             .prayer-card {
                 padding: 25px;
@@ -314,13 +318,13 @@
                 <h1><i class="fas fa-mosque"></i> Waktu Solat</h1>
                 <div class="location">
                     <i class="fas fa-map-marker-alt"></i>
-                    <span id="current-location">Indonesia</span>
+                    <span id="current-location">Memuat...</span>
                 </div>
             </div>
 
             <div class="location-wrapper">
                 <select id="city-select">
-                    <option value="">Pilih Kota...</option>
+                    <option value="">Pilih Kota Manual...</option>
                     <option value="Jakarta">Jakarta</option>
                     <option value="Surabaya">Surabaya</option>
                     <option value="Bandung">Bandung</option>
@@ -334,7 +338,7 @@
                     <option value="Yogyakarta">Yogyakarta</option>
                     <option value="Malang">Malang</option>
                 </select>
-                <button class="detect-btn" id="detect-location" title="Deteksi Lokasi Otomatis">
+                <button class="detect-btn" id="detect-location" title="Deteksi Lokasi GPS Otomatis">
                     <i class="fas fa-location-crosshairs"></i>
                 </button>
             </div>
@@ -360,11 +364,12 @@
 
         <div class="footer">
             <p>Dibuat dengan <i class="fas fa-heart"></i> oleh <a href="index.html">Portfolio</a></p>
+            <p style="font-size: 12px; opacity: 0.8; margin-top: 5px;">Powered by Aladhan API</p>
         </div>
     </div>
 
     <script>
-        // City coordinates for prayer times
+        // City coordinates for manual selection
         const cityCoordinates = {
             'Jakarta': { lat: -6.2088, lng: 106.8456 },
             'Surabaya': { lat: -7.2575, lng: 112.7521 },
@@ -380,8 +385,9 @@
             'Malang': { lat: -7.9666, lng: 112.6326 }
         };
 
-        let currentCity = 'Jakarta';
         let prayerTimes = {};
+        let isUsingGPS = false;
+        let userCoordinates = null;
 
         // Update current time
         function updateCurrentTime() {
@@ -393,22 +399,45 @@
             document.getElementById('current-date').textContent = dateString;
         }
 
-        // Calculate prayer times (simplified calculation)
-        function calculatePrayerTimes(city) {
-            const coords = cityCoordinates[city];
-            const now = new Date();
+        // Fetch prayer times from Aladhan API using coordinates
+        async function fetchPrayerTimes(lat, lng) {
+            try {
+                const timestamp = Math.floor(Date.now() / 1000);
+                const url = `https://api.aladhan.com/v1/timings/${timestamp}?latitude=${lat}&longitude=${lng}&method=20`; // Method 20 = Indonesia (Kemenag)
 
-            // Simplified prayer times (you can integrate with a real API for accurate times)
-            // This is a basic calculation for demonstration
-            const times = {
-                'Subuh': '04:45',
-                'Dzuhur': '12:00',
-                'Ashar': '15:15',
-                'Maghrib': '18:00',
-                'Isya': '19:15'
-            };
+                console.log(`Fetching prayer times for: Lat ${lat.toFixed(4)}, Lng ${lng.toFixed(4)}`);
 
-            return times;
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.code === 200 && data.data) {
+                    const timings = data.data.timings;
+
+                    // Extract prayer times
+                    const times = {
+                        'Subuh': timings.Fajr,
+                        'Dzuhur': timings.Dhuhr,
+                        'Ashar': timings.Asr,
+                        'Maghrib': timings.Maghrib,
+                        'Isya': timings.Isha
+                    };
+
+                    console.log('Prayer times fetched:', times);
+                    return times;
+                } else {
+                    throw new Error('Failed to fetch prayer times');
+                }
+            } catch (error) {
+                console.error('Error fetching prayer times:', error);
+                // Fallback to approximate times
+                return {
+                    'Subuh': '04:45',
+                    'Dzuhur': '12:00',
+                    'Ashar': '15:15',
+                    'Maghrib': '18:00',
+                    'Isya': '19:15'
+                };
+            }
         }
 
         // Get next prayer
@@ -490,12 +519,29 @@
             document.getElementById('prayer-times').innerHTML = html;
         }
 
-        // Load prayer times for city
-        function loadPrayerTimes(city) {
-            currentCity = city;
+        // Load prayer times for manual city selection
+        async function loadPrayerTimesCity(city) {
+            isUsingGPS = false;
+            userCoordinates = null;
+
             document.getElementById('current-location').textContent = city;
 
-            prayerTimes = calculatePrayerTimes(city);
+            const coords = cityCoordinates[city];
+            prayerTimes = await fetchPrayerTimes(coords.lat, coords.lng);
+            displayPrayerTimes(prayerTimes);
+            updateCountdown();
+        }
+
+        // Load prayer times using GPS coordinates
+        async function loadPrayerTimesGPS(lat, lng) {
+            isUsingGPS = true;
+            userCoordinates = { lat, lng };
+
+            const locationText = `GPS: ${lat.toFixed(4)}°, ${lng.toFixed(4)}°`;
+            document.getElementById('current-location').innerHTML =
+                `${locationText}<span class="gps-badge"><i class="fas fa-satellite-dish"></i> LIVE</span>`;
+
+            prayerTimes = await fetchPrayerTimes(lat, lng);
             displayPrayerTimes(prayerTimes);
             updateCountdown();
         }
@@ -503,29 +549,9 @@
         // City selector
         document.getElementById('city-select').addEventListener('change', (e) => {
             if (e.target.value) {
-                loadPrayerTimes(e.target.value);
+                loadPrayerTimesCity(e.target.value);
             }
         });
-
-        // Function to find nearest city
-        function findNearestCity(lat, lng) {
-            let nearestCity = 'Jakarta';
-            let minDistance = Infinity;
-
-            for (const [city, coords] of Object.entries(cityCoordinates)) {
-                // Calculate distance using Haversine formula (simplified)
-                const latDiff = Math.abs(coords.lat - lat);
-                const lngDiff = Math.abs(coords.lng - lng);
-                const distance = Math.sqrt(latDiff * latDiff + lngDiff * lngDiff);
-
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    nearestCity = city;
-                }
-            }
-
-            return nearestCity;
-        }
 
         // Auto-detect location
         function detectLocation() {
@@ -533,7 +559,7 @@
             const originalHTML = btn.innerHTML;
 
             if (!navigator.geolocation) {
-                alert('Geolocation tidak didukung oleh browser Anda');
+                alert('❌ Geolocation tidak didukung oleh browser Anda.\n\nGunakan browser modern seperti Chrome, Firefox, atau Safari.');
                 return;
             }
 
@@ -541,17 +567,27 @@
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
             btn.disabled = true;
 
+            document.getElementById('current-location').textContent = 'Mendeteksi GPS...';
+
+            const options = {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            };
+
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     const lat = position.coords.latitude;
                     const lng = position.coords.longitude;
+                    const accuracy = position.coords.accuracy;
 
-                    // Find nearest city
-                    const nearestCity = findNearestCity(lat, lng);
+                    console.log(`GPS detected: Lat ${lat.toFixed(4)}, Lng ${lng.toFixed(4)} (±${accuracy.toFixed(0)}m)`);
 
-                    // Update dropdown and load prayer times
-                    document.getElementById('city-select').value = nearestCity;
-                    loadPrayerTimes(nearestCity);
+                    // Use GPS coordinates directly
+                    loadPrayerTimesGPS(lat, lng);
+
+                    // Clear dropdown
+                    document.getElementById('city-select').value = '';
 
                     // Show success
                     btn.innerHTML = '<i class="fas fa-check"></i>';
@@ -562,23 +598,37 @@
                 },
                 (error) => {
                     console.error('Geolocation error:', error);
-                    let message = 'Gagal mendeteksi lokasi. ';
+                    let message = '';
+                    let title = '❌ Gagal Mendeteksi Lokasi\n\n';
 
                     switch (error.code) {
                         case error.PERMISSION_DENIED:
-                            message += 'Izinkan akses lokasi di browser Anda.';
+                            message = '🔒 Akses lokasi ditolak.\n\n';
+                            message += 'Cara mengizinkan:\n';
+                            message += '1. Klik ikon 🔒 di address bar\n';
+                            message += '2. Pilih "Izinkan" untuk lokasi\n';
+                            message += '3. Refresh halaman dan coba lagi';
                             break;
                         case error.POSITION_UNAVAILABLE:
-                            message += 'Informasi lokasi tidak tersedia.';
+                            message = '📍 Informasi lokasi tidak tersedia.\n\n';
+                            message += 'Pastikan GPS aktif dan browser memiliki izin.';
                             break;
                         case error.TIMEOUT:
-                            message += 'Permintaan timeout.';
+                            message = '⏱️ Permintaan timeout.\n\n';
+                            message += 'Coba lagi atau pilih kota manual.';
                             break;
                         default:
-                            message += 'Terjadi kesalahan.';
+                            message = '⚠️ Terjadi kesalahan.\n\n';
+                            message += 'Silakan pilih kota secara manual.';
                     }
 
-                    alert(message);
+                    alert(title + message);
+
+                    // Reset to default
+                    document.getElementById('current-location').textContent = 'Jakarta';
+                    document.getElementById('city-select').value = 'Jakarta';
+                    loadPrayerTimesCity('Jakarta');
+
                     btn.innerHTML = originalHTML;
                     btn.disabled = false;
                 }
@@ -588,31 +638,43 @@
         // Detect location button
         document.getElementById('detect-location').addEventListener('click', detectLocation);
 
-        // Auto-detect on first load (optional)
+        // Auto-detect on first load
         function autoDetectOnLoad() {
             if (navigator.geolocation) {
+                console.log('Attempting auto GPS detection...');
+
+                const options = {
+                    enableHighAccuracy: true,
+                    timeout: 8000,
+                    maximumAge: 300000
+                };
+
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
                         const lat = position.coords.latitude;
                         const lng = position.coords.longitude;
-                        const nearestCity = findNearestCity(lat, lng);
 
-                        document.getElementById('city-select').value = nearestCity;
-                        loadPrayerTimes(nearestCity);
+                        console.log(`Auto-detected GPS: ${lat.toFixed(4)}, ${lng.toFixed(4)}`);
+                        loadPrayerTimesGPS(lat, lng);
                     },
                     () => {
                         // Silently fail and use default Jakarta
+                        console.log('Auto-detection failed, using Jakarta');
+                        document.getElementById('current-location').textContent = 'Jakarta';
                         document.getElementById('city-select').value = 'Jakarta';
-                        loadPrayerTimes('Jakarta');
-                    }
+                        loadPrayerTimesCity('Jakarta');
+                    },
+                    options
                 );
             } else {
+                console.log('Geolocation not supported, using Jakarta');
+                document.getElementById('current-location').textContent = 'Jakarta';
                 document.getElementById('city-select').value = 'Jakarta';
-                loadPrayerTimes('Jakarta');
+                loadPrayerTimesCity('Jakarta');
             }
         }
 
-        // Initialize - auto-detect location on load
+        // Initialize
         autoDetectOnLoad();
         updateCurrentTime();
 
