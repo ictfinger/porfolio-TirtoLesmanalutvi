@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>F100 Tracking System</title>
+    <title>F100 Tracking System - Pertamina Hulu Rokan</title>
 
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -20,6 +20,8 @@
             --warning-color: #ffc107;
             --danger-color: #dc3545;
             --gray-color: #6c757d;
+            --pertamina-blue: #0047ab;
+            --pertamina-red: #ff0000;
         }
 
         * {
@@ -30,22 +32,46 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             min-height: 100vh;
             padding: 20px;
         }
 
         .main-container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
         }
 
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--pertamina-blue) 0%, #002d72 100%);
             color: white;
             padding: 2rem;
             border-radius: 15px 15px 0 0;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.1)"/></svg>');
+            background-size: cover;
+        }
+
+        .pertamina-logo {
+            background: white;
+            color: var(--pertamina-red);
+            font-weight: 800;
+            padding: 0.5rem 1.5rem;
+            border-radius: 10px;
+            display: inline-block;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
         .progress-container {
@@ -71,7 +97,7 @@
 
         .progress-bar {
             height: 100%;
-            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            background: linear-gradient(90deg, var(--pertamina-blue) 0%, #0066cc 100%);
             border-radius: 15px;
             transition: width 0.5s ease;
             position: relative;
@@ -124,7 +150,7 @@
             margin-bottom: 1.5rem;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border-left: 5px solid #4facfe;
+            border-left: 5px solid var(--pertamina-blue);
         }
 
         .tracking-card:hover {
@@ -142,7 +168,7 @@
         }
 
         .part-badge {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--pertamina-blue) 0%, #0066cc 100%);
             color: white;
             padding: 0.4rem 1.2rem;
             border-radius: 20px;
@@ -158,12 +184,12 @@
         }
 
         .badge-open {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            background: linear-gradient(135deg, #ff6b6b 0%, var(--pertamina-red) 100%);
             color: white;
         }
 
         .badge-close {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            background: linear-gradient(135deg, #4facfe 0%, var(--pertamina-blue) 100%);
             color: white;
         }
 
@@ -173,8 +199,9 @@
             padding: 1rem;
             margin-bottom: 0.8rem;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             transition: all 0.3s ease;
+            position: relative;
         }
 
         .task-item:hover {
@@ -182,105 +209,76 @@
             transform: translateX(5px);
         }
 
+        .task-item.completed {
+            background: #f0f9ff;
+            border-left: 4px solid var(--success-color);
+        }
+
         .task-checkbox {
             margin-right: 1rem;
             width: 24px;
             height: 24px;
             cursor: pointer;
-            accent-color: #4facfe;
+            accent-color: var(--pertamina-blue);
+            flex-shrink: 0;
+            margin-top: 3px;
         }
 
         .task-content {
             flex: 1;
+            min-width: 0;
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
         }
 
         .task-title {
             font-weight: 600;
             color: #333;
-            margin-bottom: 0.3rem;
+            font-size: 1.1rem;
+        }
+
+        .task-subtitle {
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
         }
 
         .task-desc {
             color: #666;
             font-size: 0.9rem;
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.8rem;
+            line-height: 1.5;
+            background: rgba(0, 0, 0, 0.02);
+            padding: 0.8rem;
+            border-radius: 8px;
+            border-left: 3px solid #ddd;
         }
 
         .task-meta {
             display: flex;
-            gap: 1rem;
+            gap: 1.5rem;
             font-size: 0.85rem;
-            color: #888;
+            color: #666;
+            flex-wrap: wrap;
         }
 
         .task-pic {
-            color: #4facfe;
+            color: var(--pertamina-blue);
             font-weight: 500;
         }
 
-        .task-performance {
-            color: #28a745;
-            font-weight: 500;
-        }
-
-        .task-kinerja {
-            color: #ffc107;
-            font-weight: 500;
-        }
-
-        .summary-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
-
-        .summary-number {
-            font-size: 3rem;
-            font-weight: 700;
-            line-height: 1;
-            margin-bottom: 0.5rem;
-        }
-
-        .summary-label {
-            font-size: 1rem;
-            opacity: 0.9;
-        }
-
-        .filter-buttons {
+        .task-status {
             display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            margin-bottom: 1.5rem;
-        }
-
-        .filter-btn {
-            padding: 0.5rem 1.2rem;
-            border: 2px solid #4facfe;
-            background: transparent;
-            color: #4facfe;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 500;
-        }
-
-        .filter-btn:hover,
-        .filter-btn.active {
-            background: #4facfe;
-            color: white;
-        }
-
-        .status-indicator {
-            display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            padding: 0.3rem 0.8rem;
-            border-radius: 15px;
-            font-size: 0.85rem;
-            font-weight: 500;
         }
 
         .status-dot {
@@ -290,19 +288,67 @@
         }
 
         .dot-green {
-            background: #28a745;
-        }
-
-        .dot-blue {
-            background: #4facfe;
+            background: var(--success-color);
         }
 
         .dot-red {
-            background: #f5576c;
+            background: var(--pertamina-red);
+        }
+
+        .dot-blue {
+            background: var(--pertamina-blue);
         }
 
         .dot-yellow {
-            background: #ffc107;
+            background: var(--warning-color);
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, var(--pertamina-blue) 0%, #0066cc 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .summary-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1.2rem;
+            border: 2px solid var(--pertamina-blue);
+            background: transparent;
+            color: var(--pertamina-blue);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--pertamina-blue);
+            color: white;
         }
 
         .legend {
@@ -311,6 +357,10 @@
             gap: 2rem;
             margin-top: 1rem;
             flex-wrap: wrap;
+            padding: 1rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
 
         @media (max-width: 768px) {
@@ -326,24 +376,30 @@
                 padding: 1rem;
             }
 
+            .task-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
             .task-meta {
                 flex-direction: column;
-                gap: 0.3rem;
+                gap: 0.5rem;
             }
 
             .filter-buttons {
-                justify-content: center;
+                justify-content: flex-start;
             }
         }
 
         .completion-message {
             text-align: center;
             padding: 2rem;
-            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            background: linear-gradient(135deg, var(--success-color) 0%, #38f9d7 100%);
             color: white;
             border-radius: 12px;
             margin-top: 2rem;
             display: none;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
 
         .completion-message.show {
@@ -362,6 +418,39 @@
                 transform: translateY(0);
             }
         }
+
+        .section-title {
+            color: var(--pertamina-blue);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-title i {
+            font-size: 1.2rem;
+        }
+
+        .counter-badge {
+            background: var(--pertamina-red);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .task-id {
+            background: rgba(0, 71, 171, 0.1);
+            color: var(--pertamina-blue);
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
     </style>
 </head>
 
@@ -369,38 +458,51 @@
     <div class="main-container">
         <!-- Header -->
         <div class="header">
+            <div class="pertamina-logo">
+                <i class="fas fa-oil-well me-2"></i>PERTAMINA HULU ROKAN
+            </div>
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h1 class="mb-0"><i class="fas fa-clipboard-check me-2"></i>F100 Tracking System</h1>
+                <div>
+                    <h1 class="mb-2"><i class="fas fa-clipboard-check me-2"></i>F100 Tracking System</h1>
+                    <p class="mb-0 opacity-90">Contract Compliance Monitoring & Evaluation</p>
+                </div>
                 <div class="text-end">
-                    <div class="status-indicator" style="background: rgba(255,255,255,0.2);">
+                    <div class="status-indicator"
+                        style="background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 20px;">
                         <span class="status-dot dot-green"></span>
-                        Live Tracking
+                        Live Tracking Active
                     </div>
-                    <div class="text-white-50 mt-1">Last Updated: <span id="last-updated">Just now</span></div>
+                    <div class="text-white-50 mt-2">Last Updated: <span id="last-updated">Just now</span></div>
                 </div>
             </div>
-            <p class="lead mb-0">Monitoring dan Tracking Compliance F100 - Pertamina Hulu</p>
         </div>
 
         <!-- Progress Overview -->
         <div class="progress-container">
-            <div class="row">
-                <div class="col-md-4">
+            <div class="row g-3">
+                <div class="col-md-3 col-6">
                     <div class="summary-card">
                         <div class="summary-number" id="total-completed">0</div>
-                        <div class="summary-label">TOTAL COMPLETED</div>
+                        <div class="summary-label">COMPLETED</div>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="summary-card" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
-                        <div class="summary-number" id="total-items">52</div>
-                        <div class="summary-label">TOTAL ITEMS</div>
+                <div class="col-md-3 col-6">
+                    <div class="summary-card"
+                        style="background: linear-gradient(135deg, #ff6b6b 0%, var(--pertamina-red) 100%);">
+                        <div class="summary-number" id="total-pending">0</div>
+                        <div class="summary-label">PENDING</div>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3 col-6">
                     <div class="summary-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
                         <div class="summary-number" id="percentage-complete">0%</div>
                         <div class="summary-label">COMPLETION RATE</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="summary-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <div class="summary-number" id="total-items">0</div>
+                        <div class="summary-label">TOTAL ITEMS</div>
                     </div>
                 </div>
             </div>
@@ -408,7 +510,7 @@
             <!-- Main Progress Bar -->
             <div class="progress-section">
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h4 class="mb-0">Overall Progress</h4>
+                    <h4 class="mb-0"><i class="fas fa-chart-line me-2"></i>Overall Progress</h4>
                     <span class="text-primary fw-bold" id="main-progress-text">0%</span>
                 </div>
                 <div class="progress-bar-container">
@@ -421,12 +523,13 @@
             <!-- Filter Buttons -->
             <div class="filter-buttons">
                 <button class="filter-btn active" data-filter="all">All Items</button>
-                <button class="filter-btn" data-filter="open">Open (2)</button>
-                <button class="filter-btn" data-filter="close">Close (50)</button>
-                <button class="filter-btn" data-filter="partI">Part I - Timeline</button>
-                <button class="filter-btn" data-filter="partII">Part II - Supervision</button>
-                <button class="filter-btn" data-filter="partIII">Part III - Skills</button>
-                <button class="filter-btn" data-filter="partIV">Part IV - Security</button>
+                <button class="filter-btn" data-filter="open">Open Items</button>
+                <button class="filter-btn" data-filter="close">Closed Items</button>
+                <button class="filter-btn" data-filter="partI">Part IV - Kinerja HSE</button>
+                <button class="filter-btn" data-filter="partII">Part V - Timelines</button>
+                <button class="filter-btn" data-filter="partIII">Part V - Supervision</button>
+                <button class="filter-btn" data-filter="partIV">Part V - Skills</button>
+                <button class="filter-btn" data-filter="partV">Part V - Security</button>
             </div>
         </div>
 
@@ -439,14 +542,14 @@
         <div class="completion-message" id="completion-message">
             <i class="fas fa-trophy fa-3x mb-3"></i>
             <h3>Congratulations! 🎉</h3>
-            <p class="mb-0">All F100 items have been completed successfully!</p>
+            <p class="mb-0">All F100 compliance items have been completed successfully!</p>
         </div>
 
         <!-- Legend -->
         <div class="legend">
             <div class="d-flex align-items-center">
                 <span class="status-dot dot-green me-2"></span>
-                <span>Completed</span>
+                <span>Completed / Closed</span>
             </div>
             <div class="d-flex align-items-center">
                 <span class="status-dot dot-red me-2"></span>
@@ -464,78 +567,559 @@
     </div>
 
     <script>
-        // F100 Data from PDF
+        // F100 Data sesuai dengan input terbaru
         const f100Data = [
             {
-                part: "Part I - Timelines",
+                part: "Part IV - Kinerja HSE",
                 items: [
-                    { id: "I-1", title: "Delivery Mobilization", description: "Kendaraan, Laptop, Surat Pendaftaran pekerja", status: "Close", pic: "All", kinerja: "TRUE", performance: "100", checked: true },
-                    { id: "I-2", title: "Work Completion", description: "Flow Recruitment", status: "Close", pic: "HC", kinerja: "TRUE", performance: "80" },
-                    { id: "I-3", title: "Response of Occurred Problem", description: "SPD, BBM, Asuransi", status: "Open", pic: "-", kinerja: "FALSE", performance: "80" },
-                    { id: "I-4", title: "Close Out Document", description: "Ketepatan waktu penyerahan dokumen close-out/SA, RO", status: "Close", pic: "Fierka", kinerja: "TRUE", performance: "100", checked: true },
-                    { id: "I-5", title: "Report", description: "(MPI, DIMS) per bulan", status: "Close", pic: "Thalia", kinerja: "TRUE", performance: "100", checked: true }
+                    {
+                        id: "IV-HSE-1",
+                        title: "Kinerja HSE",
+                        subtitle: "PSB / PB",
+                        description: "Kinerja HSE - PSB / PB",
+                        status: "Open",
+                        pic: "Thalia",
+                        checked: false
+                    }
                 ]
             },
             {
-                part: "Part II - Supervision",
+                part: "Part V - Timelines",
                 items: [
-                    { id: "II-1", title: "Presence of PMCoW", description: "-", status: "Close", pic: "N#a", kinerja: "TRUE", performance: "100", checked: true },
-                    { id: "II-2", title: "Presence of Project Manager", description: "Eviden Ke Lapangan, email terkait MWT ke pengawas", status: "Close", pic: "Fadhlan", kinerja: "TRUE", performance: "100", checked: true },
-                    { id: "II-3", title: "Presence of Management Representative Manager", description: "Eviden Ke Lapangan, foto kegiatan, beserta email undangan", status: "Close", pic: "Fadhlan", kinerja: "TRUE", performance: "100", checked: true },
-                    { id: "II-4", title: "Supervision Ability", description: "-", status: "Close", pic: "N#a", kinerja: "TRUE", performance: "100", checked: true },
-                    { id: "II-5", title: "Follow up of Findings", description: "-", status: "Close", pic: "N#a", kinerja: "TRUE", performance: "100", checked: true }
+                    {
+                        id: "V-TIM-1a",
+                        title: "Delivery Mobilization",
+                        subtitle: "a. Delivery Mobilization",
+                        description: "Kendaraan, Laptop, Surat Pendaftaran pekerja ke DISNAKER, MCU (PKWT)",
+                        status: "Close",
+                        pic: "All",
+                        checked: true
+                    },
+                    {
+                        id: "V-TIM-1b",
+                        title: "Work Completion",
+                        subtitle: "b. Work Completion",
+                        description: "Flow Recruitment",
+                        status: "Close",
+                        pic: "HC",
+                        checked: true
+                    },
+                    {
+                        id: "V-TIM-1c",
+                        title: "Response of Occurred Problem",
+                        subtitle: "c. Response of Occurred Problem",
+                        description: "SPD, BBM, Asuransi",
+                        status: "Open",
+                        pic: "",
+                        checked: false
+                    },
+                    {
+                        id: "V-TIM-1d",
+                        title: "Close Out Document",
+                        subtitle: "d. Close Out Document",
+                        description: "Ketepatan waktu penyerahan dokumen close-out/SA, RO",
+                        status: "Close",
+                        pic: "Fierka",
+                        checked: true
+                    },
+                    {
+                        id: "V-TIM-1e",
+                        title: "Report",
+                        subtitle: "e. Report",
+                        description: "(MPI, DIMS) per bulan",
+                        status: "Close",
+                        pic: "Thalia",
+                        checked: true
+                    }
                 ]
             },
             {
-                part: "Part III - Skills",
+                part: "Part V - Supervision",
                 items: [
-                    { id: "III-1", title: "Required certificate", description: "Data training ccpm", status: "Close", pic: "HC", kinerja: "TRUE", performance: "100", checked: true },
-                    { id: "III-2", title: "Employee's Ability", description: "Data training SWP", status: "Close", pic: "Thalia", kinerja: "TRUE", performance: "100", checked: true }
+                    {
+                        id: "V-SUP-2a",
+                        title: "Presence of PMCoW",
+                        subtitle: "a. Presence of PMCoW",
+                        description: "-",
+                        status: "Close",
+                        pic: "N#a",
+                        checked: true
+                    },
+                    {
+                        id: "V-SUP-2b",
+                        title: "Presence of Project Manager",
+                        subtitle: "b. Presence of Project Manager",
+                        description: "Eviden Ke Lapangan, email terkait MWT ke pengawas",
+                        status: "Close",
+                        pic: "Fadhlan",
+                        checked: true
+                    },
+                    {
+                        id: "V-SUP-2c",
+                        title: "Presence of Management Representative Manager",
+                        subtitle: "c. Presence of Management Representative Manager",
+                        description: "Eviden Ke Lapangan, foto kegiatan, beserta email undangan",
+                        status: "Close",
+                        pic: "Fadhlan",
+                        checked: true
+                    },
+                    {
+                        id: "V-SUP-2d",
+                        title: "Supervision Ability",
+                        subtitle: "d. Supervision Ability",
+                        description: "-",
+                        status: "Close",
+                        pic: "N#a",
+                        checked: true
+                    },
+                    {
+                        id: "V-SUP-2e",
+                        title: "Follow up of Findings",
+                        subtitle: "e. Follow up of Findings",
+                        description: "-",
+                        status: "Close",
+                        pic: "N#a",
+                        checked: true
+                    }
                 ]
             },
             {
-                part: "Part IV - Security",
+                part: "Part V - Skills",
                 items: [
-                    { id: "IV-1", title: "Security of Company Asset", description: "-", status: "Close", pic: "N#a", kinerja: "TRUE", performance: "100", checked: true },
-                    { id: "IV-2", title: "Security of workplace & surrounding area", description: "Schedule Security", status: "Close", pic: "Efrata", kinerja: "TRUE", performance: "100", checked: true },
-                    { id: "IV-3", title: "Security Plan", description: "Sosialisasi TKO security internal beserta absensi", status: "Close", pic: "Efrata", kinerja: "FALSE", performance: "80" }
+                    {
+                        id: "V-SKL-3a",
+                        title: "Required certificate",
+                        subtitle: "a. Required certificate",
+                        description: "Data training ccpm",
+                        status: "Close",
+                        pic: "HC",
+                        checked: true
+                    },
+                    {
+                        id: "V-SKL-3b",
+                        title: "Employee's Ability",
+                        subtitle: "b. Employee's Ability",
+                        description: "Data training SWP",
+                        status: "Close",
+                        pic: "Thalia",
+                        checked: true
+                    }
                 ]
             },
             {
-                part: "Part V - Penyelesaian Perselisihan",
+                part: "Part V - Security",
                 items: [
-                    { id: "V-1", title: "Providing of Services", description: "SOW, email new hired dari user ke pgasol", status: "Close", pic: "Fadhlan", kinerja: "TRUE", performance: "100", checked: true },
-                    { id: "V-2", title: "Refusing Work Order", description: "-", status: "Close", pic: "N#a", kinerja: "TRUE", performance: "100", checked: true },
-                    { id: "V-3", title: "Penalty KPI MPI", description: "KPI Dan MPI Email Eviden", status: "Close", pic: "Thalia", kinerja: "TRUE", performance: "100", checked: true }
+                    {
+                        id: "V-SEC-4a",
+                        title: "Security of Company Asset",
+                        subtitle: "a. Security of Company Asset",
+                        description: "-",
+                        status: "Close",
+                        pic: "N#a",
+                        checked: true
+                    },
+                    {
+                        id: "V-SEC-4b",
+                        title: "Security of workplace & surrounding area",
+                        subtitle: "b. Security of workplace & surrounding area",
+                        description: "Schedule Security",
+                        status: "Close",
+                        pic: "Efrata",
+                        checked: true
+                    },
+                    {
+                        id: "V-SEC-4c",
+                        title: "Security Plan",
+                        subtitle: "c. Security Plan",
+                        description: "Sosialisasi TKO security internal beserta absensi telah mengikuti sosialisasi",
+                        status: "Close",
+                        pic: "Efrata",
+                        checked: true
+                    }
                 ]
             },
             {
-                part: "Part VI - Materials Provided by contractor",
+                part: "Part VI - Providing of Requirement Services",
                 items: [
-                    { id: "VI-1", title: "Contractor's Main Material", description: "-", status: "Close", pic: "N#a", kinerja: "TRUE", performance: "100", checked: true },
-                    { id: "VI-2", title: "Contractor's supporting material", description: "serah terima APD dan foto penyerahan", status: "Close", pic: "N#a", kinerja: "TRUE", performance: "100", checked: true }
+                    {
+                        id: "VI-SVC-1a",
+                        title: "Providing of Services",
+                        subtitle: "a. Providing of Services",
+                        description: "SOW, email new hired dari user ke pgasol",
+                        status: "Close",
+                        pic: "Fadhlan",
+                        checked: true
+                    },
+                    {
+                        id: "VI-SVC-1b",
+                        title: "Refusing Work Order",
+                        subtitle: "b. Refusing Work Order",
+                        description: "-",
+                        status: "Close",
+                        pic: "N#a",
+                        checked: true
+                    },
+                    {
+                        id: "VI-SVC-1c",
+                        title: "Penalty KPI MPI",
+                        subtitle: "c. Penalty KPI MPI",
+                        description: "KPI Dan MPI Email Eviden",
+                        status: "Close",
+                        pic: "Thalia",
+                        checked: true
+                    }
                 ]
             },
             {
-                part: "Part VII - Tools & Equipment provided by contractor",
+                part: "Part VI - Materials Provided by Contractor",
                 items: [
-                    { id: "VII-1", title: "Contractor's main tools & equipment", description: "List Kendaraan", status: "Close", pic: "Thalia", kinerja: "TRUE", performance: "100", checked: true },
-                    { id: "VII-2", title: "Contractor's supporting tools & equipment", description: "List Laptop", status: "Close", pic: "Tirto", kinerja: "TRUE", performance: "100", checked: true }
+                    {
+                        id: "VI-MAT-2a",
+                        title: "Contractor's Main Material",
+                        subtitle: "a. Contractor's Main Material",
+                        description: "-",
+                        status: "Close",
+                        pic: "N#a",
+                        checked: true
+                    },
+                    {
+                        id: "VI-MAT-2b",
+                        title: "Contractor's supporting material",
+                        subtitle: "b. Contractor's supporting material",
+                        description: "serah terima APD dan foto penyerahan",
+                        status: "Close",
+                        pic: "N#a",
+                        checked: true
+                    }
+                ]
+            },
+            {
+                part: "Part VI - Tools & Equipment",
+                items: [
+                    {
+                        id: "VI-TOOL-3a",
+                        title: "Contractor's main tools & equipment",
+                        subtitle: "a. Contractor's main tools & equipment",
+                        description: "List Kendaraan",
+                        status: "Close",
+                        pic: "Thalia",
+                        checked: true
+                    },
+                    {
+                        id: "VI-TOOL-3b",
+                        title: "Contractor's supporting tools & equipment",
+                        subtitle: "b. Contractor's supporting tools & equipment",
+                        description: "List Laptop",
+                        status: "Close",
+                        pic: "Tirto",
+                        checked: true
+                    }
+                ]
+            },
+            {
+                part: "Part VI - Use of Company's Materials",
+                items: [
+                    {
+                        id: "VI-USE-4a",
+                        title: "Use of Company's material",
+                        subtitle: "a. Use of Company's material",
+                        description: "-",
+                        status: "Close",
+                        pic: "N#a",
+                        checked: true
+                    }
+                ]
+            },
+            {
+                part: "Part VI - Use of Company's Tools",
+                items: [
+                    {
+                        id: "VI-USE-5a",
+                        title: "Use of Company's tools/equipment",
+                        subtitle: "a. Use of Company's tools/equipment",
+                        description: "-",
+                        status: "Close",
+                        pic: "N#a",
+                        checked: true
+                    }
+                ]
+            },
+            {
+                part: "Part VII - TKDN",
+                items: [
+                    {
+                        id: "VII-TKDN-1a",
+                        title: "Self Assessment TKDN",
+                        subtitle: "a. Self Assessment TKDN",
+                        description: "Lampiran TKDN",
+                        status: "Close",
+                        pic: "Pak Nova",
+                        checked: true
+                    }
                 ]
             },
             {
                 part: "Part VIII - Kepatuhan",
                 items: [
-                    { id: "VIII-1", title: "TKDN Self Assessment", description: "Lampiran TKDN", status: "Close", pic: "Pak Nova", kinerja: "FALSE", performance: "80" },
-                    { id: "VIII-2", title: "Comply business ethic and code of conduct", description: "TKO code of conduct", status: "Close", pic: "System", kinerja: "TRUE", performance: "100", checked: true },
-                    { id: "VIII-3", title: "Pay or adjust the worker salary to minimum", description: "slip gaji", status: "Close", pic: "HC", kinerja: "TRUE", performance: "100", checked: true },
-                    { id: "VIII-4", title: "Have pay scale and salary structure", description: "struktur skala upah", status: "Close", pic: "HC", kinerja: "TRUE", performance: "100", checked: true },
-                    { id: "VIII-5", title: "Apply yearly salary increase escalation & adjustment", description: "kenaikan upah", status: "Close", pic: "N#a", kinerja: "TRUE", performance: "100", checked: true },
-                    { id: "VIII-6", title: "Pay the salary and/or other benefits stated", description: "Slip gaji (Mutasi gaji)", status: "Close", pic: "HC", kinerja: "TRUE", performance: "100", checked: true },
-                    { id: "VIII-7", title: "Pay overtime to workers on-time", description: "Slip gaji yang ada lembur", status: "Close", pic: "HC", kinerja: "TRUE", performance: "100", checked: true },
-                    { id: "VIII-8", title: "Pay official religious holiday compensation", description: "Slip Gaji THR", status: "Close", pic: "HC", kinerja: "TRUE", performance: "100", checked: true },
-                    { id: "VIII-9", title: "Pay end of service payment on time", description: "Slip Gaji Tunjangan Akhir kontrak", status: "Close", pic: "N#a", kinerja: "TRUE", performance: "100", checked: true },
-                    { id: "VIII-10", title: "Pay BPJS/Jamsostek/Askes monthly premium", description: "pembayaran BPJS Kesehatan dan Ket", status: "Close", pic: "HC", kinerja: "TRUE", performance: "100", checked: true }
+                    {
+                        id: "VIII-KPT-1a",
+                        title: "Comply business ethic and code of conduct",
+                        subtitle: "a. Comply business ethic and code of conduct",
+                        description: "TKO code of conduct",
+                        status: "Close",
+                        pic: "",
+                        checked: true
+                    },
+                    {
+                        id: "VIII-KPT-1b",
+                        title: "Pay or adjust the worker salary to minimum",
+                        subtitle: "b. Pay or adjust the worker salary to minimum",
+                        description: "slip gaji",
+                        status: "Close",
+                        pic: "HC",
+                        checked: true
+                    },
+                    {
+                        id: "VIII-KPT-1c",
+                        title: "Have pay scale and salary structure",
+                        subtitle: "c. Have pay scale and salary structure",
+                        description: "struktur skala upah",
+                        status: "Close",
+                        pic: "HC",
+                        checked: true
+                    },
+                    {
+                        id: "VIII-KPT-1d",
+                        title: "Apply yearly salary increase escalation & adjustment",
+                        subtitle: "d. Apply yearly salary increase escalation & adjustment",
+                        description: "kenaikan upah",
+                        status: "Close",
+                        pic: "N#a",
+                        checked: true
+                    },
+                    {
+                        id: "VIII-KPT-1e",
+                        title: "Pay the salary and/or other benefits stated",
+                        subtitle: "e. Pay the salary and/or other benefits stated",
+                        description: "Slip gaji (Mutasi gaji)",
+                        status: "Close",
+                        pic: "HC",
+                        checked: true
+                    },
+                    {
+                        id: "VIII-KPT-1f",
+                        title: "Pay overtime to workers on-time",
+                        subtitle: "f. Pay overtime to workers on-time",
+                        description: "Slip gaji yang ada lembur",
+                        status: "Close",
+                        pic: "HC",
+                        checked: true
+                    },
+                    {
+                        id: "VIII-KPT-1g",
+                        title: "Pay official religious holiday compensation",
+                        subtitle: "g. Pay official religious holiday compensation",
+                        description: "Slip Gaji THR",
+                        status: "Close",
+                        pic: "HC",
+                        checked: true
+                    },
+                    {
+                        id: "VIII-KPT-1h",
+                        title: "Pay end of service payment on time",
+                        subtitle: "h. Pay end of service payment on time",
+                        description: "Slip Gaji Tunjangan Akhir kontrak",
+                        status: "Close",
+                        pic: "N#a",
+                        checked: true
+                    },
+                    {
+                        id: "VIII-KPT-1i",
+                        title: "Pay BPJS/Jamsostek/Askes monthly premium",
+                        subtitle: "i. Pay BPJS/Jamsostek/Askes monthly premium",
+                        description: "pembayaran BPJS Kesehatan dan ketenagakerjaan",
+                        status: "Close",
+                        pic: "HC",
+                        checked: true
+                    },
+                    {
+                        id: "VIII-KPT-1j",
+                        title: "Pay Leave Assistance (yearly leave) on time",
+                        subtitle: "j. Pay Leave Assistance (yearly leave) on time",
+                        description: "Bukti bayar uang cuti",
+                        status: "Close",
+                        pic: "N#a",
+                        checked: true
+                    },
+                    {
+                        id: "VIII-KPT-1k",
+                        title: "Pay Monthly Transportation Assistance on time",
+                        subtitle: "k. Pay Monthly Transportation Assistance on time",
+                        description: "Bukti bayar uang transportasi",
+                        status: "Close",
+                        pic: "HC",
+                        checked: true
+                    },
+                    {
+                        id: "VIII-KPT-1l",
+                        title: "Pay other compensations (if any) to workers",
+                        subtitle: "l. Pay other compensations (if any) to workers",
+                        description: "Bukti bayar kompensasi/ bonus",
+                        status: "Close",
+                        pic: "N#a",
+                        checked: true
+                    }
+                ]
+            },
+            {
+                part: "Part VIII - Komunikasi",
+                items: [
+                    {
+                        id: "VIII-KOM-2a",
+                        title: "Conduct regular communication (quarterly)",
+                        subtitle: "a. Conduct regular communication (quarterly)",
+                        description: "sosialisasi ke pekerja eviden",
+                        status: "Close",
+                        pic: "HC",
+                        checked: true
+                    },
+                    {
+                        id: "VIII-KOM-2b",
+                        title: "Conduct regular communication (every month)",
+                        subtitle: "b. Conduct regular communication (every month)",
+                        description: "hubungan industrial",
+                        status: "Close",
+                        pic: "N#a",
+                        checked: true
+                    },
+                    {
+                        id: "VIII-KOM-2c",
+                        title: "Conduct regular progress report update",
+                        subtitle: "c. Conduct regular progress report update",
+                        description: "memberikan laporan hubungan industrial",
+                        status: "Close",
+                        pic: "N#a",
+                        checked: true
+                    }
+                ]
+            },
+            {
+                part: "Part VIII - Lingkungan Kerja yang Aman",
+                items: [
+                    {
+                        id: "VIII-LKA-3a",
+                        title: "Maintain safe & conducive work place",
+                        subtitle: "a. Maintain safe & conducive work place",
+                        description: "Humas jika ada demo? surat perintah?",
+                        status: "Close",
+                        pic: "N#a",
+                        checked: true
+                    }
+                ]
+            },
+            {
+                part: "Part VIII - Laporan dan Pendaftaran",
+                items: [
+                    {
+                        id: "VIII-LAP-4a",
+                        title: "Report mandatory enterprise report",
+                        subtitle: "a. Report mandatory enterprise report",
+                        description: "wajib lapor WLKP",
+                        status: "Close",
+                        pic: "HC",
+                        checked: true
+                    },
+                    {
+                        id: "VIII-LAP-4b",
+                        title: "Register contract summary signature page",
+                        subtitle: "b. Register contract summary signature page",
+                        description: "mendaftarkan ringkasan kontrak kepada disnaker setempat yang terdiri dari halaman penandatangan, ruang lingkup pekerjaan dan maslahat pekerja",
+                        status: "Close",
+                        pic: "HC",
+                        checked: true
+                    },
+                    {
+                        id: "VIII-LAP-4c",
+                        title: "Register work agreement",
+                        subtitle: "c. Register work agreement",
+                        description: "Registrasi PKWT",
+                        status: "Close",
+                        pic: "Wahid",
+                        checked: true
+                    }
+                ]
+            },
+            {
+                part: "Part VIII - Penyelesaian Perselisihan",
+                items: [
+                    {
+                        id: "VIII-PSP-5a",
+                        title: "Meet the worker/Union, Manpower Office",
+                        subtitle: "a. Meet the worker/Union, Manpower Office",
+                        description: "hubungan industrial",
+                        status: "Close",
+                        pic: "N#a",
+                        checked: true
+                    },
+                    {
+                        id: "VIII-PSP-5b",
+                        title: "Settle industrial dispute along with workers/Union",
+                        subtitle: "b. Settle industrial dispute along with workers/Union",
+                        description: "menyelesaikan masaalah industrial secara mandiri",
+                        status: "Close",
+                        pic: "N#a",
+                        checked: true
+                    },
+                    {
+                        id: "VIII-PSP-5c",
+                        title: "Follow through on Labor industrial dispute mechanism",
+                        subtitle: "c. Follow through on Labor industrial dispute mechanism",
+                        description: "mekanisme industrial yang berlaku",
+                        status: "Close",
+                        pic: "N#a",
+                        checked: true
+                    },
+                    {
+                        id: "VIII-PSP-5d",
+                        title: "State the industrial dispute mechanism in work agreement",
+                        subtitle: "d. State the industrial dispute mechanism in work agreement",
+                        description: "meyebutkan mekanisme penyelesaian masalah hubungan industrial PKWT",
+                        status: "Close",
+                        pic: "HC",
+                        checked: true
+                    }
+                ]
+            },
+            {
+                part: "Part VIII - Kemampuan Organisasi",
+                items: [
+                    {
+                        id: "VIII-ORG-6a",
+                        title: "Have organization chart",
+                        subtitle: "a. Have organization chart",
+                        description: "Struktur Organisasi",
+                        status: "Close",
+                        pic: "Thalia",
+                        checked: true
+                    },
+                    {
+                        id: "VIII-ORG-6b",
+                        title: "Have capable and reliable person",
+                        subtitle: "b. Have capable and reliable person",
+                        description: "sertifikat khusus hubungan industrial",
+                        status: "Close",
+                        pic: "HC",
+                        checked: true
+                    },
+                    {
+                        id: "VIII-ORG-6c",
+                        title: "Conduct IR socialization/training for workers",
+                        subtitle: "c. Conduct IR socialization/training for workers",
+                        description: "melakukan sosilisasi industrial setiap 3 bulan kepada pekerjanya? ada dokumentasi: daftar hadir, materi pelatihan, risalah pertemuan",
+                        status: "Close",
+                        pic: "HC",
+                        checked: true
+                    }
                 ]
             }
         ];
@@ -544,16 +1128,22 @@
         let trackingData = JSON.parse(localStorage.getItem('f100Tracking')) || f100Data;
         let totalItems = 0;
         let completedItems = 0;
+        let pendingItems = 0;
 
         // Calculate initial stats
         function calculateStats() {
             totalItems = 0;
             completedItems = 0;
+            pendingItems = 0;
 
             trackingData.forEach(part => {
                 part.items.forEach(item => {
                     totalItems++;
-                    if (item.checked) completedItems++;
+                    if (item.checked) {
+                        completedItems++;
+                    } else {
+                        pendingItems++;
+                    }
                 });
             });
 
@@ -562,6 +1152,7 @@
             // Update UI
             document.getElementById('total-items').textContent = totalItems;
             document.getElementById('total-completed').textContent = completedItems;
+            document.getElementById('total-pending').textContent = pendingItems;
             document.getElementById('percentage-complete').textContent = percentage + '%';
 
             // Update progress bar
@@ -584,7 +1175,13 @@
             // Update last updated time
             const now = new Date();
             document.getElementById('last-updated').textContent =
-                now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                now.toLocaleTimeString('id-ID', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric'
+                });
         }
 
         // Render F100 data
@@ -595,21 +1192,25 @@
             trackingData.forEach(part => {
                 const partCard = document.createElement('div');
                 partCard.className = 'tracking-card';
-                partCard.dataset.part = part.part.toLowerCase().replace(' ', '-');
+                partCard.dataset.part = part.part.toLowerCase().replace(/[^a-z0-9]/g, '-');
 
                 // Calculate part progress
                 const partItems = part.items.length;
                 const partCompleted = part.items.filter(item => item.checked).length;
                 const partPercentage = Math.round((partCompleted / partItems) * 100);
+                const openCount = part.items.filter(item => !item.checked).length;
 
                 partCard.innerHTML = `
                     <div class="card-header">
-                        <div>
+                        <div class="d-flex align-items-center gap-2">
                             <span class="part-badge">${part.part}</span>
-                            <span class="ms-3 text-muted">${partCompleted}/${partItems} completed</span>
+                            <span class="text-muted">
+                                ${partCompleted}/${partItems} completed
+                                ${openCount > 0 ? `<span class="counter-badge">${openCount} open</span>` : ''}
+                            </span>
                         </div>
                         <div>
-                            <span class="status-badge badge-${partCompleted === partItems ? 'close' : 'open'}">
+                            <span class="status-badge ${partCompleted === partItems ? 'badge-close' : 'badge-open'}">
                                 ${partPercentage}% Complete
                             </span>
                         </div>
@@ -621,22 +1222,48 @@
                     </div>
                     <div class="part-items">
                         ${part.items.map(item => `
-                            <div class="task-item ${item.checked ? 'completed' : ''}" data-id="${item.id}" data-status="${item.status.toLowerCase()}">
-                                <input type="checkbox" class="task-checkbox" ${item.checked ? 'checked' : ''} 
-                                       data-part="${part.part}" data-item="${item.id}">
+                            <div class="task-item ${item.checked ? 'completed' : ''}" 
+                                 data-id="${item.id}" 
+                                 data-status="${item.status.toLowerCase()}">
+                                <input type="checkbox" 
+                                       class="task-checkbox" 
+                                       ${item.checked ? 'checked' : ''} 
+                                       data-part="${part.part}" 
+                                       data-item="${item.id}">
                                 <div class="task-content">
-                                    <div class="task-title">${item.title}</div>
+                                    <div class="task-header">
+                                        <div>
+                                            <span class="task-id">${item.id}</span>
+                                            <span class="task-title">${item.title}</span>
+                                        </div>
+                                        <div class="task-status">
+                                            <span class="status-dot ${item.status === 'Close' ? 'dot-green' : 'dot-red'}"></span>
+                                            <span class="status-badge ${item.status === 'Close' ? 'badge-close' : 'badge-open'}">
+                                                ${item.status}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    ${item.subtitle ? `<div class="task-subtitle">${item.subtitle}</div>` : ''}
                                     <div class="task-desc">${item.description}</div>
                                     <div class="task-meta">
-                                        <span class="task-pic"><i class="fas fa-user-circle me-1"></i> PIC: ${item.pic}</span>
-                                        <span class="task-performance"><i class="fas fa-chart-line me-1"></i> Performance: ${item.performance}%</span>
-                                        <span class="task-kinerja ${item.kinerja === 'TRUE' ? 'text-success' : 'text-warning'}">
-                                            <i class="fas ${item.kinerja === 'TRUE' ? 'fa-check-circle' : 'fa-exclamation-circle'} me-1"></i> 
-                                            Kinerja: ${item.kinerja}
+                                        <span class="task-pic">
+                                            <i class="fas fa-user-circle me-1"></i> 
+                                            PIC: ${item.pic || 'TBD'}
                                         </span>
-                                        <span class="status-badge ${item.status === 'Close' ? 'badge-close' : 'badge-open'}">
-                                            ${item.status}
+                                        <span class="text-muted">
+                                            <i class="fas fa-calendar-alt me-1"></i>
+                                            Last update: Today
                                         </span>
+                                        ${item.status === 'Open' ?
+                        `<span class="text-warning">
+                                                <i class="fas fa-exclamation-circle me-1"></i>
+                                                Action Required
+                                            </span>` :
+                        `<span class="text-success">
+                                                <i class="fas fa-check-circle me-1"></i>
+                                                Verified
+                                            </span>`
+                    }
                                     </div>
                                 </div>
                             </div>
@@ -659,9 +1286,10 @@
                         const item = part.items.find(i => i.id === itemId);
                         if (item) {
                             item.checked = this.checked;
-
-                            // Update status based on checkbox
                             item.status = this.checked ? 'Close' : 'Open';
+
+                            // Update last updated time
+                            item.lastUpdated = new Date().toISOString();
 
                             // Save to localStorage
                             localStorage.setItem('f100Tracking', JSON.stringify(trackingData));
@@ -669,6 +1297,13 @@
                             // Recalculate and render
                             calculateStats();
                             renderF100();
+
+                            // Show notification
+                            showNotification(
+                                this.checked ? 'Item Completed' : 'Item Reopened',
+                                `${item.title} has been ${this.checked ? 'completed' : 'reopened'}`,
+                                this.checked ? 'success' : 'warning'
+                            );
                         }
                     }
                 });
@@ -690,28 +1325,70 @@
                 document.querySelectorAll('.tracking-card').forEach(card => {
                     if (filter === 'all') {
                         card.style.display = 'block';
-                    } else if (filter === 'open' || filter === 'close') {
-                        // Show cards with matching status items
-                        const hasMatchingItems = Array.from(card.querySelectorAll('.task-item'))
+                    } else if (filter === 'open') {
+                        // Show cards with open items
+                        const hasOpenItems = Array.from(card.querySelectorAll('.task-item'))
                             .some(item => {
-                                if (filter === 'open') {
-                                    const status = item.dataset.status;
-                                    const checkbox = item.querySelector('.task-checkbox');
-                                    return status === 'open' && !checkbox.checked;
-                                } else {
-                                    const checkbox = item.querySelector('.task-checkbox');
-                                    return checkbox.checked;
-                                }
+                                const status = item.dataset.status;
+                                return status === 'open';
                             });
-                        card.style.display = hasMatchingItems ? 'block' : 'none';
+                        card.style.display = hasOpenItems ? 'block' : 'none';
+                    } else if (filter === 'close') {
+                        // Show cards with closed items only
+                        const allClosed = Array.from(card.querySelectorAll('.task-item'))
+                            .every(item => {
+                                const status = item.dataset.status;
+                                return status === 'close';
+                            });
+                        card.style.display = allClosed ? 'block' : 'none';
                     } else {
-                        // Filter by part
+                        // Filter by part name
                         const partName = card.dataset.part;
-                        card.style.display = partName.includes(filter) ? 'block' : 'none';
+                        const filterMap = {
+                            'partI': 'part-iv',
+                            'partII': 'part-v-timelines',
+                            'partIII': 'part-v-supervision',
+                            'partIV': 'part-v-skills',
+                            'partV': 'part-v-security'
+                        };
+
+                        if (filterMap[filter]) {
+                            card.style.display = partName.includes(filterMap[filter]) ? 'block' : 'none';
+                        } else {
+                            card.style.display = 'block';
+                        }
                     }
                 });
             });
         });
+
+        // Notification function
+        function showNotification(title, message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type === 'success' ? 'success' : type === 'warning' ? 'warning' : 'info'} alert-dismissible fade show`;
+            notification.style.position = 'fixed';
+            notification.style.top = '20px';
+            notification.style.right = '20px';
+            notification.style.zIndex = '9999';
+            notification.style.minWidth = '300px';
+            notification.style.boxShadow = '0 4px 20px rgba(0,0,0,0.2)';
+
+            notification.innerHTML = `
+                <strong>${title}</strong><br>
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+
+            document.body.appendChild(notification);
+
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 5000);
+        }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function () {
@@ -721,23 +1398,64 @@
             // Auto-save every 5 minutes
             setInterval(() => {
                 localStorage.setItem('f100Tracking', JSON.stringify(trackingData));
-                console.log('Auto-saved tracking data');
             }, 5 * 60 * 1000);
 
-            // Add reset button functionality (optional)
+            // Add reset button functionality
             const resetButton = document.createElement('button');
             resetButton.className = 'btn btn-outline-danger mt-3';
-            resetButton.innerHTML = '<i class="fas fa-redo me-2"></i> Reset All';
+            resetButton.innerHTML = '<i class="fas fa-redo me-2"></i> Reset All Progress';
             resetButton.onclick = function () {
-                if (confirm('Are you sure you want to reset all progress?')) {
+                if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
                     localStorage.removeItem('f100Tracking');
-                    trackingData = f100Data;
+                    trackingData = JSON.parse(JSON.stringify(f100Data)); // Deep copy
                     calculateStats();
                     renderF100();
+                    showNotification('Progress Reset', 'All progress has been reset to initial state.', 'warning');
                 }
             };
             document.querySelector('.legend').after(resetButton);
+
+            // Add export button
+            const exportButton = document.createElement('button');
+            exportButton.className = 'btn btn-outline-primary mt-3 ms-3';
+            exportButton.innerHTML = '<i class="fas fa-download me-2"></i> Export Report';
+            exportButton.onclick = function () {
+                exportToCSV();
+            };
+            resetButton.after(exportButton);
         });
+
+        // Export to CSV function
+        function exportToCSV() {
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Part,ID,Title,Subtitle,Description,Status,PIC,Completed\n";
+
+            trackingData.forEach(part => {
+                part.items.forEach(item => {
+                    const row = [
+                        `"${part.part}"`,
+                        `"${item.id}"`,
+                        `"${item.title}"`,
+                        `"${item.subtitle || ''}"`,
+                        `"${item.description.replace(/"/g, '""')}"`,
+                        `"${item.status}"`,
+                        `"${item.pic}"`,
+                        `"${item.checked ? 'Yes' : 'No'}"`
+                    ].join(',');
+                    csvContent += row + "\n";
+                });
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `F100_Tracking_Report_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            showNotification('Report Exported', 'F100 tracking report has been downloaded.', 'success');
+        }
     </script>
 </body>
 
