@@ -503,6 +503,16 @@
             color: #c62828;
         }
 
+        .status-active {
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+
+        .status-inactive {
+            background: #ffcdd2;
+            color: #c62828;
+        }
+
         .action-buttons {
             display: flex;
             gap: 10px;
@@ -539,6 +549,15 @@
             background: #ffcdd2;
         }
 
+        .btn-view {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .btn-view:hover {
+            background: #c8e6c9;
+        }
+
         /* Modal */
         .modal {
             display: none;
@@ -562,8 +581,10 @@
             background: white;
             border-radius: 20px;
             padding: 40px;
-            max-width: 500px;
+            max-width: 600px;
             width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
             animation: slideUp 0.3s;
         }
 
@@ -586,6 +607,11 @@
             font-size: 24px;
             cursor: pointer;
             color: #666;
+            transition: color 0.3s;
+        }
+
+        .modal-close:hover {
+            color: #1a237e;
         }
 
         /* Login Screen */
@@ -694,6 +720,64 @@
         .btn-login:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(26, 35, 126, 0.3);
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 15px;
+        }
+
+        .tab-nav-btn {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            font-size: 16px;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab-nav-btn:hover {
+            color: #1a237e;
+        }
+
+        .tab-nav-btn.active {
+            color: #1a237e;
+            border-bottom-color: #1a237e;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Barcode Display */
+        .barcode-display {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
+
+        .barcode-text {
+            font-family: 'Courier New', monospace;
+            font-size: 20px;
+            letter-spacing: 3px;
+            padding: 15px;
+            background: #f8f8f8;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: inline-block;
         }
 
         /* Responsive */
@@ -841,6 +925,12 @@
                             Manajemen Karyawan
                         </a>
                     </li>
+                    <li class="nav-item" id="locationManagementLink" style="display: none;">
+                        <a href="#" class="nav-link" data-page="locationManagement">
+                            <i class="fas fa-map-marker-alt"></i>
+                            Lokasi Kerja
+                        </a>
+                    </li>
                     <li class="nav-item" id="reportsLink" style="display: none;">
                         <a href="#" class="nav-link" data-page="reports">
                             <i class="fas fa-chart-bar"></i>
@@ -951,6 +1041,12 @@
                                 </select>
                             </div>
                             <div class="form-group">
+                                <label for="filterLocation">Lokasi</label>
+                                <select id="filterLocation" class="form-control">
+                                    <option value="">Semua Lokasi</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <label for="filterStatus">Status</label>
                                 <select id="filterStatus" class="form-control">
                                     <option value="">Semua Status</option>
@@ -975,6 +1071,7 @@
                                     <th>Tanggal</th>
                                     <th>Masuk</th>
                                     <th>Keluar</th>
+                                    <th>Lokasi</th>
                                     <th>Status</th>
                                     <th>Durasi</th>
                                     <th>Aksi</th>
@@ -989,58 +1086,351 @@
 
                 <!-- Employee Management Page -->
                 <div id="employeeManagementPage" class="page-content" style="display: none;">
-                    <div class="content-header">
-                        <div class="content-title">
-                            <h2><i class="fas fa-users"></i> Manajemen Karyawan</h2>
+                    <div class="tab-nav">
+                        <button class="tab-nav-btn active" data-tab="employeeList">Daftar Karyawan</button>
+                        <button class="tab-nav-btn" data-tab="addEmployee">Tambah Karyawan</button>
+                        <button class="tab-nav-btn" data-tab="employeeBarcodes">Barcode Karyawan</button>
+                    </div>
+
+                    <!-- Employee List Tab -->
+                    <div class="tab-content active" id="employeeList">
+                        <div class="content-header">
+                            <div class="content-title">
+                                <h2><i class="fas fa-users"></i> Daftar Karyawan</h2>
+                            </div>
+                            <div class="content-actions">
+                                <button class="btn btn-primary" id="refreshEmployeesBtn">
+                                    <i class="fas fa-sync"></i> Refresh
+                                </button>
+                            </div>
                         </div>
-                        <div class="content-actions">
-                            <button class="btn btn-primary" id="addEmployeeBtn">
-                                <i class="fas fa-user-plus"></i> Tambah Karyawan
-                            </button>
-                            <button class="btn btn-secondary" id="generateBarcodeBtn">
+
+                        <!-- Statistics -->
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value" id="totalEmployees">0</div>
+                                <div class="stat-label">Total Karyawan</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="activeEmployees">0</div>
+                                <div class="stat-label">Karyawan Aktif</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="presentToday">0</div>
+                                <div class="stat-label">Hadir Hari Ini</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="onLeave">0</div>
+                                <div class="stat-label">Cuti</div>
+                            </div>
+                        </div>
+
+                        <!-- Employee Table -->
+                        <div class="table-container">
+                            <table class="data-table" id="employeeTable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nama</th>
+                                        <th>Departemen</th>
+                                        <th>Jabatan</th>
+                                        <th>Lokasi</th>
+                                        <th>Status</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Data will be dynamically inserted -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Add Employee Tab -->
+                    <div class="tab-content" id="addEmployee">
+                        <div class="content-header">
+                            <div class="content-title">
+                                <h2><i class="fas fa-user-plus"></i> Tambah Karyawan Baru</h2>
+                            </div>
+                        </div>
+
+                        <div class="attendance-form">
+                            <form id="addEmployeeForm">
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label for="newEmployeeId">ID Karyawan *</label>
+                                        <input type="text" id="newEmployeeId" class="form-control" required
+                                            placeholder="EMP001">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="newEmployeeName">Nama Lengkap *</label>
+                                        <input type="text" id="newEmployeeName" class="form-control" required
+                                            placeholder="John Doe">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="newEmployeeEmail">Email *</label>
+                                        <input type="email" id="newEmployeeEmail" class="form-control" required
+                                            placeholder="john@example.com">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="newEmployeePhone">Telepon *</label>
+                                        <input type="tel" id="newEmployeePhone" class="form-control" required
+                                            placeholder="081234567890">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="newEmployeeDepartment">Departemen *</label>
+                                        <select id="newEmployeeDepartment" class="form-control" required>
+                                            <option value="">Pilih Departemen</option>
+                                            <option value="IT">IT</option>
+                                            <option value="HRD">HRD</option>
+                                            <option value="Finance">Finance</option>
+                                            <option value="Marketing">Marketing</option>
+                                            <option value="Operations">Operations</option>
+                                            <option value="Production">Production</option>
+                                            <option value="Sales">Sales</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="newEmployeePosition">Jabatan *</label>
+                                        <input type="text" id="newEmployeePosition" class="form-control" required
+                                            placeholder="Software Developer">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="newEmployeeLocation">Lokasi Kerja</label>
+                                        <select id="newEmployeeLocation" class="form-control">
+                                            <option value="">Pilih Lokasi</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="newEmployeePassword">Password *</label>
+                                        <input type="password" id="newEmployeePassword" class="form-control" required
+                                            placeholder="Minimal 6 karakter">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="confirmPassword">Konfirmasi Password *</label>
+                                        <input type="password" id="confirmPassword" class="form-control" required
+                                            placeholder="Ulangi password">
+                                    </div>
+                                </div>
+                                <div style="display: flex; gap: 15px; margin-top: 25px;">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save"></i> Simpan Karyawan
+                                    </button>
+                                    <button type="reset" class="btn btn-secondary">
+                                        <i class="fas fa-redo"></i> Reset Form
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Employee Barcodes Tab -->
+                    <div class="tab-content" id="employeeBarcodes">
+                        <div class="content-header">
+                            <div class="content-title">
+                                <h2><i class="fas fa-barcode"></i> Barcode Karyawan</h2>
+                            </div>
+                            <div class="content-actions">
+                                <button class="btn btn-primary" id="printAllBarcodesBtn">
+                                    <i class="fas fa-print"></i> Cetak Semua
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="attendance-form">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="selectEmployeeForBarcode">Pilih Karyawan</label>
+                                    <select id="selectEmployeeForBarcode" class="form-control">
+                                        <option value="">Pilih karyawan...</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button class="btn btn-secondary" id="generateEmployeeBarcodeBtn">
                                 <i class="fas fa-barcode"></i> Generate Barcode
                             </button>
                         </div>
-                    </div>
 
-                    <!-- Statistics -->
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-value" id="totalEmployees">0</div>
-                            <div class="stat-label">Total Karyawan</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="activeEmployees">0</div>
-                            <div class="stat-label">Karyawan Aktif</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="presentToday">0</div>
-                            <div class="stat-label">Hadir Hari Ini</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="onLeave">0</div>
-                            <div class="stat-label">Cuti</div>
+                        <div id="employeeBarcodeContainer" style="margin-top: 30px;">
+                            <!-- Barcodes will be displayed here -->
                         </div>
                     </div>
+                </div>
 
-                    <!-- Employee Table -->
-                    <div class="table-container">
-                        <table class="data-table" id="employeeTable">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Nama</th>
-                                    <th>Departemen</th>
-                                    <th>Jabatan</th>
-                                    <th>Status</th>
-                                    <th>Barcode</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Data will be dynamically inserted -->
-                            </tbody>
-                        </table>
+                <!-- Location Management Page -->
+                <div id="locationManagementPage" class="page-content" style="display: none;">
+                    <div class="tab-nav">
+                        <button class="tab-nav-btn active" data-tab="locationList">Daftar Lokasi</button>
+                        <button class="tab-nav-btn" data-tab="addLocation">Tambah Lokasi</button>
+                        <button class="tab-nav-btn" data-tab="locationBarcodes">Barcode Lokasi</button>
+                    </div>
+
+                    <!-- Location List Tab -->
+                    <div class="tab-content active" id="locationList">
+                        <div class="content-header">
+                            <div class="content-title">
+                                <h2><i class="fas fa-map-marker-alt"></i> Daftar Lokasi Kerja</h2>
+                            </div>
+                            <div class="content-actions">
+                                <button class="btn btn-primary" id="addNewLocationBtn">
+                                    <i class="fas fa-plus"></i> Tambah Lokasi
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Statistics -->
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value" id="totalLocations">0</div>
+                                <div class="stat-label">Total Lokasi</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="activeLocations">0</div>
+                                <div class="stat-label">Lokasi Aktif</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="employeesInLocations">0</div>
+                                <div class="stat-label">Karyawan di Lokasi</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="attendanceTodayByLocation">0</div>
+                                <div class="stat-label">Absensi Hari Ini</div>
+                            </div>
+                        </div>
+
+                        <!-- Location Table -->
+                        <div class="table-container">
+                            <table class="data-table" id="locationTable">
+                                <thead>
+                                    <tr>
+                                        <th>Kode</th>
+                                        <th>Nama Lokasi</th>
+                                        <th>Alamat</th>
+                                        <th>Tipe</th>
+                                        <th>Kapasitas</th>
+                                        <th>Status</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Data will be dynamically inserted -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Add Location Tab -->
+                    <div class="tab-content" id="addLocation">
+                        <div class="content-header">
+                            <div class="content-title">
+                                <h2><i class="fas fa-map-marker-alt"></i> Tambah Lokasi Kerja Baru</h2>
+                            </div>
+                        </div>
+
+                        <div class="attendance-form">
+                            <form id="addLocationForm">
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label for="locationCode">Kode Lokasi *</label>
+                                        <input type="text" id="locationCode" class="form-control" required
+                                            placeholder="LOC001">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="locationName">Nama Lokasi *</label>
+                                        <input type="text" id="locationName" class="form-control" required
+                                            placeholder="Kantor Pusat">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="locationAddress">Alamat Lengkap *</label>
+                                        <textarea id="locationAddress" class="form-control" rows="3" required
+                                            placeholder="Jl. Contoh No. 123"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="locationType">Tipe Lokasi *</label>
+                                        <select id="locationType" class="form-control" required>
+                                            <option value="">Pilih Tipe</option>
+                                            <option value="office">Kantor</option>
+                                            <option value="warehouse">Gudang</option>
+                                            <option value="factory">Pabrik</option>
+                                            <option value="site">Site/Proyek</option>
+                                            <option value="store">Toko</option>
+                                            <option value="branch">Cabang</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="locationCapacity">Kapasitas (orang)</label>
+                                        <input type="number" id="locationCapacity" class="form-control" min="1"
+                                            placeholder="50">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="locationManager">Penanggung Jawab</label>
+                                        <input type="text" id="locationManager" class="form-control"
+                                            placeholder="Nama manager/pic">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="locationPhone">Telepon Lokasi</label>
+                                        <input type="tel" id="locationPhone" class="form-control"
+                                            placeholder="0211234567">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="locationStatus">Status</label>
+                                        <select id="locationStatus" class="form-control">
+                                            <option value="active">Aktif</option>
+                                            <option value="inactive">Non-Aktif</option>
+                                            <option value="maintenance">Maintenance</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div style="display: flex; gap: 15px; margin-top: 25px;">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save"></i> Simpan Lokasi
+                                    </button>
+                                    <button type="reset" class="btn btn-secondary">
+                                        <i class="fas fa-redo"></i> Reset Form
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Location Barcodes Tab -->
+                    <div class="tab-content" id="locationBarcodes">
+                        <div class="content-header">
+                            <div class="content-title">
+                                <h2><i class="fas fa-qrcode"></i> Barcode Lokasi Kerja</h2>
+                            </div>
+                            <div class="content-actions">
+                                <button class="btn btn-primary" id="printAllLocationBarcodesBtn">
+                                    <i class="fas fa-print"></i> Cetak Semua
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="attendance-form">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="selectLocationForBarcode">Pilih Lokasi</label>
+                                    <select id="selectLocationForBarcode" class="form-control">
+                                        <option value="">Pilih lokasi...</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="barcodeSize">Ukuran Barcode</label>
+                                    <select id="barcodeSize" class="form-control">
+                                        <option value="small">Kecil</option>
+                                        <option value="medium" selected>Sedang</option>
+                                        <option value="large">Besar</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button class="btn btn-secondary" id="generateLocationBarcodeBtn">
+                                <i class="fas fa-barcode"></i> Generate Barcode
+                            </button>
+                        </div>
+
+                        <div id="locationBarcodeContainer" style="margin-top: 30px;">
+                            <!-- Barcodes will be displayed here -->
+                        </div>
                     </div>
                 </div>
 
@@ -1094,6 +1484,12 @@
                                     <option value="Finance">Finance</option>
                                     <option value="Marketing">Marketing</option>
                                     <option value="Operations">Operations</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="reportLocation">Lokasi</label>
+                                <select id="reportLocation" class="form-control">
+                                    <option value="">Semua Lokasi</option>
                                 </select>
                             </div>
                         </div>
@@ -1159,6 +1555,11 @@
                                                 value="Software Developer">
                                         </div>
                                         <div class="form-group">
+                                            <label for="profileLocation">Lokasi Kerja</label>
+                                            <input type="text" id="profileLocation" class="form-control"
+                                                value="Kantor Pusat" readonly>
+                                        </div>
+                                        <div class="form-group">
                                             <label for="profileJoinDate">Tanggal Bergabung</label>
                                             <input type="text" id="profileJoinDate" class="form-control"
                                                 value="01 Januari 2023" readonly>
@@ -1195,83 +1596,28 @@
         </div>
     </div>
 
-    <!-- Add Employee Modal -->
-    <div class="modal" id="addEmployeeModal">
+    <!-- Barcode Display Modal -->
+    <div class="modal" id="barcodeDisplayModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title"><i class="fas fa-user-plus"></i> Tambah Karyawan Baru</h3>
-                <button class="modal-close" id="closeEmployeeModal">&times;</button>
-            </div>
-            <form id="employeeForm">
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="newEmployeeId">ID Karyawan</label>
-                        <input type="text" id="newEmployeeId" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="newEmployeeName">Nama Lengkap</label>
-                        <input type="text" id="newEmployeeName" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="newEmployeeEmail">Email</label>
-                        <input type="email" id="newEmployeeEmail" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="newEmployeePhone">Telepon</label>
-                        <input type="tel" id="newEmployeePhone" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="newEmployeeDepartment">Departemen</label>
-                        <select id="newEmployeeDepartment" class="form-control" required>
-                            <option value="IT">IT</option>
-                            <option value="HRD">HRD</option>
-                            <option value="Finance">Finance</option>
-                            <option value="Marketing">Marketing</option>
-                            <option value="Operations">Operations</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="newEmployeePosition">Jabatan</label>
-                        <input type="text" id="newEmployeePosition" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="newEmployeePassword">Password</label>
-                        <input type="password" id="newEmployeePassword" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="confirmPassword">Konfirmasi Password</label>
-                        <input type="password" id="confirmPassword" class="form-control" required>
-                    </div>
-                </div>
-                <div style="display: flex; gap: 15px; margin-top: 25px;">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Simpan Karyawan
-                    </button>
-                    <button type="button" class="btn btn-secondary" id="cancelEmployeeBtn">
-                        Batal
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Barcode Generator Modal -->
-    <div class="modal" id="barcodeModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title"><i class="fas fa-barcode"></i> Generate Barcode</h3>
+                <h3 class="modal-title"><i class="fas fa-barcode"></i> Barcode</h3>
                 <button class="modal-close" id="closeBarcodeModal">&times;</button>
             </div>
             <div style="text-align: center; padding: 30px;">
-                <div id="generatedBarcode" style="margin-bottom: 20px;"></div>
-                <p style="color: #666; margin-bottom: 20px;">Barcode untuk: <strong id="barcodeEmployeeName">-</strong>
-                </p>
-                <div style="display: flex; gap: 15px; justify-content: center;">
+                <div id="modalBarcodeContainer" style="margin-bottom: 20px;"></div>
+                <div id="barcodeInfo" style="margin-bottom: 20px;">
+                    <p><strong id="barcodeTitle">-</strong></p>
+                    <p id="barcodeDetails" style="color: #666; font-size: 14px;">-</p>
+                </div>
+                <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
                     <button class="btn btn-primary" id="printBarcodeBtn">
-                        <i class="fas fa-print"></i> Cetak Barcode
+                        <i class="fas fa-print"></i> Cetak
                     </button>
                     <button class="btn btn-secondary" id="downloadBarcodeBtn">
-                        <i class="fas fa-download"></i> Download PNG
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                    <button class="btn btn-secondary" id="copyBarcodeBtn">
+                        <i class="fas fa-copy"></i> Salin Kode
                     </button>
                 </div>
             </div>
@@ -1282,6 +1628,7 @@
         // Data storage
         let currentUser = null;
         let employees = JSON.parse(localStorage.getItem('attendance_employees')) || [];
+        let locations = JSON.parse(localStorage.getItem('attendance_locations')) || [];
         let attendanceRecords = JSON.parse(localStorage.getItem('attendance_records')) || [];
         let scannerActive = false;
 
@@ -1305,6 +1652,7 @@
                     position: 'Software Developer',
                     password: 'password123',
                     barcode: 'EMP001',
+                    location: 'LOC001',
                     status: 'active',
                     joinDate: '2023-01-01'
                 },
@@ -1317,23 +1665,42 @@
                     position: 'HR Manager',
                     password: 'password123',
                     barcode: 'EMP002',
+                    location: 'LOC001',
                     status: 'active',
                     joinDate: '2023-02-01'
-                },
-                {
-                    id: 'EMP003',
-                    name: 'Robert Johnson',
-                    email: 'robert.j@example.com',
-                    phone: '081234567892',
-                    department: 'Finance',
-                    position: 'Accountant',
-                    password: 'password123',
-                    barcode: 'EMP003',
-                    status: 'active',
-                    joinDate: '2023-03-01'
                 }
             ];
             localStorage.setItem('attendance_employees', JSON.stringify(employees));
+        }
+
+        if (locations.length === 0) {
+            locations = [
+                {
+                    id: 'LOC001',
+                    code: 'LOC001',
+                    name: 'Kantor Pusat',
+                    address: 'Jl. Sudirman No. 123, Jakarta Pusat',
+                    type: 'office',
+                    capacity: 100,
+                    manager: 'John Manager',
+                    phone: '0211234567',
+                    status: 'active',
+                    createdAt: '2023-01-01'
+                },
+                {
+                    id: 'LOC002',
+                    code: 'LOC002',
+                    name: 'Gudang Utama',
+                    address: 'Jl. Industri No. 45, Bekasi',
+                    type: 'warehouse',
+                    capacity: 50,
+                    manager: 'Jane Supervisor',
+                    phone: '0217654321',
+                    status: 'active',
+                    createdAt: '2023-02-01'
+                }
+            ];
+            localStorage.setItem('attendance_locations', JSON.stringify(locations));
         }
 
         // DOM Elements
@@ -1357,6 +1724,7 @@
         // Admin links
         const adminAttendanceLink = document.getElementById('adminAttendanceLink');
         const employeeManagementLink = document.getElementById('employeeManagementLink');
+        const locationManagementLink = document.getElementById('locationManagementLink');
         const reportsLink = document.getElementById('reportsLink');
 
         // Scanner elements
@@ -1367,11 +1735,12 @@
         const attendanceStatus = document.getElementById('attendanceStatus');
 
         // Modal elements
-        const addEmployeeModal = document.getElementById('addEmployeeModal');
-        const barcodeModal = document.getElementById('barcodeModal');
-        const closeEmployeeModal = document.getElementById('closeEmployeeModal');
+        const barcodeDisplayModal = document.getElementById('barcodeDisplayModal');
         const closeBarcodeModal = document.getElementById('closeBarcodeModal');
-        const cancelEmployeeBtn = document.getElementById('cancelEmployeeBtn');
+
+        // Tab navigation
+        const tabNavBtns = document.querySelectorAll('.tab-nav-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function () {
@@ -1417,7 +1786,8 @@
                         name: employee.name,
                         role: 'employee',
                         department: employee.department,
-                        position: employee.position
+                        position: employee.position,
+                        location: employee.location
                     };
 
                     localStorage.setItem('currentUser', JSON.stringify(currentUser));
@@ -1475,6 +1845,26 @@
                 });
             });
 
+            // Tab navigation for admin pages
+            tabNavBtns.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const tabId = this.getAttribute('data-tab');
+                    const container = this.closest('.page-content');
+
+                    // Update active tab
+                    container.querySelectorAll('.tab-nav-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // Show corresponding tab content
+                    container.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === tabId) {
+                            content.classList.add('active');
+                        }
+                    });
+                });
+            });
+
             // Scanner controls
             startScannerBtn.addEventListener('click', startScanner);
             stopScannerBtn.addEventListener('click', stopScanner);
@@ -1487,51 +1877,34 @@
                 }
             });
 
-            // Employee management
-            document.getElementById('addEmployeeBtn')?.addEventListener('click', function () {
-                addEmployeeModal.classList.add('active');
-            });
-
-            document.getElementById('generateBarcodeBtn')?.addEventListener('click', function () {
-                if (employees.length > 0) {
-                    showBarcodeModal(employees[0]);
-                }
-            });
-
-            // Modal controls
-            closeEmployeeModal.addEventListener('click', function () {
-                addEmployeeModal.classList.remove('active');
-            });
-
-            closeBarcodeModal.addEventListener('click', function () {
-                barcodeModal.classList.remove('active');
-            });
-
-            cancelEmployeeBtn.addEventListener('click', function () {
-                addEmployeeModal.classList.remove('active');
-            });
-
             // Add employee form
-            document.getElementById('employeeForm')?.addEventListener('submit', function (e) {
+            document.getElementById('addEmployeeForm')?.addEventListener('submit', function (e) {
                 e.preventDefault();
 
                 const newEmployee = {
-                    id: document.getElementById('newEmployeeId').value,
-                    name: document.getElementById('newEmployeeName').value,
-                    email: document.getElementById('newEmployeeEmail').value,
-                    phone: document.getElementById('newEmployeePhone').value,
+                    id: document.getElementById('newEmployeeId').value.trim(),
+                    name: document.getElementById('newEmployeeName').value.trim(),
+                    email: document.getElementById('newEmployeeEmail').value.trim(),
+                    phone: document.getElementById('newEmployeePhone').value.trim(),
                     department: document.getElementById('newEmployeeDepartment').value,
-                    position: document.getElementById('newEmployeePosition').value,
+                    position: document.getElementById('newEmployeePosition').value.trim(),
                     password: document.getElementById('newEmployeePassword').value,
-                    barcode: document.getElementById('newEmployeeId').value,
+                    barcode: document.getElementById('newEmployeeId').value.trim(),
+                    location: document.getElementById('newEmployeeLocation').value,
                     status: 'active',
                     joinDate: new Date().toISOString().split('T')[0]
                 };
 
                 const confirmPassword = document.getElementById('confirmPassword').value;
 
+                // Validation
                 if (newEmployee.password !== confirmPassword) {
                     alert('Password dan konfirmasi password tidak cocok!');
+                    return;
+                }
+
+                if (newEmployee.password.length < 6) {
+                    alert('Password minimal 6 karakter!');
                     return;
                 }
 
@@ -1540,19 +1913,106 @@
                     return;
                 }
 
+                if (employees.some(emp => emp.email === newEmployee.email)) {
+                    alert('Email sudah terdaftar!');
+                    return;
+                }
+
                 employees.push(newEmployee);
                 localStorage.setItem('attendance_employees', JSON.stringify(employees));
 
-                // Reset form and close modal
+                // Reset form
                 this.reset();
-                addEmployeeModal.classList.remove('active');
 
-                // Reload employee management page
-                if (currentUser?.role === 'admin') {
-                    loadPageContent('employeeManagement');
+                // Show success message
+                alert(`Karyawan ${newEmployee.name} berhasil ditambahkan!`);
+
+                // Switch to employee list tab
+                document.querySelector('[data-tab="employeeList"]').click();
+
+                // Reload employee list
+                loadEmployeeManagementPage();
+            });
+
+            // Add location form
+            document.getElementById('addLocationForm')?.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                const newLocation = {
+                    id: 'LOC' + Date.now().toString().slice(-6),
+                    code: document.getElementById('locationCode').value.trim(),
+                    name: document.getElementById('locationName').value.trim(),
+                    address: document.getElementById('locationAddress').value.trim(),
+                    type: document.getElementById('locationType').value,
+                    capacity: parseInt(document.getElementById('locationCapacity').value) || 0,
+                    manager: document.getElementById('locationManager').value.trim(),
+                    phone: document.getElementById('locationPhone').value.trim(),
+                    status: document.getElementById('locationStatus').value,
+                    createdAt: new Date().toISOString().split('T')[0]
+                };
+
+                // Validation
+                if (locations.some(loc => loc.code === newLocation.code)) {
+                    alert('Kode lokasi sudah terdaftar!');
+                    return;
                 }
 
-                alert('Karyawan berhasil ditambahkan!');
+                locations.push(newLocation);
+                localStorage.setItem('attendance_locations', JSON.stringify(locations));
+
+                // Reset form
+                this.reset();
+
+                // Show success message
+                alert(`Lokasi ${newLocation.name} berhasil ditambahkan!`);
+
+                // Switch to location list tab
+                document.querySelector('[data-tab="locationList"]').click();
+
+                // Reload location list
+                loadLocationManagementPage();
+            });
+
+            // Generate employee barcode
+            document.getElementById('generateEmployeeBarcodeBtn')?.addEventListener('click', function () {
+                const employeeId = document.getElementById('selectEmployeeForBarcode').value;
+                const employee = employees.find(emp => emp.id === employeeId);
+
+                if (employee) {
+                    generateAndDisplayBarcode(employee.barcode, employee.name, 'Karyawan');
+                } else {
+                    alert('Pilih karyawan terlebih dahulu!');
+                }
+            });
+
+            // Generate location barcode
+            document.getElementById('generateLocationBarcodeBtn')?.addEventListener('click', function () {
+                const locationId = document.getElementById('selectLocationForBarcode').value;
+                const location = locations.find(loc => loc.code === locationId);
+
+                if (location) {
+                    generateAndDisplayBarcode(location.code, location.name, 'Lokasi Kerja');
+                } else {
+                    alert('Pilih lokasi terlebih dahulu!');
+                }
+            });
+
+            // Modal controls
+            closeBarcodeModal.addEventListener('click', function () {
+                barcodeDisplayModal.classList.remove('active');
+            });
+
+            // Print barcode button
+            document.getElementById('printBarcodeBtn')?.addEventListener('click', function () {
+                window.print();
+            });
+
+            // Copy barcode button
+            document.getElementById('copyBarcodeBtn')?.addEventListener('click', function () {
+                const barcodeText = document.getElementById('barcodeTitle').textContent;
+                navigator.clipboard.writeText(barcodeText.split(' - ')[0]).then(() => {
+                    alert('Kode barcode berhasil disalin!');
+                });
             });
         }
 
@@ -1572,10 +2032,12 @@
                 if (currentUser.role === 'admin') {
                     adminAttendanceLink.style.display = 'block';
                     employeeManagementLink.style.display = 'block';
+                    locationManagementLink.style.display = 'block';
                     reportsLink.style.display = 'block';
                 } else {
                     adminAttendanceLink.style.display = 'none';
                     employeeManagementLink.style.display = 'none';
+                    locationManagementLink.style.display = 'none';
                     reportsLink.style.display = 'none';
                 }
 
@@ -1612,6 +2074,9 @@
                 case 'employeeManagement':
                     loadEmployeeManagementPage();
                     break;
+                case 'locationManagement':
+                    loadLocationManagementPage();
+                    break;
                 case 'reports':
                     loadReportsPage();
                     break;
@@ -1647,12 +2112,13 @@
                     const row = document.createElement('tr');
                     const time = new Date(record.timestamp).toLocaleTimeString('id-ID');
                     const statusClass = record.status === 'late' ? 'status-late' : 'status-present';
+                    const location = locations.find(loc => loc.code === record.location)?.name || record.location || 'Office';
 
                     row.innerHTML = `
                         <td>${time}</td>
                         <td><span class="status-badge ${statusClass}">${record.status === 'late' ? 'Terlambat' : 'Hadir'}</span></td>
                         <td>${record.type === 'checkin' ? 'Masuk' : 'Pulang'}</td>
-                        <td>${record.location || 'Office'}</td>
+                        <td>${location}</td>
                     `;
                     tableBody.appendChild(row);
                 });
@@ -1661,6 +2127,340 @@
             // Hide scanner and status if they were shown
             scannerSection.style.display = 'none';
             attendanceStatus.style.display = 'none';
+        }
+
+        // Load employee management page
+        function loadEmployeeManagementPage() {
+            // Populate location dropdown for new employee
+            const locationSelect = document.getElementById('newEmployeeLocation');
+            locationSelect.innerHTML = '<option value="">Pilih Lokasi</option>';
+            locations.forEach(location => {
+                const option = document.createElement('option');
+                option.value = location.code;
+                option.textContent = `${location.name} (${location.code})`;
+                locationSelect.appendChild(option);
+            });
+
+            // Populate employee dropdown for barcode generation
+            const employeeBarcodeSelect = document.getElementById('selectEmployeeForBarcode');
+            employeeBarcodeSelect.innerHTML = '<option value="">Pilih karyawan...</option>';
+            employees.forEach(employee => {
+                const option = document.createElement('option');
+                option.value = employee.id;
+                option.textContent = `${employee.name} (${employee.id})`;
+                employeeBarcodeSelect.appendChild(option);
+            });
+
+            // Update statistics
+            document.getElementById('totalEmployees').textContent = employees.length;
+            document.getElementById('activeEmployees').textContent = employees.filter(e => e.status === 'active').length;
+
+            const today = new Date().toISOString().split('T')[0];
+            const presentToday = attendanceRecords.filter(record =>
+                record.date === today && record.type === 'checkin'
+            ).length;
+            document.getElementById('presentToday').textContent = presentToday;
+
+            // Update employee table
+            const tableBody = document.querySelector('#employeeTable tbody');
+            tableBody.innerHTML = '';
+
+            if (employees.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px; color: #666;">
+                            <i class="fas fa-users" style="font-size: 24px; margin-bottom: 10px; display: block;"></i>
+                            Belum ada data karyawan
+                        </td>
+                    </tr>
+                `;
+            } else {
+                employees.forEach(employee => {
+                    const row = document.createElement('tr');
+                    const statusClass = employee.status === 'active' ? 'status-active' : 'status-inactive';
+                    const statusText = employee.status === 'active' ? 'Aktif' : 'Non-Aktif';
+                    const location = locations.find(loc => loc.code === employee.location)?.name || 'Tidak ditentukan';
+
+                    row.innerHTML = `
+                        <td><strong>${employee.id}</strong></td>
+                        <td>${employee.name}</td>
+                        <td>${employee.department}</td>
+                        <td>${employee.position}</td>
+                        <td>${location}</td>
+                        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-action btn-edit edit-employee-btn" data-id="${employee.id}">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn-action btn-view view-barcode-btn" data-id="${employee.id}">
+                                    <i class="fas fa-barcode"></i> Barcode
+                                </button>
+                                <button class="btn-action btn-delete delete-employee-btn" data-id="${employee.id}">
+                                    <i class="fas fa-trash"></i> Hapus
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            }
+
+            // Add event listeners for employee actions
+            document.querySelectorAll('.edit-employee-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const employeeId = this.getAttribute('data-id');
+                    editEmployee(employeeId);
+                });
+            });
+
+            document.querySelectorAll('.view-barcode-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const employeeId = this.getAttribute('data-id');
+                    const employee = employees.find(emp => emp.id === employeeId);
+                    if (employee) {
+                        generateAndDisplayBarcode(employee.barcode, employee.name, 'Karyawan');
+                    }
+                });
+            });
+
+            document.querySelectorAll('.delete-employee-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const employeeId = this.getAttribute('data-id');
+                    if (confirm(`Hapus karyawan ${employeeId}?`)) {
+                        employees = employees.filter(e => e.id !== employeeId);
+                        localStorage.setItem('attendance_employees', JSON.stringify(employees));
+                        loadEmployeeManagementPage();
+                        alert('Karyawan berhasil dihapus!');
+                    }
+                });
+            });
+
+            // Load employee barcodes tab content
+            loadEmployeeBarcodesTab();
+        }
+
+        // Load employee barcodes tab
+        function loadEmployeeBarcodesTab() {
+            const container = document.getElementById('employeeBarcodeContainer');
+            container.innerHTML = '';
+
+            if (employees.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #666;">
+                        <i class="fas fa-barcode" style="font-size: 48px; margin-bottom: 15px; opacity: 0.3;"></i>
+                        <p>Belum ada data karyawan</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Create barcode grid
+            const grid = document.createElement('div');
+            grid.style.display = 'grid';
+            grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(250px, 1fr))';
+            grid.style.gap = '20px';
+
+            employees.forEach(employee => {
+                const card = document.createElement('div');
+                card.style.background = 'white';
+                card.style.border = '1px solid #e0e0e0';
+                card.style.borderRadius = '10px';
+                card.style.padding = '20px';
+                card.style.textAlign = 'center';
+
+                const barcode = generateTextBarcode(employee.barcode);
+
+                card.innerHTML = `
+                    <div style="font-family: 'Courier New', monospace; font-size: 18px; letter-spacing: 3px; padding: 15px; background: #f8f8f8; border-radius: 8px; margin-bottom: 10px;">
+                        ${barcode}
+                    </div>
+                    <h4 style="margin: 10px 0 5px; color: #333;">${employee.name}</h4>
+                    <p style="color: #666; font-size: 12px; margin-bottom: 5px;">ID: ${employee.id}</p>
+                    <p style="color: #666; font-size: 12px; margin-bottom: 15px;">${employee.department}</p>
+                    <button class="btn-action btn-view print-single-barcode-btn" data-id="${employee.id}" style="width: 100%;">
+                        <i class="fas fa-print"></i> Cetak
+                    </button>
+                `;
+
+                grid.appendChild(card);
+            });
+
+            container.appendChild(grid);
+
+            // Add event listeners for print buttons
+            document.querySelectorAll('.print-single-barcode-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const employeeId = this.getAttribute('data-id');
+                    const employee = employees.find(emp => emp.id === employeeId);
+                    if (employee) {
+                        generateAndDisplayBarcode(employee.barcode, employee.name, 'Karyawan');
+                    }
+                });
+            });
+        }
+
+        // Load location management page
+        function loadLocationManagementPage() {
+            // Populate location dropdown for barcode generation
+            const locationBarcodeSelect = document.getElementById('selectLocationForBarcode');
+            locationBarcodeSelect.innerHTML = '<option value="">Pilih lokasi...</option>';
+            locations.forEach(location => {
+                const option = document.createElement('option');
+                option.value = location.code;
+                option.textContent = `${location.name} (${location.code})`;
+                locationBarcodeSelect.appendChild(option);
+            });
+
+            // Update statistics
+            document.getElementById('totalLocations').textContent = locations.length;
+            document.getElementById('activeLocations').textContent = locations.filter(l => l.status === 'active').length;
+
+            const employeesInLocations = employees.filter(emp => emp.location).length;
+            document.getElementById('employeesInLocations').textContent = employeesInLocations;
+
+            const today = new Date().toISOString().split('T')[0];
+            const attendanceToday = attendanceRecords.filter(record => record.date === today).length;
+            document.getElementById('attendanceTodayByLocation').textContent = attendanceToday;
+
+            // Update location table
+            const tableBody = document.querySelector('#locationTable tbody');
+            tableBody.innerHTML = '';
+
+            if (locations.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px; color: #666;">
+                            <i class="fas fa-map-marker-alt" style="font-size: 24px; margin-bottom: 10px; display: block;"></i>
+                            Belum ada data lokasi
+                        </td>
+                    </tr>
+                `;
+            } else {
+                locations.forEach(location => {
+                    const row = document.createElement('tr');
+                    const statusClass = location.status === 'active' ? 'status-active' : 'status-inactive';
+                    const statusText = location.status === 'active' ? 'Aktif' : location.status === 'maintenance' ? 'Maintenance' : 'Non-Aktif';
+                    const employeesAtLocation = employees.filter(emp => emp.location === location.code).length;
+
+                    row.innerHTML = `
+                        <td><strong>${location.code}</strong></td>
+                        <td>${location.name}</td>
+                        <td>${location.address}</td>
+                        <td>${getLocationTypeLabel(location.type)}</td>
+                        <td>${employeesAtLocation}/${location.capacity || '-'}</td>
+                        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-action btn-edit edit-location-btn" data-id="${location.id}">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn-action btn-view view-location-barcode-btn" data-code="${location.code}">
+                                    <i class="fas fa-barcode"></i> Barcode
+                                </button>
+                                <button class="btn-action btn-delete delete-location-btn" data-id="${location.id}">
+                                    <i class="fas fa-trash"></i> Hapus
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            }
+
+            // Add event listeners for location actions
+            document.querySelectorAll('.edit-location-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const locationId = this.getAttribute('data-id');
+                    editLocation(locationId);
+                });
+            });
+
+            document.querySelectorAll('.view-location-barcode-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const locationCode = this.getAttribute('data-code');
+                    const location = locations.find(loc => loc.code === locationCode);
+                    if (location) {
+                        generateAndDisplayBarcode(location.code, location.name, 'Lokasi Kerja');
+                    }
+                });
+            });
+
+            document.querySelectorAll('.delete-location-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const locationId = this.getAttribute('data-id');
+                    if (confirm(`Hapus lokasi ini?`)) {
+                        locations = locations.filter(l => l.id !== locationId);
+                        localStorage.setItem('attendance_locations', JSON.stringify(locations));
+                        loadLocationManagementPage();
+                        alert('Lokasi berhasil dihapus!');
+                    }
+                });
+            });
+
+            // Load location barcodes tab content
+            loadLocationBarcodesTab();
+        }
+
+        // Load location barcodes tab
+        function loadLocationBarcodesTab() {
+            const container = document.getElementById('locationBarcodeContainer');
+            container.innerHTML = '';
+
+            if (locations.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #666;">
+                        <i class="fas fa-map-marker-alt" style="font-size: 48px; margin-bottom: 15px; opacity: 0.3;"></i>
+                        <p>Belum ada data lokasi</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Create barcode grid
+            const grid = document.createElement('div');
+            grid.style.display = 'grid';
+            grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(300px, 1fr))';
+            grid.style.gap = '20px';
+
+            locations.forEach(location => {
+                const card = document.createElement('div');
+                card.style.background = 'white';
+                card.style.border = '1px solid #e0e0e0';
+                card.style.borderRadius = '10px';
+                card.style.padding = '20px';
+                card.style.textAlign = 'center';
+
+                const barcode = generateTextBarcode(location.code);
+
+                card.innerHTML = `
+                    <div style="font-family: 'Courier New', monospace; font-size: 20px; letter-spacing: 3px; padding: 15px; background: #f8f8f8; border-radius: 8px; margin-bottom: 10px;">
+                        ${barcode}
+                    </div>
+                    <h4 style="margin: 10px 0 5px; color: #333;">${location.name}</h4>
+                    <p style="color: #666; font-size: 12px; margin-bottom: 5px;">Kode: ${location.code}</p>
+                    <p style="color: #666; font-size: 12px; margin-bottom: 5px;">Tipe: ${getLocationTypeLabel(location.type)}</p>
+                    <p style="color: #666; font-size: 12px; margin-bottom: 15px;">${location.address.substring(0, 50)}...</p>
+                    <button class="btn-action btn-view print-location-barcode-btn" data-code="${location.code}" style="width: 100%;">
+                        <i class="fas fa-print"></i> Cetak
+                    </button>
+                `;
+
+                grid.appendChild(card);
+            });
+
+            container.appendChild(grid);
+
+            // Add event listeners for print buttons
+            document.querySelectorAll('.print-location-barcode-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const locationCode = this.getAttribute('data-code');
+                    const location = locations.find(loc => loc.code === locationCode);
+                    if (location) {
+                        generateAndDisplayBarcode(location.code, location.name, 'Lokasi Kerja');
+                    }
+                });
+            });
         }
 
         // Load admin attendance page
@@ -1679,6 +2479,16 @@
                 employeeFilter.appendChild(option);
             });
 
+            // Populate location filter
+            const locationFilter = document.getElementById('filterLocation');
+            locationFilter.innerHTML = '<option value="">Semua Lokasi</option>';
+            locations.forEach(loc => {
+                const option = document.createElement('option');
+                option.value = loc.code;
+                option.textContent = loc.name;
+                locationFilter.appendChild(option);
+            });
+
             // Apply filter
             applyAttendanceFilter();
 
@@ -1690,6 +2500,7 @@
         function applyAttendanceFilter() {
             const date = document.getElementById('filterDate').value;
             const employeeId = document.getElementById('filterEmployee').value;
+            const locationCode = document.getElementById('filterLocation').value;
             const status = document.getElementById('filterStatus').value;
 
             let filteredRecords = attendanceRecords;
@@ -1702,83 +2513,92 @@
                 filteredRecords = filteredRecords.filter(record => record.employeeId === employeeId);
             }
 
+            if (locationCode) {
+                filteredRecords = filteredRecords.filter(record => record.location === locationCode);
+            }
+
             if (status) {
                 filteredRecords = filteredRecords.filter(record => record.status === status);
             }
-
-            // Group by employee and date
-            const groupedRecords = {};
-            filteredRecords.forEach(record => {
-                const key = `${record.employeeId}_${record.date}`;
-                if (!groupedRecords[key]) {
-                    groupedRecords[key] = {
-                        employeeId: record.employeeId,
-                        employeeName: employees.find(e => e.id === record.employeeId)?.name || 'Unknown',
-                        date: record.date,
-                        checkin: null,
-                        checkout: null,
-                        status: 'present',
-                        duration: 0
-                    };
-                }
-
-                if (record.type === 'checkin') {
-                    groupedRecords[key].checkin = record.timestamp;
-                } else if (record.type === 'checkout') {
-                    groupedRecords[key].checkout = record.timestamp;
-                }
-
-                if (record.status === 'late') {
-                    groupedRecords[key].status = 'late';
-                }
-            });
-
-            // Calculate duration
-            Object.values(groupedRecords).forEach(record => {
-                if (record.checkin && record.checkout) {
-                    const checkinTime = new Date(record.checkin);
-                    const checkoutTime = new Date(record.checkout);
-                    const durationMs = checkoutTime - checkinTime;
-                    const durationHours = Math.floor(durationMs / (1000 * 60 * 60));
-                    const durationMinutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
-                    record.duration = `${durationHours}j ${durationMinutes}m`;
-                }
-            });
 
             // Update table
             const tableBody = document.querySelector('#adminAttendanceTable tbody');
             tableBody.innerHTML = '';
 
-            if (Object.keys(groupedRecords).length === 0) {
+            if (filteredRecords.length === 0) {
                 tableBody.innerHTML = `
                     <tr>
-                        <td colspan="8" style="text-align: center; padding: 40px; color: #666;">
+                        <td colspan="9" style="text-align: center; padding: 40px; color: #666;">
                             Tidak ada data absensi
                         </td>
                     </tr>
                 `;
             } else {
-                Object.values(groupedRecords).forEach(record => {
+                // Group records by employee and date for better display
+                const groupedData = {};
+
+                filteredRecords.forEach(record => {
+                    const key = `${record.employeeId}_${record.date}`;
+                    if (!groupedData[key]) {
+                        const employee = employees.find(e => e.id === record.employeeId) || {};
+                        groupedData[key] = {
+                            employeeName: employee.name || 'Unknown',
+                            employeeId: record.employeeId,
+                            date: record.date,
+                            checkin: null,
+                            checkout: null,
+                            location: record.location,
+                            status: 'present',
+                            duration: 0
+                        };
+                    }
+
+                    if (record.type === 'checkin') {
+                        groupedData[key].checkin = record.timestamp;
+                        if (record.status === 'late') {
+                            groupedData[key].status = 'late';
+                        }
+                    } else if (record.type === 'checkout') {
+                        groupedData[key].checkout = record.timestamp;
+                    }
+
+                    groupedData[key].location = record.location || groupedData[key].location;
+                });
+
+                // Calculate duration for each record
+                Object.values(groupedData).forEach(data => {
+                    if (data.checkin && data.checkout) {
+                        const checkinTime = new Date(data.checkin);
+                        const checkoutTime = new Date(data.checkout);
+                        const durationMs = checkoutTime - checkinTime;
+                        const hours = Math.floor(durationMs / (1000 * 60 * 60));
+                        const minutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
+                        data.duration = `${hours}j ${minutes}m`;
+                    }
+                });
+
+                // Display grouped data
+                Object.values(groupedData).forEach(data => {
                     const row = document.createElement('tr');
-                    const checkinTime = record.checkin ? new Date(record.checkin).toLocaleTimeString('id-ID') : '-';
-                    const checkoutTime = record.checkout ? new Date(record.checkout).toLocaleTimeString('id-ID') : '-';
-                    const statusClass = record.status === 'late' ? 'status-late' : 'status-present';
-                    const statusText = record.status === 'late' ? 'Terlambat' : 'Hadir';
+                    const checkinTime = data.checkin ? new Date(data.checkin).toLocaleTimeString('id-ID') : '-';
+                    const checkoutTime = data.checkout ? new Date(data.checkout).toLocaleTimeString('id-ID') : '-';
+                    const statusClass = data.status === 'late' ? 'status-late' : 'status-present';
+                    const statusText = data.status === 'late' ? 'Terlambat' : 'Hadir';
+                    const location = locations.find(loc => loc.code === data.location)?.name || data.location || '-';
 
                     row.innerHTML = `
-                        <td>${record.employeeName}</td>
-                        <td>${record.employeeId}</td>
-                        <td>${new Date(record.date).toLocaleDateString('id-ID')}</td>
+                        <td>${data.employeeName}</td>
+                        <td>${data.employeeId}</td>
+                        <td>${new Date(data.date).toLocaleDateString('id-ID')}</td>
                         <td>${checkinTime}</td>
                         <td>${checkoutTime}</td>
+                        <td>${location}</td>
                         <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-                        <td>${record.duration}</td>
+                        <td>${data.duration}</td>
                         <td>
-                            <div class="action-buttons">
-                                <button class="btn-action btn-edit" data-id="${record.employeeId}" data-date="${record.date}">
-                                    <i class="fas fa-edit"></i> Edit
-                                </button>
-                            </div>
+                            <button class="btn-action btn-edit" onclick="viewAttendanceDetails('${data.employeeId}', '${data.date}')">
+                                <i class="fas fa-eye"></i> Detail
+                            </button>
                         </td>
                     `;
                     tableBody.appendChild(row);
@@ -1786,84 +2606,18 @@
             }
         }
 
-        // Load employee management page
-        function loadEmployeeManagementPage() {
-            // Update statistics
-            document.getElementById('totalEmployees').textContent = employees.length;
-            document.getElementById('activeEmployees').textContent = employees.filter(e => e.status === 'active').length;
-
-            const today = new Date().toISOString().split('T')[0];
-            const presentToday = attendanceRecords.filter(record =>
-                record.date === today && record.type === 'checkin'
-            ).length;
-            document.getElementById('presentToday').textContent = presentToday;
-
-            // Update employee table
-            const tableBody = document.querySelector('#employeeTable tbody');
-            tableBody.innerHTML = '';
-
-            employees.forEach(employee => {
-                const row = document.createElement('tr');
-                const statusClass = employee.status === 'active' ? 'status-present' : 'status-absent';
-                const statusText = employee.status === 'active' ? 'Aktif' : 'Non-Aktif';
-
-                row.innerHTML = `
-                    <td>${employee.id}</td>
-                    <td>${employee.name}</td>
-                    <td>${employee.department}</td>
-                    <td>${employee.position}</td>
-                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-                    <td>
-                        <button class="btn-action btn-edit view-barcode" data-id="${employee.id}">
-                            <i class="fas fa-barcode"></i> Lihat
-                        </button>
-                    </td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="btn-action btn-edit edit-employee" data-id="${employee.id}">
-                                <i class="fas fa-edit"></i> Edit
-                            </button>
-                            <button class="btn-action btn-delete delete-employee" data-id="${employee.id}">
-                                <i class="fas fa-trash"></i> Hapus
-                            </button>
-                        </div>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
-
-            // Add event listeners for employee actions
-            document.querySelectorAll('.view-barcode').forEach(btn => {
-                btn.addEventListener('click', function () {
-                    const employeeId = this.getAttribute('data-id');
-                    const employee = employees.find(e => e.id === employeeId);
-                    if (employee) {
-                        showBarcodeModal(employee);
-                    }
-                });
-            });
-
-            document.querySelectorAll('.edit-employee').forEach(btn => {
-                btn.addEventListener('click', function () {
-                    const employeeId = this.getAttribute('data-id');
-                    alert(`Edit employee ${employeeId} - Fitur dalam pengembangan`);
-                });
-            });
-
-            document.querySelectorAll('.delete-employee').forEach(btn => {
-                btn.addEventListener('click', function () {
-                    const employeeId = this.getAttribute('data-id');
-                    if (confirm(`Hapus karyawan ${employeeId}?`)) {
-                        employees = employees.filter(e => e.id !== employeeId);
-                        localStorage.setItem('attendance_employees', JSON.stringify(employees));
-                        loadEmployeeManagementPage();
-                    }
-                });
-            });
-        }
-
         // Load reports page
         function loadReportsPage() {
+            // Populate location filter
+            const reportLocationSelect = document.getElementById('reportLocation');
+            reportLocationSelect.innerHTML = '<option value="">Semua Lokasi</option>';
+            locations.forEach(loc => {
+                const option = document.createElement('option');
+                option.value = loc.code;
+                option.textContent = loc.name;
+                reportLocationSelect.appendChild(option);
+            });
+
             // Set current month and year
             const now = new Date();
             document.getElementById('reportMonth').value = now.getMonth() + 1;
@@ -1881,6 +2635,7 @@
             const month = parseInt(document.getElementById('reportMonth').value);
             const year = parseInt(document.getElementById('reportYear').value);
             const department = document.getElementById('reportDepartment').value;
+            const locationCode = document.getElementById('reportLocation').value;
 
             // Filter records by month and year
             const filteredRecords = attendanceRecords.filter(record => {
@@ -1890,36 +2645,9 @@
 
                 if (recordMonth !== month || recordYear !== year) return false;
                 if (department && record.department !== department) return false;
+                if (locationCode && record.location !== locationCode) return false;
 
                 return true;
-            });
-
-            // Group by employee
-            const employeeStats = {};
-            employees.forEach(emp => {
-                if (department && emp.department !== department) return;
-
-                employeeStats[emp.id] = {
-                    name: emp.name,
-                    department: emp.department,
-                    present: 0,
-                    late: 0,
-                    absent: 0,
-                    totalHours: 0
-                };
-            });
-
-            // Calculate statistics
-            filteredRecords.forEach(record => {
-                if (employeeStats[record.employeeId]) {
-                    if (record.type === 'checkin') {
-                        if (record.status === 'late') {
-                            employeeStats[record.employeeId].late++;
-                        } else {
-                            employeeStats[record.employeeId].present++;
-                        }
-                    }
-                }
             });
 
             // Generate report HTML
@@ -1929,10 +2657,6 @@
                     <h3 style="color: #1a237e; margin-bottom: 20px;">Laporan Absensi ${getMonthName(month)} ${year}</h3>
                     <div class="stats-grid">
                         <div class="stat-card">
-                            <div class="stat-value">${Object.keys(employeeStats).length}</div>
-                            <div class="stat-label">Total Karyawan</div>
-                        </div>
-                        <div class="stat-card">
                             <div class="stat-value">${filteredRecords.filter(r => r.type === 'checkin').length}</div>
                             <div class="stat-label">Total Kehadiran</div>
                         </div>
@@ -1941,8 +2665,12 @@
                             <div class="stat-label">Keterlambatan</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-value">${Math.round(filteredRecords.length / Object.keys(employeeStats).length)}</div>
-                            <div class="stat-label">Rata-rata per Hari</div>
+                            <div class="stat-value">${new Set(filteredRecords.map(r => r.employeeId)).size}</div>
+                            <div class="stat-label">Karyawan</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${locations.length}</div>
+                            <div class="stat-label">Lokasi</div>
                         </div>
                     </div>
                 </div>
@@ -1951,37 +2679,46 @@
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th>Nama</th>
-                                <th>Departemen</th>
+                                <th>Lokasi</th>
+                                <th>Karyawan</th>
                                 <th>Hadir</th>
                                 <th>Terlambat</th>
-                                <th>Tidak Hadir</th>
-                                <th>Persentase</th>
+                                <th>Rata-rata Jam Kerja</th>
                             </tr>
                         </thead>
                         <tbody>
             `;
 
-            Object.values(employeeStats).forEach(stat => {
-                const totalDays = getWorkingDays(month, year);
-                const absent = totalDays - (stat.present + stat.late);
-                const percentage = Math.round(((stat.present + stat.late) / totalDays) * 100);
+            // Group by location
+            const locationStats = {};
+            locations.forEach(location => {
+                if (locationCode && location.code !== locationCode) return;
+
+                const locationRecords = filteredRecords.filter(record => record.location === location.code);
+                const employeeIds = [...new Set(locationRecords.map(r => r.employeeId))];
+
+                if (employeeIds.length > 0) {
+                    locationStats[location.code] = {
+                        name: location.name,
+                        employees: employeeIds.length,
+                        present: locationRecords.filter(r => r.type === 'checkin' && r.status !== 'late').length,
+                        late: locationRecords.filter(r => r.status === 'late').length,
+                        totalHours: 0
+                    };
+                }
+            });
+
+            // Display location stats
+            Object.values(locationStats).forEach(stat => {
+                const avgHours = stat.employees > 0 ? Math.round((stat.present * 8) / stat.employees) : 0;
 
                 html += `
                     <tr>
                         <td>${stat.name}</td>
-                        <td>${stat.department}</td>
+                        <td>${stat.employees}</td>
                         <td>${stat.present}</td>
                         <td>${stat.late}</td>
-                        <td>${absent}</td>
-                        <td>
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <span>${percentage}%</span>
-                                <div style="flex-grow: 1; height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden;">
-                                    <div style="width: ${percentage}%; height: 100%; background: ${percentage >= 80 ? '#4caf50' : percentage >= 60 ? '#ff9800' : '#f44336'};"></div>
-                                </div>
-                            </div>
-                        </td>
+                        <td>${avgHours} jam</td>
                     </tr>
                 `;
             });
@@ -2005,6 +2742,10 @@
                     document.getElementById('profilePhone').value = employee.phone;
                     document.getElementById('profileDepartment').value = employee.department;
                     document.getElementById('profilePosition').value = employee.position;
+
+                    const location = locations.find(loc => loc.code === employee.location);
+                    document.getElementById('profileLocation').value = location ? location.name : 'Tidak ditentukan';
+
                     document.getElementById('profileJoinDate').value = new Date(employee.joinDate).toLocaleDateString('id-ID');
 
                     // Update avatar
@@ -2012,7 +2753,7 @@
                     document.getElementById('profileAvatar').textContent = initials;
 
                     // Generate barcode
-                    generateBarcode(employee.barcode, 'profileBarcode');
+                    generateTextBarcodeInElement(employee.barcode, 'profileBarcode');
                 }
             } else {
                 // Admin profile
@@ -2021,6 +2762,7 @@
                 document.getElementById('profilePhone').value = '081234567777';
                 document.getElementById('profileDepartment').value = 'Administration';
                 document.getElementById('profilePosition').value = 'System Administrator';
+                document.getElementById('profileLocation').value = 'All Locations';
                 document.getElementById('profileJoinDate').value = '01 Januari 2023';
 
                 // Update avatar
@@ -2077,10 +2819,12 @@
 
         // Process scanned barcode
         function processBarcode(barcode) {
-            const employee = employees.find(emp => emp.barcode === barcode);
+            // Check if barcode is for employee or location
+            let employee = employees.find(emp => emp.barcode === barcode);
+            let location = locations.find(loc => loc.code === barcode);
 
-            if (!employee) {
-                showAttendanceStatus('error', 'Barcode tidak valid', 'Karyawan tidak ditemukan dalam sistem');
+            if (!employee && !location) {
+                showAttendanceStatus('error', 'Barcode tidak valid', 'Kode tidak ditemukan dalam sistem');
                 return;
             }
 
@@ -2088,61 +2832,73 @@
             const today = now.toISOString().split('T')[0];
             const currentTime = now.getHours() * 60 + now.getMinutes();
 
-            // Check if already checked in today
-            const todayRecords = attendanceRecords.filter(record =>
-                record.employeeId === employee.id && record.date === today
-            );
+            if (employee) {
+                // Process employee attendance
+                const todayRecords = attendanceRecords.filter(record =>
+                    record.employeeId === employee.id && record.date === today
+                );
 
-            let type = 'checkin';
-            let status = 'present';
-            let message = '';
+                let type = 'checkin';
+                let status = 'present';
+                let message = '';
+                let locationCode = employee.location || 'LOC001';
 
-            // Determine check-in/out
-            if (todayRecords.length > 0) {
-                const lastRecord = todayRecords[todayRecords.length - 1];
-                if (lastRecord.type === 'checkin') {
-                    type = 'checkout';
-                    message = 'Selamat pulang!';
+                // Determine check-in/out
+                if (todayRecords.length > 0) {
+                    const lastRecord = todayRecords[todayRecords.length - 1];
+                    if (lastRecord.type === 'checkin') {
+                        type = 'checkout';
+                        message = 'Selamat pulang!';
+                    } else {
+                        type = 'checkin';
+                        message = 'Selamat bekerja kembali!';
+                    }
                 } else {
-                    type = 'checkin';
-                    message = 'Selamat bekerja kembali!';
+                    // First check-in of the day
+                    if (currentTime > 9 * 60 + 15) { // Late after 9:15 AM
+                        status = 'late';
+                        message = 'Anda terlambat!';
+                    } else {
+                        message = 'Selamat datang!';
+                    }
                 }
-            } else {
-                // First check-in of the day
-                if (currentTime > 9 * 60 + 15) { // Late after 9:15 AM
-                    status = 'late';
-                    message = 'Anda terlambat!';
+
+                // Create attendance record
+                const record = {
+                    id: `ATT${Date.now()}`,
+                    employeeId: employee.id,
+                    employeeName: employee.name,
+                    date: today,
+                    timestamp: now.toISOString(),
+                    type: type,
+                    status: status,
+                    location: locationCode,
+                    department: employee.department
+                };
+
+                attendanceRecords.push(record);
+                localStorage.setItem('attendance_records', JSON.stringify(attendanceRecords));
+
+                // Show success status
+                const locationName = locations.find(loc => loc.code === locationCode)?.name || locationCode;
+                if (status === 'late') {
+                    showAttendanceStatus('warning', 'Anda terlambat!',
+                        `Absensi ${type === 'checkin' ? 'masuk' : 'pulang'} berhasil di ${locationName}. ${message}`);
                 } else {
-                    message = 'Selamat datang!';
+                    showAttendanceStatus('success', 'Absensi Berhasil',
+                        `Absensi ${type === 'checkin' ? 'masuk' : 'pulang'} berhasil di ${locationName}. ${message}`);
                 }
+
+                // Reload attendance page after delay
+                setTimeout(() => {
+                    loadAttendancePage();
+                }, 3000);
+
+            } else if (location) {
+                // Show location info
+                showAttendanceStatus('success', 'Lokasi Terdeteksi',
+                    `Lokasi: ${location.name}\nAlamat: ${location.address}`);
             }
-
-            // Create attendance record
-            const record = {
-                id: `ATT${Date.now()}`,
-                employeeId: employee.id,
-                employeeName: employee.name,
-                date: today,
-                timestamp: now.toISOString(),
-                type: type,
-                status: status,
-                location: 'Office'
-            };
-
-            attendanceRecords.push(record);
-            localStorage.setItem('attendance_records', JSON.stringify(attendanceRecords));
-
-            // Show success status
-            if (status === 'late') {
-                showAttendanceStatus('warning', 'Anda terlambat!', `Absensi ${type === 'checkin' ? 'masuk' : 'pulang'} berhasil dicatat. ${message}`);
-            } else {
-                showAttendanceStatus('success', 'Absensi Berhasil', `Absensi ${type === 'checkin' ? 'masuk' : 'pulang'} berhasil dicatat. ${message}`);
-            }
-
-            // Reload attendance page after delay
-            setTimeout(() => {
-                loadAttendancePage();
-            }, 3000);
         }
 
         // Show attendance status
@@ -2156,31 +2912,66 @@
                         <i class="fas ${icon}"></i>
                     </div>
                     <div class="status-message">${title}</div>
-                    <div class="status-details">${message}</div>
+                    <div class="status-details">${message.replace(/\n/g, '<br>')}</div>
                 </div>
             `;
 
             attendanceStatus.style.display = 'block';
         }
 
-        // Show barcode modal
-        function showBarcodeModal(employee) {
-            document.getElementById('barcodeEmployeeName').textContent = `${employee.name} (${employee.id})`;
-            generateBarcode(employee.barcode, 'generatedBarcode');
-            barcodeModal.classList.add('active');
-        }
+        // Generate and display barcode in modal
+        function generateAndDisplayBarcode(code, name, type) {
+            const barcodeContainer = document.getElementById('modalBarcodeContainer');
+            const barcodeTitle = document.getElementById('barcodeTitle');
+            const barcodeDetails = document.getElementById('barcodeDetails');
 
-        // Generate barcode (simple text-based for demo)
-        function generateBarcode(code, elementId) {
-            const barcodeElement = document.getElementById(elementId);
-            barcodeElement.innerHTML = `
-                <div style="font-family: 'Courier New', monospace; font-size: 20px; letter-spacing: 3px; padding: 20px; background: white; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 10px;">
-                    ${code}
-                </div>
-                <div style="font-family: 'Courier New', monospace; font-size: 12px; color: #666;">
-                    ${code.split('').join(' ')}
+            // Generate barcode display
+            const barcodeHTML = generateTextBarcode(code);
+
+            barcodeContainer.innerHTML = `
+                <div class="barcode-display">
+                    <div class="barcode-text">${barcodeHTML}</div>
+                    <div style="font-family: 'Courier New', monospace; font-size: 12px; color: #666; margin-top: 10px;">
+                        ${code.split('').join(' ')}
+                    </div>
                 </div>
             `;
+
+            barcodeTitle.textContent = `${code} - ${name}`;
+            barcodeDetails.textContent = `${type} • ${new Date().toLocaleDateString('id-ID')}`;
+
+            barcodeDisplayModal.classList.add('active');
+        }
+
+        // Generate text-based barcode
+        function generateTextBarcode(code) {
+            // Create a simple text representation of barcode
+            const codeStr = String(code);
+            let barcode = '';
+
+            for (let i = 0; i < codeStr.length; i++) {
+                barcode += codeStr[i];
+                if (i < codeStr.length - 1) {
+                    barcode += ' ';
+                }
+            }
+
+            return barcode;
+        }
+
+        // Generate text barcode in element
+        function generateTextBarcodeInElement(code, elementId) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.innerHTML = `
+                    <div style="font-family: 'Courier New', monospace; font-size: 20px; letter-spacing: 3px; padding: 15px; background: #f8f8f8; border-radius: 8px; margin-bottom: 10px;">
+                        ${generateTextBarcode(code)}
+                    </div>
+                    <div style="font-family: 'Courier New', monospace; font-size: 12px; color: #666;">
+                        ${code.split('').join(' ')}
+                    </div>
+                `;
+            }
         }
 
         // Helper functions
@@ -2192,20 +2983,66 @@
             return months[month - 1];
         }
 
-        function getWorkingDays(month, year) {
-            let count = 0;
-            const date = new Date(year, month - 1, 1);
-
-            while (date.getMonth() === month - 1) {
-                const day = date.getDay();
-                if (day !== 0 && day !== 6) { // Not Sunday (0) or Saturday (6)
-                    count++;
-                }
-                date.setDate(date.getDate() + 1);
-            }
-
-            return count;
+        function getLocationTypeLabel(type) {
+            const types = {
+                'office': 'Kantor',
+                'warehouse': 'Gudang',
+                'factory': 'Pabrik',
+                'site': 'Site/Proyek',
+                'store': 'Toko',
+                'branch': 'Cabang'
+            };
+            return types[type] || type;
         }
+
+        function editEmployee(employeeId) {
+            const employee = employees.find(emp => emp.id === employeeId);
+            if (!employee) return;
+
+            // For now, just show an edit prompt
+            const newName = prompt('Edit nama karyawan:', employee.name);
+            if (newName && newName.trim() !== '') {
+                employee.name = newName.trim();
+                localStorage.setItem('attendance_employees', JSON.stringify(employees));
+                loadEmployeeManagementPage();
+                alert('Data karyawan berhasil diperbarui!');
+            }
+        }
+
+        function editLocation(locationId) {
+            const location = locations.find(loc => loc.id === locationId);
+            if (!location) return;
+
+            // For now, just show an edit prompt
+            const newName = prompt('Edit nama lokasi:', location.name);
+            if (newName && newName.trim() !== '') {
+                location.name = newName.trim();
+                localStorage.setItem('attendance_locations', JSON.stringify(locations));
+                loadLocationManagementPage();
+                alert('Data lokasi berhasil diperbarui!');
+            }
+        }
+
+        // Global function for view attendance details
+        window.viewAttendanceDetails = function (employeeId, date) {
+            const employee = employees.find(emp => emp.id === employeeId);
+            const dayRecords = attendanceRecords.filter(record =>
+                record.employeeId === employeeId && record.date === date
+            );
+
+            let details = `Detail Absensi\n`;
+            details += `Karyawan: ${employee?.name || employeeId}\n`;
+            details += `Tanggal: ${new Date(date).toLocaleDateString('id-ID')}\n\n`;
+
+            dayRecords.forEach(record => {
+                const time = new Date(record.timestamp).toLocaleTimeString('id-ID');
+                const type = record.type === 'checkin' ? 'Masuk' : 'Pulang';
+                const status = record.status === 'late' ? ' (Terlambat)' : '';
+                details += `${time} - ${type}${status}\n`;
+            });
+
+            alert(details);
+        };
     </script>
 </body>
 
