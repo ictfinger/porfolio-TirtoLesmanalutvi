@@ -1,44 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Projects - Portfolio</title>
+    <title>My Projects - Tirto Lesmana Lutvi | Portfolio</title>
 
     <!-- SEO Meta Tags -->
     <meta name="description"
-        content="Explore my latest projects and applications including Attendance App and All System App.">
-    <meta name="keywords" content="projects, web applications, portfolio, attendance app, system app">
+        content="Explore my portfolio of innovative projects including Attendance Systems, Mobile Apps, and Web Applications.">
+    <meta name="keywords" content="web development projects, mobile apps, full stack projects, portfolio showcase">
+    <meta name="author" content="Tirto Lesmana Lutvi">
+    <meta property="og:title" content="Project Portfolio - Tirto Lesmana Lutvi">
+    <meta property="og:description" content="Discover my latest work in web and mobile development.">
+    <meta property="og:image" content="assets/images/hero.png">
+    <meta property="og:url" content="https://yourportfolio.com/projects.html">
 
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/github_style.css">
 </head>
 
-<body>
-
-    <nav class="navbar navbar-expand-lg fixed-top">
+<body class="bg-dark text-light">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top py-3"
+        style="background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px);">
         <div class="container">
-            <a class="navbar-brand" href="index.html">Tirto Lesmana Lutvi</a>
-            <button class="navbar-toggler navbar-dark" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
-                aria-label="Toggle navigation">
+            <a class="navbar-brand fw-bold fs-3" href="index.html">
+                <span class="text-gradient">TL</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <ul class="navbar-nav align-items-center">
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center gap-3">
                     <li class="nav-item">
-                        <a class="nav-link" href="index.html#home">Home</a>
+                        <a class="nav-link" href="index.html">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="index.html#about">About</a>
@@ -52,60 +59,147 @@
                     <li class="nav-item">
                         <a class="nav-link active" href="projects.html">Projects</a>
                     </li>
-                    <li class="nav-item ms-lg-3">
-                        <a class="btn btn-primary"
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-primary rounded-pill px-4"
                             href="https://wa.me/6281363364465?text=Halo,%20saya%20tertarik%20dengan%20jasa%20pembuatan%20website%20Anda"
-                            target="_blank"><i class="fab fa-whatsapp me-2"></i>WhatsApp</a>
+                            target="_blank">
+                            <i class="fab fa-whatsapp me-2"></i>Contact Now
+                        </a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <section class="hero-section pt-5 pb-5">
-        <div class="container mt-5">
-            <div class="text-center mb-5">
-                <h1 class="display-4 fw-bold">My <span class="text-primary-gradient">Projects</span></h1>
-                <p class="text-muted lead">Explore my latest work and applications.</p>
+    <!-- Projects Hero -->
+    <section class="projects-hero py-5 mt-5">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <div class="mb-4">
+                        <span
+                            class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25 rounded-pill px-4 py-2">
+                            <i class="fas fa-code-branch me-2"></i>Project Gallery
+                        </span>
+                    </div>
+                    <h1 class="display-3 fw-bold mb-4">
+                        My <span class="text-gradient">Projects</span>
+                    </h1>
+                    <p class="lead text-muted mb-5">
+                        Explore my collection of innovative web and mobile applications,
+                        each crafted with precision and attention to detail.
+                    </p>
+                    <div class="project-filter d-flex justify-content-center flex-wrap gap-2">
+                        <button class="btn btn-outline-primary rounded-pill active" data-filter="all">All
+                            Projects</button>
+                        <button class="btn btn-outline-primary rounded-pill" data-filter="web">Web Apps</button>
+                        <button class="btn btn-outline-primary rounded-pill" data-filter="mobile">Mobile Apps</button>
+                        <button class="btn btn-outline-primary rounded-pill" data-filter="system">System Apps</button>
+                        <button class="btn btn-outline-primary rounded-pill" data-filter="tools">Tools</button>
+                    </div>
+                </div>
             </div>
+        </div>
+    </section>
 
+    <!-- Projects Grid -->
+    <section class="projects-grid py-5">
+        <div class="container">
             <div class="row g-4">
                 <!-- Attendance App -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="portfolio-item">
-                        <img src="assets/images/project_attendance.png" alt="Attendance App">
-                        <div class="portfolio-overlay">
-                            <h4>Attendance App</h4>
-                            <p>HC Management System</p>
-                            <div class="d-flex gap-2 mt-3">
-                                <a href="viewer.html?url=https://attendance-pgasol.vercel.app/&title=Attendance App"
-                                    class="btn btn-sm btn-primary rounded-pill">
-                                    <i class="fas fa-eye me-1"></i> Live Preview
+                <div class="col-lg-6 project-item" data-category="system web">
+                    <div class="project-card">
+                        <div class="project-image-wrapper">
+                            <img src="assets/images/project_attendance.png" alt="Attendance App" class="project-image">
+                            <div class="project-badge">Featured</div>
+                        </div>
+                        <div class="project-content">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <span
+                                        class="badge bg-primary bg-opacity-25 text-primary rounded-pill px-3 py-1 mb-2">
+                                        HC Management System
+                                    </span>
+                                    <h3 class="h4 fw-bold mb-2">Attendance Management System</h3>
+                                    <p class="text-muted mb-4">
+                                        A comprehensive human capital management solution with real-time attendance
+                                        tracking,
+                                        leave management, and employee analytics dashboard.
+                                    </p>
+                                </div>
+                                <div class="project-stats">
+                                    <div class="stat-item">
+                                        <i class="fas fa-users text-primary"></i>
+                                        <small>500+ Users</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tech-tags mb-4">
+                                <span class="tech-tag">React</span>
+                                <span class="tech-tag">Node.js</span>
+                                <span class="tech-tag">MongoDB</span>
+                                <span class="tech-tag">Express</span>
+                            </div>
+
+                            <div class="d-flex gap-3">
+                                <a href="viewer.html?url=https://attendance-pgasol.vercel.app/&title=Attendance Management System"
+                                    class="btn btn-primary rounded-pill px-4">
+                                    <i class="fas fa-eye me-2"></i>Live Demo
                                 </a>
                                 <a href="https://attendance-pgasol.vercel.app/" target="_blank"
-                                    class="btn btn-sm btn-light rounded-pill">
-                                    <i class="fas fa-external-link-alt"></i>
+                                    class="btn btn-outline-light rounded-pill px-4">
+                                    <i class="fas fa-external-link-alt me-2"></i>Visit Site
                                 </a>
+                                <button class="btn btn-link text-primary p-0" onclick="showProjectDetails(1)">
+                                    <i class="fas fa-info-circle"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- All System App -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="portfolio-item">
-                        <img src="assets/images/project_inv_app.png" alt="All System App">
-                        <div class="portfolio-overlay">
-                            <h4>All System App</h4>
-                            <p>Portal Event & Maintenance</p>
-                            <div class="d-flex gap-2 mt-3">
-                                <a href="viewer.html?url=https://inv-app-kappa.vercel.app/&title=All System App"
-                                    class="btn btn-sm btn-primary rounded-pill">
-                                    <i class="fas fa-eye me-1"></i> Live Preview
+                <div class="col-lg-6 project-item" data-category="system web">
+                    <div class="project-card">
+                        <div class="project-image-wrapper">
+                            <img src="assets/images/project_inv_app.png" alt="All System App" class="project-image">
+                            <div class="project-badge">Latest</div>
+                        </div>
+                        <div class="project-content">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <span
+                                        class="badge bg-primary bg-opacity-25 text-primary rounded-pill px-3 py-1 mb-2">
+                                        Portal System
+                                    </span>
+                                    <h3 class="h4 fw-bold mb-2">Integrated Portal System</h3>
+                                    <p class="text-muted mb-4">
+                                        A multi-functional portal for event management, maintenance tracking, and
+                                        inventory
+                                        management with real-time notifications and reporting.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="tech-tags mb-4">
+                                <span class="tech-tag">Vue.js</span>
+                                <span class="tech-tag">Laravel</span>
+                                <span class="tech-tag">MySQL</span>
+                                <span class="tech-tag">Redis</span>
+                            </div>
+
+                            <div class="d-flex gap-3">
+                                <a href="viewer.html?url=https://inv-app-kappa.vercel.app/&title=Integrated Portal System"
+                                    class="btn btn-primary rounded-pill px-4">
+                                    <i class="fas fa-eye me-2"></i>Live Demo
                                 </a>
                                 <a href="https://inv-app-kappa.vercel.app/" target="_blank"
-                                    class="btn btn-sm btn-light rounded-pill">
-                                    <i class="fas fa-external-link-alt"></i>
+                                    class="btn btn-outline-light rounded-pill px-4">
+                                    <i class="fas fa-external-link-alt me-2"></i>Visit Site
                                 </a>
                             </div>
                         </div>
@@ -113,20 +207,36 @@
                 </div>
 
                 <!-- Prayer Time App -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="portfolio-item">
-                        <img src="assets/images/project_prayer_time.svg" alt="Prayer Time App">
-                        <div class="portfolio-overlay">
-                            <h4>Prayer Time App</h4>
-                            <p>Waktu Solat Indonesia</p>
-                            <div class="d-flex gap-2 mt-3">
+                <div class="col-lg-4 project-item" data-category="mobile tools">
+                    <div class="project-card">
+                        <div class="project-image-wrapper">
+                            <img src="assets/images/project_prayer_time.svg" alt="Prayer Time App"
+                                class="project-image">
+                        </div>
+                        <div class="project-content">
+                            <span class="badge bg-primary bg-opacity-25 text-primary rounded-pill px-3 py-1 mb-2">
+                                Mobile App
+                            </span>
+                            <h3 class="h5 fw-bold mb-2">Prayer Time App</h3>
+                            <p class="text-muted mb-3">
+                                Accurate prayer times for Indonesia with location detection, Qibla direction,
+                                and Islamic calendar features.
+                            </p>
+
+                            <div class="tech-tags mb-4">
+                                <span class="tech-tag">React Native</span>
+                                <span class="tech-tag">Firebase</span>
+                                <span class="tech-tag">Geolocation</span>
+                            </div>
+
+                            <div class="d-flex gap-2">
                                 <a href="viewer.html?url=prayer-time-app.html&title=Prayer Time App"
-                                    class="btn btn-sm btn-primary rounded-pill">
-                                    <i class="fas fa-eye me-1"></i> Live Preview
+                                    class="btn btn-primary btn-sm rounded-pill px-3">
+                                    <i class="fas fa-eye me-1"></i>Demo
                                 </a>
                                 <a href="prayer-time-app.html" target="_blank"
-                                    class="btn btn-sm btn-light rounded-pill">
-                                    <i class="fas fa-external-link-alt"></i>
+                                    class="btn btn-outline-light btn-sm rounded-pill px-3">
+                                    <i class="fas fa-mobile-alt me-1"></i>Mobile
                                 </a>
                             </div>
                         </div>
@@ -134,40 +244,71 @@
                 </div>
 
                 <!-- Image to Text OCR App -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="portfolio-item">
-                        <img src="assets/images/project_ocr_app.png" alt="Image to Text OCR App">
-                        <div class="portfolio-overlay">
-                            <h4>Image to Text OCR</h4>
-                            <p>Extract Text from Images</p>
-                            <div class="d-flex gap-2 mt-3">
-                                <a href="viewer.html?url=image-to-text-app.html&title=Image to Text OCR"
-                                    class="btn btn-sm btn-primary rounded-pill">
-                                    <i class="fas fa-eye me-1"></i> Live Preview
+                <div class="col-lg-4 project-item" data-category="tools web">
+                    <div class="project-card">
+                        <div class="project-image-wrapper">
+                            <img src="assets/images/project_ocr_app.png" alt="OCR App" class="project-image">
+                        </div>
+                        <div class="project-content">
+                            <span class="badge bg-primary bg-opacity-25 text-primary rounded-pill px-3 py-1 mb-2">
+                                AI Tool
+                            </span>
+                            <h3 class="h5 fw-bold mb-2">Image to Text OCR</h3>
+                            <p class="text-muted mb-3">
+                                Advanced OCR tool that extracts text from images with high accuracy,
+                                supporting multiple languages and document formats.
+                            </p>
+
+                            <div class="tech-tags mb-4">
+                                <span class="tech-tag">Python</span>
+                                <span class="tech-tag">Tesseract</span>
+                                <span class="tech-tag">Flask</span>
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <a href="viewer.html?url=image-to-text-app.html&title=OCR App"
+                                    class="btn btn-primary btn-sm rounded-pill px-3">
+                                    <i class="fas fa-eye me-1"></i>Demo
                                 </a>
                                 <a href="image-to-text-app.html" target="_blank"
-                                    class="btn btn-sm btn-light rounded-pill">
-                                    <i class="fas fa-external-link-alt"></i>
+                                    class="btn btn-outline-light btn-sm rounded-pill px-3">
+                                    <i class="fas fa-cogs me-1"></i>Tool
                                 </a>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Perpustakaan -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="portfolio-item">
-                        <img src="assets/images/perpustakaan.png" alt="Perpustakaan App">
-                        <div class="portfolio-overlay">
-                            <h4>Perpustakaan App</h4>
-                            <p>Portal Perpustakaan</p>
-                            <div class="d-flex gap-2 mt-3">
-                                <a href="viewer.html?url=perpustakaan.html&title=Perpustakaan App"
-                                    class="btn btn-sm btn-primary rounded-pill">
-                                    <i class="fas fa-eye me-1"></i> Live Preview
+                <!-- Perpustakaan App -->
+                <div class="col-lg-4 project-item" data-category="system web">
+                    <div class="project-card">
+                        <div class="project-image-wrapper">
+                            <img src="assets/images/perpustakaan.png" alt="Perpustakaan App" class="project-image">
+                        </div>
+                        <div class="project-content">
+                            <span class="badge bg-primary bg-opacity-25 text-primary rounded-pill px-3 py-1 mb-2">
+                                Library System
+                            </span>
+                            <h3 class="h5 fw-bold mb-2">Perpustakaan App</h3>
+                            <p class="text-muted mb-3">
+                                Complete library management system with book tracking, member management,
+                                and borrowing system.
+                            </p>
+
+                            <div class="tech-tags mb-4">
+                                <span class="tech-tag">PHP</span>
+                                <span class="tech-tag">MySQL</span>
+                                <span class="tech-tag">Bootstrap</span>
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <a href="viewer.html?url=perpustakaan.html&title=Library System"
+                                    class="btn btn-primary btn-sm rounded-pill px-3">
+                                    <i class="fas fa-eye me-1"></i>Demo
                                 </a>
-                                <a href="perpustakaan.html" target="_blank" class="btn btn-sm btn-light rounded-pill">
-                                    <i class="fas fa-external-link-alt"></i>
+                                <a href="perpustakaan.html" target="_blank"
+                                    class="btn btn-outline-light btn-sm rounded-pill px-3">
+                                    <i class="fas fa-book me-1"></i>Library
                                 </a>
                             </div>
                         </div>
@@ -175,20 +316,36 @@
                 </div>
 
                 <!-- Attendance Barcode -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="portfolio-item">
-                        <img src="assets/images/attendance-barcode.png" alt="Attendance Barcode App">
-                        <div class="portfolio-overlay">
-                            <h4>Attendance Barcode App</h4>
-                            <p>Attendance Barcode App</p>
-                            <div class="d-flex gap-2 mt-3">
-                                <a href="viewer.html?url=attendance-barcode.html&title=Attendance Barcode App"
-                                    class="btn btn-sm btn-primary rounded-pill">
-                                    <i class="fas fa-eye me-1"></i> Live Preview
+                <div class="col-lg-6 project-item" data-category="system tools">
+                    <div class="project-card">
+                        <div class="project-image-wrapper">
+                            <img src="assets/images/attendance-barcode.png" alt="Attendance Barcode"
+                                class="project-image">
+                        </div>
+                        <div class="project-content">
+                            <span class="badge bg-primary bg-opacity-25 text-primary rounded-pill px-3 py-1 mb-2">
+                                Barcode System
+                            </span>
+                            <h3 class="h4 fw-bold mb-2">Attendance Barcode System</h3>
+                            <p class="text-muted mb-3">
+                                QR/Barcode based attendance system with real-time tracking,
+                                reports generation, and employee management features.
+                            </p>
+
+                            <div class="tech-tags mb-4">
+                                <span class="tech-tag">JavaScript</span>
+                                <span class="tech-tag">QR Code</span>
+                                <span class="tech-tag">Local Storage</span>
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <a href="viewer.html?url=attendance-barcode.html&title=Barcode Attendance"
+                                    class="btn btn-primary rounded-pill px-4">
+                                    <i class="fas fa-eye me-2"></i>Live Demo
                                 </a>
                                 <a href="attendance-barcode.html" target="_blank"
-                                    class="btn btn-sm btn-light rounded-pill">
-                                    <i class="fas fa-external-link-alt"></i>
+                                    class="btn btn-outline-light rounded-pill px-4">
+                                    <i class="fas fa-qrcode me-2"></i>Try Barcode
                                 </a>
                             </div>
                         </div>
@@ -196,50 +353,225 @@
                 </div>
 
                 <!-- Website Sekolah -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="portfolio-item">
-                        <img src="assets/images/website-sekolah.png" alt="Website Sekolah">
-                        <div class="portfolio-overlay">
-                            <h4>Website Sekolah</h4>
-                            <p>Website Sekolah</p>
-                            <div class="d-flex gap-2 mt-3">
-                                <a href="viewer.html?url=website-sekolah.html&title=Website Sekolah"
-                                    class="btn btn-sm btn-primary rounded-pill">
-                                    <i class="fas fa-eye me-1"></i> Live Preview
+                <div class="col-lg-6 project-item" data-category="web">
+                    <div class="project-card">
+                        <div class="project-image-wrapper">
+                            <img src="assets/images/website-sekolah.png" alt="School Website" class="project-image">
+                        </div>
+                        <div class="project-content">
+                            <span class="badge bg-primary bg-opacity-25 text-primary rounded-pill px-3 py-1 mb-2">
+                                Education
+                            </span>
+                            <h3 class="h4 fw-bold mb-2">School Website Platform</h3>
+                            <p class="text-muted mb-3">
+                                Modern school website with news section, gallery, teacher profiles,
+                                event calendar, and parent portal.
+                            </p>
+
+                            <div class="tech-tags mb-4">
+                                <span class="tech-tag">HTML5</span>
+                                <span class="tech-tag">CSS3</span>
+                                <span class="tech-tag">JavaScript</span>
+                                <span class="tech-tag">CMS</span>
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <a href="viewer.html?url=website-sekolah.html&title=School Website"
+                                    class="btn btn-primary rounded-pill px-4">
+                                    <i class="fas fa-eye me-2"></i>Live Demo
                                 </a>
                                 <a href="website-sekolah.html" target="_blank"
-                                    class="btn btn-sm btn-light rounded-pill">
-                                    <i class="fas fa-external-link-alt"></i>
+                                    class="btn btn-outline-light rounded-pill px-4">
+                                    <i class="fas fa-school me-2"></i>Visit Site
                                 </a>
                             </div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Project Stats -->
+                <div class="col-12">
+                    <div class="project-stats-overview">
+                        <div class="row g-4">
+                            <div class="col-md-3 col-6">
+                                <div class="stat-card text-center">
+                                    <div class="stat-number text-primary fw-bold display-6">15+</div>
+                                    <div class="stat-label text-muted">Projects Completed</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="stat-card text-center">
+                                    <div class="stat-number text-primary fw-bold display-6">8</div>
+                                    <div class="stat-label text-muted">Technologies</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="stat-card text-center">
+                                    <div class="stat-number text-primary fw-bold display-6">1000+</div>
+                                    <div class="stat-label text-muted">Active Users</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="stat-card text-center">
+                                    <div class="stat-number text-primary fw-bold display-6">5</div>
+                                    <div class="stat-label text-muted">Years Experience</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <footer class="text-center">
+    <!-- CTA Section -->
+    <section class="cta-section py-5">
         <div class="container">
-            <div class="d-flex justify-content-center mb-4">
-                <a href="https://github.com/ictfinger" target="_blank" class="social-link"><i
-                        class="fab fa-github"></i></a>
-                <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
-                <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <div class="cta-card p-5 rounded-4">
+                        <h2 class="display-5 fw-bold mb-4">Ready to Start Your Project?</h2>
+                        <p class="lead text-muted mb-5">
+                            Let's collaborate to bring your ideas to life with cutting-edge technology
+                            and exceptional design.
+                        </p>
+                        <div class="d-flex justify-content-center gap-3">
+                            <a href="https://wa.me/6281363364465" target="_blank"
+                                class="btn btn-primary btn-lg rounded-pill px-5">
+                                <i class="fab fa-whatsapp me-2"></i>Start a Conversation
+                            </a>
+                            <a href="index.html#contact" class="btn btn-outline-light btn-lg rounded-pill px-5">
+                                <i class="fas fa-envelope me-2"></i>Send Email
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <p class="mb-0 text-muted small">&copy; <span id="current-year"></span> Portfolio. All rights reserved.</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-5" id="contact">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <a href="index.html" class="navbar-brand fw-bold fs-3 mb-3 d-block">
+                        <span class="text-gradient">Tirto Lesmana Lutvi</span>
+                    </a>
+                    <p class="text-muted">
+                        Full Stack Developer & UI/UX Designer passionate about creating digital experiences.
+                    </p>
+                </div>
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <div class="text-center">
+                        <div class="social-links d-flex justify-content-center gap-3 mb-4">
+                            <a href="https://github.com/ictfinger" target="_blank" class="social-link">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            <a href="#" class="social-link">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                            <a href="#" class="social-link">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="social-link">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                        </div>
+                        <p class="text-muted small mb-0">
+                            Available for freelance and full-time opportunities
+                        </p>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="text-lg-end">
+                        <a href="https://wa.me/6281363364465" target="_blank"
+                            class="btn btn-outline-light rounded-pill px-4 mb-3">
+                            <i class="fab fa-whatsapp me-2"></i>Contact Now
+                        </a>
+                        <p class="text-muted small">
+                            © <span id="current-year"></span> Tirto Lesmana Lutvi. All rights reserved.
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
     </footer>
 
-    <!-- Bootstrap 5 JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap 5.3 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Custom JS -->
-    <script src="assets/js/script.js"></script>
     <script>
         // Set current year
         document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // Project Filtering
+        document.querySelectorAll('.project-filter button').forEach(button => {
+            button.addEventListener('click', function () {
+                // Update active state
+                document.querySelectorAll('.project-filter button').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                this.classList.add('active');
+
+                // Filter projects
+                const filter = this.getAttribute('data-filter');
+                const projects = document.querySelectorAll('.project-item');
+
+                projects.forEach(project => {
+                    const categories = project.getAttribute('data-category').split(' ');
+
+                    if (filter === 'all' || categories.includes(filter)) {
+                        project.style.display = 'block';
+                        setTimeout(() => {
+                            project.style.opacity = '1';
+                            project.style.transform = 'translateY(0)';
+                        }, 10);
+                    } else {
+                        project.style.opacity = '0';
+                        project.style.transform = 'translateY(20px)';
+                        setTimeout(() => {
+                            project.style.display = 'none';
+                        }, 300);
+                    }
+                });
+            });
+        });
+
+        // Project details modal function
+        function showProjectDetails(projectId) {
+            // You can implement a modal or expandable section here
+            alert('Project details coming soon!');
+        }
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Initialize project animations
+        document.addEventListener('DOMContentLoaded', function () {
+            const projects = document.querySelectorAll('.project-item');
+            projects.forEach(project => {
+                project.style.opacity = '0';
+                project.style.transform = 'translateY(20px)';
+                project.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+
+                setTimeout(() => {
+                    project.style.opacity = '1';
+                    project.style.transform = 'translateY(0)';
+                }, 100);
+            });
+        });
     </script>
 </body>
 
