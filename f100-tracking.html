@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>F100 Tracking System - Pertamina Hulu Rokan</title>
+    <title>Smart Todo List - Project Management System</title>
 
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -15,13 +15,21 @@
 
     <style>
         :root {
-            --primary-color: #0d6efd;
-            --success-color: #198754;
-            --warning-color: #ffc107;
-            --danger-color: #dc3545;
-            --gray-color: #6c757d;
-            --pertamina-blue: #0047ab;
-            --pertamina-red: #ff0000;
+            --primary-color: #3b82f6;
+            --primary-dark: #2563eb;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #06b6d4;
+            --gray-100: #f8fafc;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-400: #94a3b8;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --gray-900: #0f172a;
         }
 
         * {
@@ -32,1430 +40,1444 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
             min-height: 100vh;
-            padding: 20px;
+            color: var(--gray-800);
         }
 
-        .main-container {
-            max-width: 1600px;
-            margin: 0 auto;
-        }
-
-        .header {
-            background: linear-gradient(135deg, var(--pertamina-blue) 0%, #002d72 100%);
-            color: white;
-            padding: 2rem;
-            border-radius: 15px 15px 0 0;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: white;
+            height: 100vh;
+            position: fixed;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.1)"/></svg>');
-            background-size: cover;
+            top: 0;
+            border-right: 1px solid var(--gray-200);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            z-index: 1000;
+            transition: transform 0.3s ease;
         }
 
-        .pertamina-logo {
-            background: white;
-            color: var(--pertamina-red);
-            font-weight: 800;
-            padding: 0.5rem 1.5rem;
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .sidebar-menu {
+            padding: 1rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: var(--gray-600);
             border-radius: 10px;
-            display: inline-block;
-            margin-bottom: 1rem;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 0.5rem;
+            transition: all 0.2s ease;
         }
 
-        .progress-container {
-            background: white;
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--primary-color);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .nav-link i {
+            width: 24px;
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
             padding: 2rem;
-            border-radius: 0 0 15px 15px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            margin-bottom: 2rem;
+            min-height: 100vh;
         }
 
-        .progress-section {
-            margin-bottom: 2rem;
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
         }
 
-        .progress-bar-container {
-            height: 30px;
-            background: #e9ecef;
+        /* Header */
+        .main-header {
+            background: white;
             border-radius: 15px;
-            overflow: hidden;
-            margin-top: 10px;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .stat-content {
+            flex: 1;
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: var(--gray-500);
+            font-size: 0.9rem;
+        }
+
+        /* Todo Container */
+        .todo-container {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        /* Todo Item */
+        .todo-item {
+            border: 1px solid var(--gray-200);
+            border-radius: 10px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
             position: relative;
+            overflow: hidden;
+        }
+
+        .todo-item:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.1);
+        }
+
+        .todo-item.completed {
+            background: var(--gray-100);
+            border-color: var(--success-color);
+            opacity: 0.9;
+        }
+
+        .todo-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            cursor: pointer;
+        }
+
+        .todo-checkbox {
+            width: 22px;
+            height: 22px;
+            margin-right: 1rem;
+            cursor: pointer;
+            accent-color: var(--success-color);
+            flex-shrink: 0;
+        }
+
+        .todo-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--gray-800);
+            flex: 1;
+            margin-right: 1rem;
+        }
+
+        .todo-title input {
+            border: 1px solid var(--gray-300);
+            border-radius: 6px;
+            padding: 0.5rem;
+            font-size: 1.1rem;
+            width: 100%;
+        }
+
+        .todo-actions {
+            display: flex;
+            gap: 0.5rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .todo-item:hover .todo-actions {
+            opacity: 1;
+        }
+
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: none;
+            background: var(--gray-100);
+            color: var(--gray-600);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .todo-content {
+            padding-left: 2.5rem;
+        }
+
+        .todo-description {
+            color: var(--gray-600);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .todo-description textarea {
+            width: 100%;
+            border: 1px solid var(--gray-300);
+            border-radius: 8px;
+            padding: 0.75rem;
+            resize: vertical;
+            font-family: inherit;
+            min-height: 100px;
+        }
+
+        .todo-meta {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.85rem;
+            color: var(--gray-500);
+            flex-wrap: wrap;
+            padding-top: 1rem;
+            border-top: 1px dashed var(--gray-200);
+        }
+
+        .todo-priority {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .priority-high {
+            background: #fee2e2;
+            color: var(--danger-color);
+        }
+
+        .priority-medium {
+            background: #fef3c7;
+            color: var(--warning-color);
+        }
+
+        .priority-low {
+            background: #d1fae5;
+            color: var(--success-color);
+        }
+
+        /* Sub Tasks */
+        .subtasks-container {
+            margin-top: 1.5rem;
+            margin-left: 2.5rem;
+            border-left: 2px solid var(--gray-200);
+            padding-left: 1.5rem;
+        }
+
+        .subtask-item {
+            background: var(--gray-50);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border: 1px solid var(--gray-200);
+            transition: all 0.3s ease;
+        }
+
+        .subtask-item:hover {
+            border-color: var(--primary-color);
+            background: white;
+        }
+
+        .subtask-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .subtask-title {
+            font-weight: 500;
+            font-size: 1rem;
+            flex: 1;
+            margin: 0 1rem;
+        }
+
+        .subsubtasks-container {
+            margin-left: 2rem;
+            margin-top: 0.75rem;
+            padding-left: 1rem;
+            border-left: 1px solid var(--gray-300);
+        }
+
+        /* Add Task Button */
+        .add-task-btn {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .add-task-btn:hover {
+            background: var(--primary-dark);
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        /* Modal */
+        .modal-content {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            border-bottom: 1px solid var(--gray-200);
+            padding: 1.5rem;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            height: 8px;
+            background: var(--gray-200);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.5rem;
         }
 
         .progress-bar {
             height: 100%;
-            background: linear-gradient(90deg, var(--pertamina-blue) 0%, #0066cc 100%);
-            border-radius: 15px;
+            background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+            border-radius: 4px;
             transition: width 0.5s ease;
-            position: relative;
-            overflow: hidden;
         }
 
-        .progress-bar::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
-            background-image: linear-gradient(45deg,
-                    rgba(255, 255, 255, 0.15) 25%,
-                    transparent 25%,
-                    transparent 50%,
-                    rgba(255, 255, 255, 0.15) 50%,
-                    rgba(255, 255, 255, 0.15) 75%,
-                    transparent 75%,
-                    transparent);
-            background-size: 1rem 1rem;
-            animation: progress-bar-stripes 1s linear infinite;
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--gray-400);
         }
 
-        @keyframes progress-bar-stripes {
-            from {
-                background-position: 1rem 0;
-            }
-
-            to {
-                background-position: 0 0;
-            }
-        }
-
-        .progress-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-weight: 600;
-            color: #333;
-            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
-        }
-
-        .tracking-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border-left: 5px solid var(--pertamina-blue);
-        }
-
-        .tracking-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .empty-state i {
+            font-size: 4rem;
             margin-bottom: 1rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 2px solid #f0f0f0;
+            opacity: 0.5;
         }
 
-        .part-badge {
-            background: linear-gradient(135deg, var(--pertamina-blue) 0%, #0066cc 100%);
-            color: white;
-            padding: 0.4rem 1.2rem;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .status-badge {
-            padding: 0.3rem 0.8rem;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
-
-        .badge-open {
-            background: linear-gradient(135deg, #ff6b6b 0%, var(--pertamina-red) 100%);
-            color: white;
-        }
-
-        .badge-close {
-            background: linear-gradient(135deg, #4facfe 0%, var(--pertamina-blue) 100%);
-            color: white;
-        }
-
-        .task-item {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 1rem;
-            margin-bottom: 0.8rem;
-            display: flex;
-            align-items: flex-start;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .task-item:hover {
-            background: #edf2f7;
-            transform: translateX(5px);
-        }
-
-        .task-item.completed {
-            background: #f0f9ff;
-            border-left: 4px solid var(--success-color);
-        }
-
-        .task-checkbox {
-            margin-right: 1rem;
-            width: 24px;
-            height: 24px;
-            cursor: pointer;
-            accent-color: var(--pertamina-blue);
-            flex-shrink: 0;
-            margin-top: 3px;
-        }
-
-        .task-content {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .task-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 0.5rem;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .task-title {
-            font-weight: 600;
-            color: #333;
-            font-size: 1.1rem;
-        }
-
-        .task-subtitle {
-            font-weight: 500;
-            color: #555;
-            margin-bottom: 0.5rem;
-            font-size: 0.95rem;
-        }
-
-        .task-desc {
-            color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 0.8rem;
-            line-height: 1.5;
-            background: rgba(0, 0, 0, 0.02);
-            padding: 0.8rem;
-            border-radius: 8px;
-            border-left: 3px solid #ddd;
-        }
-
-        .task-meta {
-            display: flex;
-            gap: 1.5rem;
-            font-size: 0.85rem;
-            color: #666;
-            flex-wrap: wrap;
-        }
-
-        .task-pic {
-            color: var(--pertamina-blue);
-            font-weight: 500;
-        }
-
-        .task-status {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .status-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-        }
-
-        .dot-green {
-            background: var(--success-color);
-        }
-
-        .dot-red {
-            background: var(--pertamina-red);
-        }
-
-        .dot-blue {
-            background: var(--pertamina-blue);
-        }
-
-        .dot-yellow {
-            background: var(--warning-color);
-        }
-
-        .summary-card {
-            background: linear-gradient(135deg, var(--pertamina-blue) 0%, #0066cc 100%);
-            color: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .summary-number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            line-height: 1;
-            margin-bottom: 0.5rem;
-        }
-
-        .summary-label {
-            font-size: 0.9rem;
-            opacity: 0.9;
-            font-weight: 500;
-        }
-
-        .filter-buttons {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            margin-bottom: 1.5rem;
-            justify-content: center;
-        }
-
-        .filter-btn {
-            padding: 0.5rem 1.2rem;
-            border: 2px solid var(--pertamina-blue);
-            background: transparent;
-            color: var(--pertamina-blue);
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 500;
-        }
-
-        .filter-btn:hover,
-        .filter-btn.active {
-            background: var(--pertamina-blue);
-            color: white;
-        }
-
-        .legend {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-top: 1rem;
-            flex-wrap: wrap;
-            padding: 1rem;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        @media (max-width: 768px) {
-            .main-container {
-                padding: 10px;
-            }
-
-            .header {
-                padding: 1.5rem;
-            }
-
-            .tracking-card {
-                padding: 1rem;
-            }
-
-            .task-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .task-meta {
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-
-            .filter-buttons {
-                justify-content: flex-start;
-            }
-        }
-
-        .completion-message {
-            text-align: center;
-            padding: 2rem;
-            background: linear-gradient(135deg, var(--success-color) 0%, #38f9d7 100%);
-            color: white;
-            border-radius: 12px;
-            margin-top: 2rem;
+        /* Toggle Button */
+        .sidebar-toggle {
             display: none;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .completion-message.show {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .section-title {
-            color: var(--pertamina-blue);
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            display: flex;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1001;
+            background: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
             align-items: center;
+            justify-content: center;
+        }
+
+        @media (max-width: 992px) {
+            .sidebar-toggle {
+                display: flex;
+            }
+
+            .add-task-btn {
+                bottom: 1rem;
+                right: 1rem;
+            }
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: var(--warning-color);
+        }
+
+        .status-in-progress {
+            background: #dbeafe;
+            color: var(--primary-color);
+        }
+
+        .status-completed {
+            background: #d1fae5;
+            color: var(--success-color);
+        }
+
+        /* Drag and Drop */
+        .todo-item.dragging {
+            opacity: 0.5;
+            border: 2px dashed var(--primary-color);
+        }
+
+        .drop-zone {
+            min-height: 50px;
+            border: 2px dashed var(--gray-300);
+            border-radius: 10px;
+            margin: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .drop-zone.active {
+            border-color: var(--primary-color);
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        /* Due Date */
+        .due-date {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            background: #f3f4f6;
+            color: var(--gray-600);
+            font-size: 0.8rem;
+        }
+
+        .due-date.overdue {
+            background: #fee2e2;
+            color: var(--danger-color);
+        }
+
+        .due-date.today {
+            background: #fef3c7;
+            color: var(--warning-color);
+        }
+
+        /* Tags */
+        .todo-tags {
+            display: flex;
             gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
         }
 
-        .section-title i {
-            font-size: 1.2rem;
-        }
-
-        .counter-badge {
-            background: var(--pertamina-red);
-            color: white;
-            padding: 0.2rem 0.6rem;
-            border-radius: 12px;
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            background: var(--gray-100);
+            color: var(--gray-600);
             font-size: 0.8rem;
-            font-weight: 600;
-            margin-left: 0.5rem;
+            gap: 0.25rem;
         }
 
-        .task-id {
-            background: rgba(0, 71, 171, 0.1);
-            color: var(--pertamina-blue);
-            padding: 0.2rem 0.6rem;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            margin-right: 0.5rem;
+        .tag i {
+            cursor: pointer;
+            opacity: 0.5;
+            transition: opacity 0.2s ease;
+        }
+
+        .tag i:hover {
+            opacity: 1;
         }
     </style>
 </head>
 
 <body>
-    <div class="main-container">
+    <!-- Sidebar Toggle -->
+    <button class="sidebar-toggle" id="sidebarToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3 class="mb-0"><i class="fas fa-tasks text-primary me-2"></i>Smart Todo</h3>
+            <p class="text-muted mb-0 small">Project Management System</p>
+        </div>
+
+        <div class="sidebar-menu">
+            <nav class="nav flex-column">
+                <a class="nav-link active" href="#">
+                    <i class="fas fa-inbox"></i>
+                    All Tasks
+                    <span class="badge bg-primary ms-auto" id="allTasksCount">0</span>
+                </a>
+                <a class="nav-link" href="#">
+                    <i class="fas fa-calendar-day"></i>
+                    Today
+                    <span class="badge bg-warning ms-auto" id="todayTasksCount">0</span>
+                </a>
+                <a class="nav-link" href="#">
+                    <i class="fas fa-star"></i>
+                    Important
+                    <span class="badge bg-danger ms-auto" id="importantTasksCount">0</span>
+                </a>
+                <a class="nav-link" href="#">
+                    <i class="fas fa-check-circle"></i>
+                    Completed
+                    <span class="badge bg-success ms-auto" id="completedTasksCount">0</span>
+                </a>
+                <div class="mt-4 pt-3 border-top">
+                    <small class="text-muted text-uppercase mb-2 d-block">Projects</small>
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-briefcase"></i>
+                        Work Projects
+                    </a>
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-home"></i>
+                        Personal
+                    </a>
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-shopping-cart"></i>
+                        Shopping List
+                    </a>
+                </div>
+                <div class="mt-4 pt-3 border-top">
+                    <small class="text-muted text-uppercase mb-2 d-block">Tags</small>
+                    <div class="px-2">
+                        <div class="todo-tags">
+                            <span class="tag" style="background: #dbeafe; color: #3b82f6;">Work</span>
+                            <span class="tag" style="background: #d1fae5; color: #10b981;">Personal</span>
+                            <span class="tag" style="background: #fef3c7; color: #f59e0b;">Urgent</span>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+
+        <div class="position-absolute bottom-0 start-0 end-0 p-3 border-top">
+            <div class="progress-container mb-2">
+                <div class="progress-bar" id="sidebarProgress" style="width: 0%"></div>
+            </div>
+            <small class="text-muted" id="progressText">No tasks yet</small>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
         <!-- Header -->
-        <div class="header">
-            <div class="pertamina-logo">
-                <i class="fas fa-oil-well me-2"></i>PERTAMINA HULU ROKAN
+        <div class="main-header">
+            <div>
+                <h1 class="h3 mb-1">Smart Todo List</h1>
+                <p class="text-muted mb-0">Manage your tasks with sub-tasks and detailed notes</p>
             </div>
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <div>
-                    <h1 class="mb-2"><i class="fas fa-clipboard-check me-2"></i>F100 Tracking System</h1>
-                    <p class="mb-0 opacity-90">Contract Compliance Monitoring & Evaluation</p>
+            <div class="d-flex align-items-center gap-3">
+                <div class="input-group" style="width: 300px;">
+                    <span class="input-group-text bg-white border-end-0">
+                        <i class="fas fa-search text-muted"></i>
+                    </span>
+                    <input type="text" class="form-control border-start-0" placeholder="Search tasks..."
+                        id="searchInput">
                 </div>
-                <div class="text-end">
-                    <div class="status-indicator"
-                        style="background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 20px;">
-                        <span class="status-dot dot-green"></span>
-                        Live Tracking Active
-                    </div>
-                    <div class="text-white-50 mt-2">Last Updated: <span id="last-updated">Just now</span></div>
+                <button class="btn btn-primary" id="newTaskBtn">
+                    <i class="fas fa-plus me-2"></i>New Task
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #dbeafe; color: #3b82f6;">
+                    <i class="fas fa-tasks"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number" id="totalTasks">0</div>
+                    <div class="stat-label">Total Tasks</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #fef3c7; color: #f59e0b;">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number" id="pendingTasks">0</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #d1fae5; color: #10b981;">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number" id="completedStats">0</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #fee2e2; color: #ef4444;">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number" id="overdueTasks">0</div>
+                    <div class="stat-label">Overdue</div>
                 </div>
             </div>
         </div>
 
-        <!-- Progress Overview -->
-        <div class="progress-container">
-            <div class="row g-3">
-                <div class="col-md-3 col-6">
-                    <div class="summary-card">
-                        <div class="summary-number" id="total-completed">0</div>
-                        <div class="summary-label">COMPLETED</div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-6">
-                    <div class="summary-card"
-                        style="background: linear-gradient(135deg, #ff6b6b 0%, var(--pertamina-red) 100%);">
-                        <div class="summary-number" id="total-pending">0</div>
-                        <div class="summary-label">PENDING</div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-6">
-                    <div class="summary-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
-                        <div class="summary-number" id="percentage-complete">0%</div>
-                        <div class="summary-label">COMPLETION RATE</div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-6">
-                    <div class="summary-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-                        <div class="summary-number" id="total-items">0</div>
-                        <div class="summary-label">TOTAL ITEMS</div>
-                    </div>
+        <!-- Todo Container -->
+        <div class="todo-container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="mb-0">All Tasks</h3>
+                <div class="d-flex gap-2">
+                    <select class="form-select form-select-sm" style="width: auto;" id="sortSelect">
+                        <option value="date">Sort by Date</option>
+                        <option value="priority">Sort by Priority</option>
+                        <option value="title">Sort by Name</option>
+                        <option value="status">Sort by Status</option>
+                    </select>
+                    <select class="form-select form-select-sm" style="width: auto;" id="filterSelect">
+                        <option value="all">All Tasks</option>
+                        <option value="pending">Pending</option>
+                        <option value="completed">Completed</option>
+                        <option value="high">High Priority</option>
+                    </select>
                 </div>
             </div>
 
-            <!-- Main Progress Bar -->
-            <div class="progress-section">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h4 class="mb-0"><i class="fas fa-chart-line me-2"></i>Overall Progress</h4>
-                    <span class="text-primary fw-bold" id="main-progress-text">0%</span>
+            <!-- Todos will be loaded here -->
+            <div id="todosContainer">
+                <div class="empty-state">
+                    <i class="fas fa-clipboard-list"></i>
+                    <h4 class="mt-3 mb-2">No tasks yet</h4>
+                    <p class="text-muted">Add your first task to get started!</p>
+                    <button class="btn btn-primary mt-3" id="addFirstTaskBtn">
+                        <i class="fas fa-plus me-2"></i>Create Your First Task
+                    </button>
                 </div>
-                <div class="progress-bar-container">
-                    <div class="progress-bar" id="main-progress-bar" style="width: 0%">
-                        <span class="progress-text" id="main-progress-number">0%</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Filter Buttons -->
-            <div class="filter-buttons">
-                <button class="filter-btn active" data-filter="all">All Items</button>
-                <button class="filter-btn" data-filter="open">Open Items</button>
-                <button class="filter-btn" data-filter="close">Closed Items</button>
-                <button class="filter-btn" data-filter="partI">Part IV - Kinerja HSE</button>
-                <button class="filter-btn" data-filter="partII">Part V - Timelines</button>
-                <button class="filter-btn" data-filter="partIII">Part V - Supervision</button>
-                <button class="filter-btn" data-filter="partIV">Part V - Skills</button>
-                <button class="filter-btn" data-filter="partV">Part V - Security</button>
-            </div>
-        </div>
-
-        <!-- F100 Parts Container -->
-        <div id="f100-container">
-            <!-- Data will be loaded here -->
-        </div>
-
-        <!-- Completion Message -->
-        <div class="completion-message" id="completion-message">
-            <i class="fas fa-trophy fa-3x mb-3"></i>
-            <h3>Congratulations! 🎉</h3>
-            <p class="mb-0">All F100 compliance items have been completed successfully!</p>
-        </div>
-
-        <!-- Legend -->
-        <div class="legend">
-            <div class="d-flex align-items-center">
-                <span class="status-dot dot-green me-2"></span>
-                <span>Completed / Closed</span>
-            </div>
-            <div class="d-flex align-items-center">
-                <span class="status-dot dot-red me-2"></span>
-                <span>Open / Pending</span>
-            </div>
-            <div class="d-flex align-items-center">
-                <span class="status-dot dot-blue me-2"></span>
-                <span>In Progress</span>
-            </div>
-            <div class="d-flex align-items-center">
-                <span class="status-dot dot-yellow me-2"></span>
-                <span>Needs Review</span>
             </div>
         </div>
     </div>
 
-    <script>
-        // F100 Data sesuai dengan input terbaru
-        const f100Data = [
-            {
-                part: "Part IV - Kinerja HSE",
-                items: [
-                    {
-                        id: "IV-HSE-1",
-                        title: "Kinerja HSE",
-                        subtitle: "PSB / PB",
-                        description: "Kinerja HSE - PSB / PB",
-                        status: "Open",
-                        pic: "Thalia",
-                        checked: false
-                    }
-                ]
-            },
-            {
-                part: "Part V - Timelines",
-                items: [
-                    {
-                        id: "V-TIM-1a",
-                        title: "Delivery Mobilization",
-                        subtitle: "a. Delivery Mobilization",
-                        description: "Kendaraan, Laptop, Surat Pendaftaran pekerja ke DISNAKER, MCU (PKWT)",
-                        status: "Close",
-                        pic: "All",
-                        checked: true
-                    },
-                    {
-                        id: "V-TIM-1b",
-                        title: "Work Completion",
-                        subtitle: "b. Work Completion",
-                        description: "Flow Recruitment",
-                        status: "Close",
-                        pic: "HC",
-                        checked: true
-                    },
-                    {
-                        id: "V-TIM-1c",
-                        title: "Response of Occurred Problem",
-                        subtitle: "c. Response of Occurred Problem",
-                        description: "SPD, BBM, Asuransi",
-                        status: "Open",
-                        pic: "",
-                        checked: false
-                    },
-                    {
-                        id: "V-TIM-1d",
-                        title: "Close Out Document",
-                        subtitle: "d. Close Out Document",
-                        description: "Ketepatan waktu penyerahan dokumen close-out/SA, RO",
-                        status: "Close",
-                        pic: "Fierka",
-                        checked: true
-                    },
-                    {
-                        id: "V-TIM-1e",
-                        title: "Report",
-                        subtitle: "e. Report",
-                        description: "(MPI, DIMS) per bulan",
-                        status: "Close",
-                        pic: "Thalia",
-                        checked: true
-                    }
-                ]
-            },
-            {
-                part: "Part V - Supervision",
-                items: [
-                    {
-                        id: "V-SUP-2a",
-                        title: "Presence of PMCoW",
-                        subtitle: "a. Presence of PMCoW",
-                        description: "-",
-                        status: "Close",
-                        pic: "N#a",
-                        checked: true
-                    },
-                    {
-                        id: "V-SUP-2b",
-                        title: "Presence of Project Manager",
-                        subtitle: "b. Presence of Project Manager",
-                        description: "Eviden Ke Lapangan, email terkait MWT ke pengawas",
-                        status: "Close",
-                        pic: "Fadhlan",
-                        checked: true
-                    },
-                    {
-                        id: "V-SUP-2c",
-                        title: "Presence of Management Representative Manager",
-                        subtitle: "c. Presence of Management Representative Manager",
-                        description: "Eviden Ke Lapangan, foto kegiatan, beserta email undangan",
-                        status: "Close",
-                        pic: "Fadhlan",
-                        checked: true
-                    },
-                    {
-                        id: "V-SUP-2d",
-                        title: "Supervision Ability",
-                        subtitle: "d. Supervision Ability",
-                        description: "-",
-                        status: "Close",
-                        pic: "N#a",
-                        checked: true
-                    },
-                    {
-                        id: "V-SUP-2e",
-                        title: "Follow up of Findings",
-                        subtitle: "e. Follow up of Findings",
-                        description: "-",
-                        status: "Close",
-                        pic: "N#a",
-                        checked: true
-                    }
-                ]
-            },
-            {
-                part: "Part V - Skills",
-                items: [
-                    {
-                        id: "V-SKL-3a",
-                        title: "Required certificate",
-                        subtitle: "a. Required certificate",
-                        description: "Data training ccpm",
-                        status: "Close",
-                        pic: "HC",
-                        checked: true
-                    },
-                    {
-                        id: "V-SKL-3b",
-                        title: "Employee's Ability",
-                        subtitle: "b. Employee's Ability",
-                        description: "Data training SWP",
-                        status: "Close",
-                        pic: "Thalia",
-                        checked: true
-                    }
-                ]
-            },
-            {
-                part: "Part V - Security",
-                items: [
-                    {
-                        id: "V-SEC-4a",
-                        title: "Security of Company Asset",
-                        subtitle: "a. Security of Company Asset",
-                        description: "-",
-                        status: "Close",
-                        pic: "N#a",
-                        checked: true
-                    },
-                    {
-                        id: "V-SEC-4b",
-                        title: "Security of workplace & surrounding area",
-                        subtitle: "b. Security of workplace & surrounding area",
-                        description: "Schedule Security",
-                        status: "Close",
-                        pic: "Efrata",
-                        checked: true
-                    },
-                    {
-                        id: "V-SEC-4c",
-                        title: "Security Plan",
-                        subtitle: "c. Security Plan",
-                        description: "Sosialisasi TKO security internal beserta absensi telah mengikuti sosialisasi",
-                        status: "Close",
-                        pic: "Efrata",
-                        checked: true
-                    }
-                ]
-            },
-            {
-                part: "Part VI - Providing of Requirement Services",
-                items: [
-                    {
-                        id: "VI-SVC-1a",
-                        title: "Providing of Services",
-                        subtitle: "a. Providing of Services",
-                        description: "SOW, email new hired dari user ke pgasol",
-                        status: "Close",
-                        pic: "Fadhlan",
-                        checked: true
-                    },
-                    {
-                        id: "VI-SVC-1b",
-                        title: "Refusing Work Order",
-                        subtitle: "b. Refusing Work Order",
-                        description: "-",
-                        status: "Close",
-                        pic: "N#a",
-                        checked: true
-                    },
-                    {
-                        id: "VI-SVC-1c",
-                        title: "Penalty KPI MPI",
-                        subtitle: "c. Penalty KPI MPI",
-                        description: "KPI Dan MPI Email Eviden",
-                        status: "Close",
-                        pic: "Thalia",
-                        checked: true
-                    }
-                ]
-            },
-            {
-                part: "Part VI - Materials Provided by Contractor",
-                items: [
-                    {
-                        id: "VI-MAT-2a",
-                        title: "Contractor's Main Material",
-                        subtitle: "a. Contractor's Main Material",
-                        description: "-",
-                        status: "Close",
-                        pic: "N#a",
-                        checked: true
-                    },
-                    {
-                        id: "VI-MAT-2b",
-                        title: "Contractor's supporting material",
-                        subtitle: "b. Contractor's supporting material",
-                        description: "serah terima APD dan foto penyerahan",
-                        status: "Close",
-                        pic: "N#a",
-                        checked: true
-                    }
-                ]
-            },
-            {
-                part: "Part VI - Tools & Equipment",
-                items: [
-                    {
-                        id: "VI-TOOL-3a",
-                        title: "Contractor's main tools & equipment",
-                        subtitle: "a. Contractor's main tools & equipment",
-                        description: "List Kendaraan",
-                        status: "Close",
-                        pic: "Thalia",
-                        checked: true
-                    },
-                    {
-                        id: "VI-TOOL-3b",
-                        title: "Contractor's supporting tools & equipment",
-                        subtitle: "b. Contractor's supporting tools & equipment",
-                        description: "List Laptop",
-                        status: "Close",
-                        pic: "Tirto",
-                        checked: true
-                    }
-                ]
-            },
-            {
-                part: "Part VI - Use of Company's Materials",
-                items: [
-                    {
-                        id: "VI-USE-4a",
-                        title: "Use of Company's material",
-                        subtitle: "a. Use of Company's material",
-                        description: "-",
-                        status: "Close",
-                        pic: "N#a",
-                        checked: true
-                    }
-                ]
-            },
-            {
-                part: "Part VI - Use of Company's Tools",
-                items: [
-                    {
-                        id: "VI-USE-5a",
-                        title: "Use of Company's tools/equipment",
-                        subtitle: "a. Use of Company's tools/equipment",
-                        description: "-",
-                        status: "Close",
-                        pic: "N#a",
-                        checked: true
-                    }
-                ]
-            },
-            {
-                part: "Part VII - TKDN",
-                items: [
-                    {
-                        id: "VII-TKDN-1a",
-                        title: "Self Assessment TKDN",
-                        subtitle: "a. Self Assessment TKDN",
-                        description: "Lampiran TKDN",
-                        status: "Close",
-                        pic: "Pak Nova",
-                        checked: true
-                    }
-                ]
-            },
-            {
-                part: "Part VIII - Kepatuhan",
-                items: [
-                    {
-                        id: "VIII-KPT-1a",
-                        title: "Comply business ethic and code of conduct",
-                        subtitle: "a. Comply business ethic and code of conduct",
-                        description: "TKO code of conduct",
-                        status: "Close",
-                        pic: "",
-                        checked: true
-                    },
-                    {
-                        id: "VIII-KPT-1b",
-                        title: "Pay or adjust the worker salary to minimum",
-                        subtitle: "b. Pay or adjust the worker salary to minimum",
-                        description: "slip gaji",
-                        status: "Close",
-                        pic: "HC",
-                        checked: true
-                    },
-                    {
-                        id: "VIII-KPT-1c",
-                        title: "Have pay scale and salary structure",
-                        subtitle: "c. Have pay scale and salary structure",
-                        description: "struktur skala upah",
-                        status: "Close",
-                        pic: "HC",
-                        checked: true
-                    },
-                    {
-                        id: "VIII-KPT-1d",
-                        title: "Apply yearly salary increase escalation & adjustment",
-                        subtitle: "d. Apply yearly salary increase escalation & adjustment",
-                        description: "kenaikan upah",
-                        status: "Close",
-                        pic: "N#a",
-                        checked: true
-                    },
-                    {
-                        id: "VIII-KPT-1e",
-                        title: "Pay the salary and/or other benefits stated",
-                        subtitle: "e. Pay the salary and/or other benefits stated",
-                        description: "Slip gaji (Mutasi gaji)",
-                        status: "Close",
-                        pic: "HC",
-                        checked: true
-                    },
-                    {
-                        id: "VIII-KPT-1f",
-                        title: "Pay overtime to workers on-time",
-                        subtitle: "f. Pay overtime to workers on-time",
-                        description: "Slip gaji yang ada lembur",
-                        status: "Close",
-                        pic: "HC",
-                        checked: true
-                    },
-                    {
-                        id: "VIII-KPT-1g",
-                        title: "Pay official religious holiday compensation",
-                        subtitle: "g. Pay official religious holiday compensation",
-                        description: "Slip Gaji THR",
-                        status: "Close",
-                        pic: "HC",
-                        checked: true
-                    },
-                    {
-                        id: "VIII-KPT-1h",
-                        title: "Pay end of service payment on time",
-                        subtitle: "h. Pay end of service payment on time",
-                        description: "Slip Gaji Tunjangan Akhir kontrak",
-                        status: "Close",
-                        pic: "N#a",
-                        checked: true
-                    },
-                    {
-                        id: "VIII-KPT-1i",
-                        title: "Pay BPJS/Jamsostek/Askes monthly premium",
-                        subtitle: "i. Pay BPJS/Jamsostek/Askes monthly premium",
-                        description: "pembayaran BPJS Kesehatan dan ketenagakerjaan",
-                        status: "Close",
-                        pic: "HC",
-                        checked: true
-                    },
-                    {
-                        id: "VIII-KPT-1j",
-                        title: "Pay Leave Assistance (yearly leave) on time",
-                        subtitle: "j. Pay Leave Assistance (yearly leave) on time",
-                        description: "Bukti bayar uang cuti",
-                        status: "Close",
-                        pic: "N#a",
-                        checked: true
-                    },
-                    {
-                        id: "VIII-KPT-1k",
-                        title: "Pay Monthly Transportation Assistance on time",
-                        subtitle: "k. Pay Monthly Transportation Assistance on time",
-                        description: "Bukti bayar uang transportasi",
-                        status: "Close",
-                        pic: "HC",
-                        checked: true
-                    },
-                    {
-                        id: "VIII-KPT-1l",
-                        title: "Pay other compensations (if any) to workers",
-                        subtitle: "l. Pay other compensations (if any) to workers",
-                        description: "Bukti bayar kompensasi/ bonus",
-                        status: "Close",
-                        pic: "N#a",
-                        checked: true
-                    }
-                ]
-            },
-            {
-                part: "Part VIII - Komunikasi",
-                items: [
-                    {
-                        id: "VIII-KOM-2a",
-                        title: "Conduct regular communication (quarterly)",
-                        subtitle: "a. Conduct regular communication (quarterly)",
-                        description: "sosialisasi ke pekerja eviden",
-                        status: "Close",
-                        pic: "HC",
-                        checked: true
-                    },
-                    {
-                        id: "VIII-KOM-2b",
-                        title: "Conduct regular communication (every month)",
-                        subtitle: "b. Conduct regular communication (every month)",
-                        description: "hubungan industrial",
-                        status: "Close",
-                        pic: "N#a",
-                        checked: true
-                    },
-                    {
-                        id: "VIII-KOM-2c",
-                        title: "Conduct regular progress report update",
-                        subtitle: "c. Conduct regular progress report update",
-                        description: "memberikan laporan hubungan industrial",
-                        status: "Close",
-                        pic: "N#a",
-                        checked: true
-                    }
-                ]
-            },
-            {
-                part: "Part VIII - Lingkungan Kerja yang Aman",
-                items: [
-                    {
-                        id: "VIII-LKA-3a",
-                        title: "Maintain safe & conducive work place",
-                        subtitle: "a. Maintain safe & conducive work place",
-                        description: "Humas jika ada demo? surat perintah?",
-                        status: "Close",
-                        pic: "N#a",
-                        checked: true
-                    }
-                ]
-            },
-            {
-                part: "Part VIII - Laporan dan Pendaftaran",
-                items: [
-                    {
-                        id: "VIII-LAP-4a",
-                        title: "Report mandatory enterprise report",
-                        subtitle: "a. Report mandatory enterprise report",
-                        description: "wajib lapor WLKP",
-                        status: "Close",
-                        pic: "HC",
-                        checked: true
-                    },
-                    {
-                        id: "VIII-LAP-4b",
-                        title: "Register contract summary signature page",
-                        subtitle: "b. Register contract summary signature page",
-                        description: "mendaftarkan ringkasan kontrak kepada disnaker setempat yang terdiri dari halaman penandatangan, ruang lingkup pekerjaan dan maslahat pekerja",
-                        status: "Close",
-                        pic: "HC",
-                        checked: true
-                    },
-                    {
-                        id: "VIII-LAP-4c",
-                        title: "Register work agreement",
-                        subtitle: "c. Register work agreement",
-                        description: "Registrasi PKWT",
-                        status: "Close",
-                        pic: "Wahid",
-                        checked: true
-                    }
-                ]
-            },
-            {
-                part: "Part VIII - Penyelesaian Perselisihan",
-                items: [
-                    {
-                        id: "VIII-PSP-5a",
-                        title: "Meet the worker/Union, Manpower Office",
-                        subtitle: "a. Meet the worker/Union, Manpower Office",
-                        description: "hubungan industrial",
-                        status: "Close",
-                        pic: "N#a",
-                        checked: true
-                    },
-                    {
-                        id: "VIII-PSP-5b",
-                        title: "Settle industrial dispute along with workers/Union",
-                        subtitle: "b. Settle industrial dispute along with workers/Union",
-                        description: "menyelesaikan masaalah industrial secara mandiri",
-                        status: "Close",
-                        pic: "N#a",
-                        checked: true
-                    },
-                    {
-                        id: "VIII-PSP-5c",
-                        title: "Follow through on Labor industrial dispute mechanism",
-                        subtitle: "c. Follow through on Labor industrial dispute mechanism",
-                        description: "mekanisme industrial yang berlaku",
-                        status: "Close",
-                        pic: "N#a",
-                        checked: true
-                    },
-                    {
-                        id: "VIII-PSP-5d",
-                        title: "State the industrial dispute mechanism in work agreement",
-                        subtitle: "d. State the industrial dispute mechanism in work agreement",
-                        description: "meyebutkan mekanisme penyelesaian masalah hubungan industrial PKWT",
-                        status: "Close",
-                        pic: "HC",
-                        checked: true
-                    }
-                ]
-            },
-            {
-                part: "Part VIII - Kemampuan Organisasi",
-                items: [
-                    {
-                        id: "VIII-ORG-6a",
-                        title: "Have organization chart",
-                        subtitle: "a. Have organization chart",
-                        description: "Struktur Organisasi",
-                        status: "Close",
-                        pic: "Thalia",
-                        checked: true
-                    },
-                    {
-                        id: "VIII-ORG-6b",
-                        title: "Have capable and reliable person",
-                        subtitle: "b. Have capable and reliable person",
-                        description: "sertifikat khusus hubungan industrial",
-                        status: "Close",
-                        pic: "HC",
-                        checked: true
-                    },
-                    {
-                        id: "VIII-ORG-6c",
-                        title: "Conduct IR socialization/training for workers",
-                        subtitle: "c. Conduct IR socialization/training for workers",
-                        description: "melakukan sosilisasi industrial setiap 3 bulan kepada pekerjanya? ada dokumentasi: daftar hadir, materi pelatihan, risalah pertemuan",
-                        status: "Close",
-                        pic: "HC",
-                        checked: true
-                    }
-                ]
-            }
-        ];
+    <!-- Add Task Button -->
+    <button class="add-task-btn" id="addTaskBtn">
+        <i class="fas fa-plus"></i>
+    </button>
 
-        // Initialize with data from localStorage or default
-        let trackingData = JSON.parse(localStorage.getItem('f100Tracking')) || f100Data;
-        let totalItems = 0;
-        let completedItems = 0;
-        let pendingItems = 0;
-
-        // Calculate initial stats
-        function calculateStats() {
-            totalItems = 0;
-            completedItems = 0;
-            pendingItems = 0;
-
-            trackingData.forEach(part => {
-                part.items.forEach(item => {
-                    totalItems++;
-                    if (item.checked) {
-                        completedItems++;
-                    } else {
-                        pendingItems++;
-                    }
-                });
-            });
-
-            const percentage = Math.round((completedItems / totalItems) * 100);
-
-            // Update UI
-            document.getElementById('total-items').textContent = totalItems;
-            document.getElementById('total-completed').textContent = completedItems;
-            document.getElementById('total-pending').textContent = pendingItems;
-            document.getElementById('percentage-complete').textContent = percentage + '%';
-
-            // Update progress bar
-            const progressBar = document.getElementById('main-progress-bar');
-            const progressNumber = document.getElementById('main-progress-number');
-            const progressText = document.getElementById('main-progress-text');
-
-            progressBar.style.width = percentage + '%';
-            progressNumber.textContent = percentage + '%';
-            progressText.textContent = percentage + '%';
-
-            // Update completion message
-            const completionMsg = document.getElementById('completion-message');
-            if (percentage === 100) {
-                completionMsg.classList.add('show');
-            } else {
-                completionMsg.classList.remove('show');
-            }
-
-            // Update last updated time
-            const now = new Date();
-            document.getElementById('last-updated').textContent =
-                now.toLocaleTimeString('id-ID', {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    day: '2-digit',
-                    month: 'short',
-                    year: 'numeric'
-                });
-        }
-
-        // Render F100 data
-        function renderF100() {
-            const container = document.getElementById('f100-container');
-            container.innerHTML = '';
-
-            trackingData.forEach(part => {
-                const partCard = document.createElement('div');
-                partCard.className = 'tracking-card';
-                partCard.dataset.part = part.part.toLowerCase().replace(/[^a-z0-9]/g, '-');
-
-                // Calculate part progress
-                const partItems = part.items.length;
-                const partCompleted = part.items.filter(item => item.checked).length;
-                const partPercentage = Math.round((partCompleted / partItems) * 100);
-                const openCount = part.items.filter(item => !item.checked).length;
-
-                partCard.innerHTML = `
-                    <div class="card-header">
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="part-badge">${part.part}</span>
-                            <span class="text-muted">
-                                ${partCompleted}/${partItems} completed
-                                ${openCount > 0 ? `<span class="counter-badge">${openCount} open</span>` : ''}
-                            </span>
-                        </div>
-                        <div>
-                            <span class="status-badge ${partCompleted === partItems ? 'badge-close' : 'badge-open'}">
-                                ${partPercentage}% Complete
-                            </span>
-                        </div>
-                    </div>
-                    <div class="part-progress mb-3">
-                        <div class="progress-bar-container" style="height: 12px;">
-                            <div class="progress-bar" style="width: ${partPercentage}%"></div>
-                        </div>
-                    </div>
-                    <div class="part-items">
-                        ${part.items.map(item => `
-                            <div class="task-item ${item.checked ? 'completed' : ''}" 
-                                 data-id="${item.id}" 
-                                 data-status="${item.status.toLowerCase()}">
-                                <input type="checkbox" 
-                                       class="task-checkbox" 
-                                       ${item.checked ? 'checked' : ''} 
-                                       data-part="${part.part}" 
-                                       data-item="${item.id}">
-                                <div class="task-content">
-                                    <div class="task-header">
-                                        <div>
-                                            <span class="task-id">${item.id}</span>
-                                            <span class="task-title">${item.title}</span>
-                                        </div>
-                                        <div class="task-status">
-                                            <span class="status-dot ${item.status === 'Close' ? 'dot-green' : 'dot-red'}"></span>
-                                            <span class="status-badge ${item.status === 'Close' ? 'badge-close' : 'badge-open'}">
-                                                ${item.status}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    ${item.subtitle ? `<div class="task-subtitle">${item.subtitle}</div>` : ''}
-                                    <div class="task-desc">${item.description}</div>
-                                    <div class="task-meta">
-                                        <span class="task-pic">
-                                            <i class="fas fa-user-circle me-1"></i> 
-                                            PIC: ${item.pic || 'TBD'}
-                                        </span>
-                                        <span class="text-muted">
-                                            <i class="fas fa-calendar-alt me-1"></i>
-                                            Last update: Today
-                                        </span>
-                                        ${item.status === 'Open' ?
-                        `<span class="text-warning">
-                                                <i class="fas fa-exclamation-circle me-1"></i>
-                                                Action Required
-                                            </span>` :
-                        `<span class="text-success">
-                                                <i class="fas fa-check-circle me-1"></i>
-                                                Verified
-                                            </span>`
-                    }
-                                    </div>
+    <!-- Create Task Modal -->
+    <div class="modal fade" id="createTaskModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create New Task</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="taskForm">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label class="form-label">Task Title *</label>
+                                    <input type="text" class="form-control" id="taskTitle" required>
                                 </div>
                             </div>
-                        `).join('')}
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Priority</label>
+                                    <select class="form-control" id="taskPriority">
+                                        <option value="low">Low</option>
+                                        <option value="medium" selected>Medium</option>
+                                        <option value="high">High</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" id="taskDescription" rows="3"
+                                placeholder="Add detailed description..."></textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Due Date</label>
+                                    <input type="date" class="form-control" id="taskDueDate">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Status</label>
+                                    <select class="form-control" id="taskStatus">
+                                        <option value="pending">Pending</option>
+                                        <option value="in-progress">In Progress</option>
+                                        <option value="completed">Completed</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Tags (comma separated)</label>
+                            <input type="text" class="form-control" id="taskTags" placeholder="work, urgent, project">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label d-flex justify-content-between align-items-center">
+                                <span>Sub Tasks</span>
+                                <button type="button" class="btn btn-sm btn-outline-primary" id="addSubTaskBtn">
+                                    <i class="fas fa-plus me-1"></i>Add Sub Task
+                                </button>
+                            </label>
+                            <div id="subTasksContainer">
+                                <!-- Sub tasks will be added here -->
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveTaskBtn">Save Task</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sub Task Template -->
+    <template id="subTaskTemplate">
+        <div class="subtask-input mb-2">
+            <div class="input-group">
+                <input type="text" class="form-control subtask-title" placeholder="Sub task title">
+                <button type="button" class="btn btn-outline-danger remove-subtask-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    </template>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Todo List Application
+        class TodoListApp {
+            constructor() {
+                this.todos = JSON.parse(localStorage.getItem('smartTodos')) || [];
+                this.currentEditId = null;
+                this.init();
+            }
+
+            init() {
+                this.loadTodos();
+                this.setupEventListeners();
+                this.updateStats();
+            }
+
+            loadTodos() {
+                const container = document.getElementById('todosContainer');
+
+                if (this.todos.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-clipboard-list"></i>
+                            <h4 class="mt-3 mb-2">No tasks yet</h4>
+                            <p class="text-muted">Add your first task to get started!</p>
+                            <button class="btn btn-primary mt-3" id="addFirstTaskBtn">
+                                <i class="fas fa-plus me-2"></i>Create Your First Task
+                            </button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = '';
+
+                const filter = document.getElementById('filterSelect').value;
+                const sort = document.getElementById('sortSelect').value;
+
+                let filteredTodos = this.todos;
+
+                // Apply filter
+                if (filter !== 'all') {
+                    filteredTodos = this.todos.filter(todo => {
+                        if (filter === 'pending') return !todo.completed;
+                        if (filter === 'completed') return todo.completed;
+                        if (filter === 'high') return todo.priority === 'high';
+                        return true;
+                    });
+                }
+
+                // Apply sorting
+                filteredTodos.sort((a, b) => {
+                    if (sort === 'date') {
+                        return new Date(b.createdAt) - new Date(a.createdAt);
+                    } else if (sort === 'priority') {
+                        const priorityOrder = { high: 3, medium: 2, low: 1 };
+                        return priorityOrder[b.priority] - priorityOrder[a.priority];
+                    } else if (sort === 'title') {
+                        return a.title.localeCompare(b.title);
+                    } else if (sort === 'status') {
+                        return a.completed - b.completed;
+                    }
+                    return 0;
+                });
+
+                filteredTodos.forEach(todo => {
+                    const todoElement = this.createTodoElement(todo);
+                    container.appendChild(todoElement);
+                });
+            }
+
+            createTodoElement(todo) {
+                const todoDiv = document.createElement('div');
+                todoDiv.className = `todo-item ${todo.completed ? 'completed' : ''}`;
+                todoDiv.dataset.id = todo.id;
+
+                const dueDateClass = this.getDueDateClass(todo.dueDate);
+
+                todoDiv.innerHTML = `
+                    <div class="todo-header">
+                        <input type="checkbox" class="todo-checkbox" ${todo.completed ? 'checked' : ''}>
+                        <div class="todo-title">
+                            ${todo.completed ? `<del>${todo.title}</del>` : todo.title}
+                        </div>
+                        <div class="todo-actions">
+                            <button class="action-btn edit-btn" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="action-btn delete-btn" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            <button class="action-btn expand-btn" title="Toggle Details">
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="todo-content" style="display: none;">
+                        <div class="todo-description">
+                            ${todo.description || '<span class="text-muted">No description</span>'}
+                        </div>
+                        
+                        ${todo.tags && todo.tags.length > 0 ? `
+                            <div class="todo-tags">
+                                ${todo.tags.map(tag => `
+                                    <span class="tag">${tag}</span>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                        
+                        <div class="todo-meta">
+                            <span class="todo-priority priority-${todo.priority}">
+                                <i class="fas fa-flag me-1"></i>${todo.priority.charAt(0).toUpperCase() + todo.priority.slice(1)} Priority
+                            </span>
+                            <span class="status-badge status-${todo.status.replace('-', '')}">
+                                <i class="fas fa-circle me-1"></i>${this.formatStatus(todo.status)}
+                            </span>
+                            ${todo.dueDate ? `
+                                <span class="due-date ${dueDateClass}">
+                                    <i class="fas fa-calendar-alt me-1"></i>
+                                    ${new Date(todo.dueDate).toLocaleDateString()}
+                                </span>
+                            ` : ''}
+                            <span class="text-muted">
+                                <i class="fas fa-clock me-1"></i>
+                                Created: ${new Date(todo.createdAt).toLocaleDateString()}
+                            </span>
+                        </div>
+                        
+                        ${todo.subTasks && todo.subTasks.length > 0 ? `
+                            <div class="subtasks-container">
+                                <h6 class="mb-3">
+                                    <i class="fas fa-list-ul me-2"></i>Sub Tasks
+                                    <small class="text-muted">(${todo.subTasks.filter(st => st.completed).length}/${todo.subTasks.length})</small>
+                                </h6>
+                                ${todo.subTasks.map(subTask => `
+                                    <div class="subtask-item ${subTask.completed ? 'completed' : ''}" data-subtask-id="${subTask.id}">
+                                        <div class="subtask-header">
+                                            <input type="checkbox" class="subtask-checkbox" ${subTask.completed ? 'checked' : ''}>
+                                            <div class="subtask-title">${subTask.title}</div>
+                                            <div class="todo-actions">
+                                                <button class="action-btn delete-subtask-btn" title="Delete Sub Task">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        ${subTask.subSubTasks && subTask.subSubTasks.length > 0 ? `
+                                            <div class="subsubtasks-container">
+                                                ${subTask.subSubTasks.map(subSubTask => `
+                                                    <div class="subtask-item ${subSubTask.completed ? 'completed' : ''}" style="background: #fafafa; border: 1px solid #e5e7eb;">
+                                                        <div class="subtask-header">
+                                                            <input type="checkbox" class="subsubtask-checkbox" ${subSubTask.completed ? 'checked' : ''}>
+                                                            <div class="subtask-title">${subSubTask.title}</div>
+                                                        </div>
+                                                    </div>
+                                                `).join('')}
+                                            </div>
+                                        ` : ''}
+                                        
+                                        <div class="mt-2">
+                                            <button class="btn btn-sm btn-outline-primary add-subsubtask-btn">
+                                                <i class="fas fa-plus me-1"></i>Add Sub-Sub Task
+                                            </button>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                        
+                        <div class="mt-3">
+                            <button class="btn btn-sm btn-outline-primary add-subtask-btn">
+                                <i class="fas fa-plus me-1"></i>Add Sub Task
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary ms-2 add-note-btn">
+                                <i class="fas fa-sticky-note me-1"></i>Add Note
+                            </button>
+                        </div>
                     </div>
                 `;
 
-                container.appendChild(partCard);
-            });
+                // Add event listeners
+                const checkbox = todoDiv.querySelector('.todo-checkbox');
+                checkbox.addEventListener('change', () => this.toggleTodoCompletion(todo.id));
 
-            // Add event listeners to checkboxes
-            document.querySelectorAll('.task-checkbox').forEach(checkbox => {
-                checkbox.addEventListener('change', function () {
-                    const partName = this.dataset.part;
-                    const itemId = this.dataset.item;
+                const editBtn = todoDiv.querySelector('.edit-btn');
+                editBtn.addEventListener('click', () => this.editTodo(todo.id));
 
-                    // Find and update the item
-                    const part = trackingData.find(p => p.part === partName);
-                    if (part) {
-                        const item = part.items.find(i => i.id === itemId);
-                        if (item) {
-                            item.checked = this.checked;
-                            item.status = this.checked ? 'Close' : 'Open';
+                const deleteBtn = todoDiv.querySelector('.delete-btn');
+                deleteBtn.addEventListener('click', () => this.deleteTodo(todo.id));
 
-                            // Update last updated time
-                            item.lastUpdated = new Date().toISOString();
+                const expandBtn = todoDiv.querySelector('.expand-btn');
+                expandBtn.addEventListener('click', (e) => {
+                    const content = todoDiv.querySelector('.todo-content');
+                    const icon = e.currentTarget.querySelector('i');
 
-                            // Save to localStorage
-                            localStorage.setItem('f100Tracking', JSON.stringify(trackingData));
-
-                            // Recalculate and render
-                            calculateStats();
-                            renderF100();
-
-                            // Show notification
-                            showNotification(
-                                this.checked ? 'Item Completed' : 'Item Reopened',
-                                `${item.title} has been ${this.checked ? 'completed' : 'reopened'}`,
-                                this.checked ? 'success' : 'warning'
-                            );
-                        }
-                    }
-                });
-            });
-        }
-
-        // Filter functionality
-        document.querySelectorAll('.filter-btn').forEach(button => {
-            button.addEventListener('click', function () {
-                // Update active button
-                document.querySelectorAll('.filter-btn').forEach(btn => {
-                    btn.classList.remove('active');
-                });
-                this.classList.add('active');
-
-                const filter = this.dataset.filter;
-
-                // Show/hide cards based on filter
-                document.querySelectorAll('.tracking-card').forEach(card => {
-                    if (filter === 'all') {
-                        card.style.display = 'block';
-                    } else if (filter === 'open') {
-                        // Show cards with open items
-                        const hasOpenItems = Array.from(card.querySelectorAll('.task-item'))
-                            .some(item => {
-                                const status = item.dataset.status;
-                                return status === 'open';
-                            });
-                        card.style.display = hasOpenItems ? 'block' : 'none';
-                    } else if (filter === 'close') {
-                        // Show cards with closed items only
-                        const allClosed = Array.from(card.querySelectorAll('.task-item'))
-                            .every(item => {
-                                const status = item.dataset.status;
-                                return status === 'close';
-                            });
-                        card.style.display = allClosed ? 'block' : 'none';
+                    if (content.style.display === 'none') {
+                        content.style.display = 'block';
+                        icon.className = 'fas fa-chevron-up';
                     } else {
-                        // Filter by part name
-                        const partName = card.dataset.part;
-                        const filterMap = {
-                            'partI': 'part-iv',
-                            'partII': 'part-v-timelines',
-                            'partIII': 'part-v-supervision',
-                            'partIV': 'part-v-skills',
-                            'partV': 'part-v-security'
-                        };
-
-                        if (filterMap[filter]) {
-                            card.style.display = partName.includes(filterMap[filter]) ? 'block' : 'none';
-                        } else {
-                            card.style.display = 'block';
-                        }
+                        content.style.display = 'none';
+                        icon.className = 'fas fa-chevron-down';
                     }
                 });
-            });
-        });
 
-        // Notification function
-        function showNotification(title, message, type = 'info') {
-            // Create notification element
-            const notification = document.createElement('div');
-            notification.className = `alert alert-${type === 'success' ? 'success' : type === 'warning' ? 'warning' : 'info'} alert-dismissible fade show`;
-            notification.style.position = 'fixed';
-            notification.style.top = '20px';
-            notification.style.right = '20px';
-            notification.style.zIndex = '9999';
-            notification.style.minWidth = '300px';
-            notification.style.boxShadow = '0 4px 20px rgba(0,0,0,0.2)';
-
-            notification.innerHTML = `
-                <strong>${title}</strong><br>
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            `;
-
-            document.body.appendChild(notification);
-
-            // Auto remove after 5 seconds
-            setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.parentNode.removeChild(notification);
-                }
-            }, 5000);
-        }
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function () {
-            calculateStats();
-            renderF100();
-
-            // Auto-save every 5 minutes
-            setInterval(() => {
-                localStorage.setItem('f100Tracking', JSON.stringify(trackingData));
-            }, 5 * 60 * 1000);
-
-            // Add reset button functionality
-            const resetButton = document.createElement('button');
-            resetButton.className = 'btn btn-outline-danger mt-3';
-            resetButton.innerHTML = '<i class="fas fa-redo me-2"></i> Reset All Progress';
-            resetButton.onclick = function () {
-                if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
-                    localStorage.removeItem('f100Tracking');
-                    trackingData = JSON.parse(JSON.stringify(f100Data)); // Deep copy
-                    calculateStats();
-                    renderF100();
-                    showNotification('Progress Reset', 'All progress has been reset to initial state.', 'warning');
-                }
-            };
-            document.querySelector('.legend').after(resetButton);
-
-            // Add export button
-            const exportButton = document.createElement('button');
-            exportButton.className = 'btn btn-outline-primary mt-3 ms-3';
-            exportButton.innerHTML = '<i class="fas fa-download me-2"></i> Export Report';
-            exportButton.onclick = function () {
-                exportToCSV();
-            };
-            resetButton.after(exportButton);
-        });
-
-        // Export to CSV function
-        function exportToCSV() {
-            let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "Part,ID,Title,Subtitle,Description,Status,PIC,Completed\n";
-
-            trackingData.forEach(part => {
-                part.items.forEach(item => {
-                    const row = [
-                        `"${part.part}"`,
-                        `"${item.id}"`,
-                        `"${item.title}"`,
-                        `"${item.subtitle || ''}"`,
-                        `"${item.description.replace(/"/g, '""')}"`,
-                        `"${item.status}"`,
-                        `"${item.pic}"`,
-                        `"${item.checked ? 'Yes' : 'No'}"`
-                    ].join(',');
-                    csvContent += row + "\n";
+                // Sub task event listeners
+                todoDiv.querySelectorAll('.subtask-checkbox').forEach((checkbox, index) => {
+                    checkbox.addEventListener('change', () => this.toggleSubTaskCompletion(todo.id, index));
                 });
-            });
 
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `F100_Tracking_Report_${new Date().toISOString().split('T')[0]}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+                todoDiv.querySelectorAll('.delete-subtask-btn').forEach((btn, index) => {
+                    btn.addEventListener('click', () => this.deleteSubTask(todo.id, index));
+                });
 
-            showNotification('Report Exported', 'F100 tracking report has been downloaded.', 'success');
+                todoDiv.querySelectorAll('.add-subsubtask-btn').forEach((btn, index) => {
+                    btn.addEventListener('click', () => this.addSubSubTask(todo.id, index));
+                });
+
+                todoDiv.querySelectorAll('.subsubtask-checkbox').forEach((checkbox, subIndex, parentIndex) => {
+                    // This needs more complex handling for sub-sub tasks
+                    checkbox.addEventListener('change', () => {
+                        // Implementation for sub-sub task completion
+                    });
+                });
+
+                const addSubTaskBtn = todoDiv.querySelector('.add-subtask-btn');
+                addSubTaskBtn.addEventListener('click', () => this.addSubTaskToTodo(todo.id));
+
+                return todoDiv;
+            }
+
+            addTodo(todoData) {
+                const todo = {
+                    id: Date.now().toString(),
+                    ...todoData,
+                    completed: false,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    subTasks: [],
+                    notes: []
+                };
+
+                this.todos.unshift(todo);
+                this.saveTodos();
+                this.loadTodos();
+                this.updateStats();
+                this.showNotification('Task added successfully!', 'success');
+            }
+
+            editTodo(id) {
+                const todo = this.todos.find(t => t.id === id);
+                if (!todo) return;
+
+                this.currentEditId = id;
+
+                // Populate modal with todo data
+                document.getElementById('taskTitle').value = todo.title;
+                document.getElementById('taskDescription').value = todo.description || '';
+                document.getElementById('taskPriority').value = todo.priority;
+                document.getElementById('taskDueDate').value = todo.dueDate || '';
+                document.getElementById('taskStatus').value = todo.status;
+                document.getElementById('taskTags').value = todo.tags ? todo.tags.join(', ') : '';
+
+                // Clear and populate sub tasks
+                const subTasksContainer = document.getElementById('subTasksContainer');
+                subTasksContainer.innerHTML = '';
+
+                if (todo.subTasks && todo.subTasks.length > 0) {
+                    todo.subTasks.forEach(subTask => {
+                        const template = document.getElementById('subTaskTemplate').content.cloneNode(true);
+                        template.querySelector('.subtask-title').value = subTask.title;
+                        subTasksContainer.appendChild(template);
+                    });
+                }
+
+                // Show modal
+                const modal = new bootstrap.Modal(document.getElementById('createTaskModal'));
+                modal.show();
+
+                // Change save button text
+                document.getElementById('saveTaskBtn').textContent = 'Update Task';
+            }
+
+            updateTodo(id, todoData) {
+                const index = this.todos.findIndex(t => t.id === id);
+                if (index === -1) return;
+
+                this.todos[index] = {
+                    ...this.todos[index],
+                    ...todoData,
+                    updatedAt: new Date().toISOString()
+                };
+
+                this.saveTodos();
+                this.loadTodos();
+                this.updateStats();
+                this.showNotification('Task updated successfully!', 'success');
+            }
+
+            deleteTodo(id) {
+                if (!confirm('Are you sure you want to delete this task?')) return;
+
+                this.todos = this.todos.filter(t => t.id !== id);
+                this.saveTodos();
+                this.loadTodos();
+                this.updateStats();
+                this.showNotification('Task deleted!', 'warning');
+            }
+
+            toggleTodoCompletion(id) {
+                const todo = this.todos.find(t => t.id === id);
+                if (!todo) return;
+
+                todo.completed = !todo.completed;
+                todo.updatedAt = new Date().toISOString();
+
+                // If marking as completed, also complete all sub tasks
+                if (todo.completed && todo.subTasks) {
+                    todo.subTasks.forEach(subTask => {
+                        subTask.completed = true;
+                    });
+                }
+
+                this.saveTodos();
+                this.loadTodos();
+                this.updateStats();
+            }
+
+            addSubTaskToTodo(todoId) {
+                const todo = this.todos.find(t => t.id === todoId);
+                if (!todo) return;
+
+                if (!todo.subTasks) todo.subTasks = [];
+
+                const title = prompt('Enter sub task title:');
+                if (!title) return;
+
+                todo.subTasks.push({
+                    id: Date.now().toString(),
+                    title,
+                    completed: false,
+                    createdAt: new Date().toISOString(),
+                    subSubTasks: []
+                });
+
+                this.saveTodos();
+                this.loadTodos();
+                this.showNotification('Sub task added!', 'success');
+            }
+
+            toggleSubTaskCompletion(todoId, subTaskIndex) {
+                const todo = this.todos.find(t => t.id === todoId);
+                if (!todo || !todo.subTasks || !todo.subTasks[subTaskIndex]) return;
+
+                todo.subTasks[subTaskIndex].completed = !todo.subTasks[subTaskIndex].completed;
+                todo.updatedAt = new Date().toISOString();
+
+                this.saveTodos();
+                this.loadTodos();
+                this.updateStats();
+            }
+
+            deleteSubTask(todoId, subTaskIndex) {
+                const todo = this.todos.find(t => t.id === todoId);
+                if (!todo || !todo.subTasks || !todo.subTasks[subTaskIndex]) return;
+
+                todo.subTasks.splice(subTaskIndex, 1);
+                this.saveTodos();
+                this.loadTodos();
+                this.showNotification('Sub task deleted!', 'warning');
+            }
+
+            addSubSubTask(todoId, subTaskIndex) {
+                const todo = this.todos.find(t => t.id === todoId);
+                if (!todo || !todo.subTasks || !todo.subTasks[subTaskIndex]) return;
+
+                const title = prompt('Enter sub-sub task title:');
+                if (!title) return;
+
+                if (!todo.subTasks[subTaskIndex].subSubTasks) {
+                    todo.subTasks[subTaskIndex].subSubTasks = [];
+                }
+
+                todo.subTasks[subTaskIndex].subSubTasks.push({
+                    id: Date.now().toString(),
+                    title,
+                    completed: false
+                });
+
+                this.saveTodos();
+                this.loadTodos();
+                this.showNotification('Sub-sub task added!', 'success');
+            }
+
+            saveTodos() {
+                localStorage.setItem('smartTodos', JSON.stringify(this.todos));
+            }
+
+            updateStats() {
+                const total = this.todos.length;
+                const completed = this.todos.filter(t => t.completed).length;
+                const pending = total - completed;
+
+                // Count overdue tasks
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                const overdue = this.todos.filter(todo => {
+                    if (!todo.dueDate || todo.completed) return false;
+                    const dueDate = new Date(todo.dueDate);
+                    dueDate.setHours(0, 0, 0, 0);
+                    return dueDate < today;
+                }).length;
+
+                // Update stats cards
+                document.getElementById('totalTasks').textContent = total;
+                document.getElementById('pendingTasks').textContent = pending;
+                document.getElementById('completedStats').textContent = completed;
+                document.getElementById('overdueTasks').textContent = overdue;
+
+                // Update sidebar counts
+                document.getElementById('allTasksCount').textContent = total;
+                document.getElementById('completedTasksCount').textContent = completed;
+
+                // Count today's tasks
+                const todayTasks = this.todos.filter(todo => {
+                    if (!todo.dueDate) return false;
+                    const dueDate = new Date(todo.dueDate);
+                    const today = new Date();
+                    return dueDate.toDateString() === today.toDateString();
+                }).length;
+                document.getElementById('todayTasksCount').textContent = todayTasks;
+
+                // Count important tasks (high priority)
+                const importantTasks = this.todos.filter(todo => todo.priority === 'high').length;
+                document.getElementById('importantTasksCount').textContent = importantTasks;
+
+                // Update progress bar
+                const progress = total > 0 ? Math.round((completed / total) * 100) : 0;
+                document.getElementById('sidebarProgress').style.width = `${progress}%`;
+                document.getElementById('progressText').textContent =
+                    total > 0 ? `${completed}/${total} completed (${progress}%)` : 'No tasks yet';
+            }
+
+            setupEventListeners() {
+                // New Task Button
+                document.getElementById('newTaskBtn').addEventListener('click', () => {
+                    this.currentEditId = null;
+                    document.getElementById('taskForm').reset();
+                    document.getElementById('subTasksContainer').innerHTML = '';
+                    document.getElementById('saveTaskBtn').textContent = 'Save Task';
+
+                    const modal = new bootstrap.Modal(document.getElementById('createTaskModal'));
+                    modal.show();
+                });
+
+                // Add First Task Button
+                document.getElementById('todosContainer').addEventListener('click', (e) => {
+                    if (e.target.id === 'addFirstTaskBtn') {
+                        this.currentEditId = null;
+                        document.getElementById('taskForm').reset();
+                        document.getElementById('saveTaskBtn').textContent = 'Save Task';
+
+                        const modal = new bootstrap.Modal(document.getElementById('createTaskModal'));
+                        modal.show();
+                    }
+                });
+
+                // Add Task Button (floating)
+                document.getElementById('addTaskBtn').addEventListener('click', () => {
+                    this.currentEditId = null;
+                    document.getElementById('taskForm').reset();
+                    document.getElementById('subTasksContainer').innerHTML = '';
+                    document.getElementById('saveTaskBtn').textContent = 'Save Task';
+
+                    const modal = new bootstrap.Modal(document.getElementById('createTaskModal'));
+                    modal.show();
+                });
+
+                // Add Sub Task Button in Modal
+                document.getElementById('addSubTaskBtn').addEventListener('click', () => {
+                    const template = document.getElementById('subTaskTemplate').content.cloneNode(true);
+                    const container = document.getElementById('subTasksContainer');
+                    container.appendChild(template);
+
+                    // Add event listener to remove button
+                    template.querySelector('.remove-subtask-btn').addEventListener('click', function () {
+                        this.closest('.subtask-input').remove();
+                    });
+                });
+
+                // Save Task Button
+                document.getElementById('saveTaskBtn').addEventListener('click', () => {
+                    // Collect sub tasks
+                    const subTasks = Array.from(document.querySelectorAll('#subTasksContainer .subtask-title'))
+                        .map(input => input.value.trim())
+                        .filter(title => title.length > 0)
+                        .map(title => ({
+                            id: Date.now().toString() + Math.random(),
+                            title,
+                            completed: false,
+                            createdAt: new Date().toISOString(),
+                            subSubTasks: []
+                        }));
+
+                    // Collect task data
+                    const taskData = {
+                        title: document.getElementById('taskTitle').value,
+                        description: document.getElementById('taskDescription').value,
+                        priority: document.getElementById('taskPriority').value,
+                        dueDate: document.getElementById('taskDueDate').value || null,
+                        status: document.getElementById('taskStatus').value,
+                        tags: document.getElementById('taskTags').value
+                            .split(',')
+                            .map(tag => tag.trim())
+                            .filter(tag => tag.length > 0),
+                        subTasks
+                    };
+
+                    if (!taskData.title.trim()) {
+                        alert('Task title is required!');
+                        return;
+                    }
+
+                    if (this.currentEditId) {
+                        this.updateTodo(this.currentEditId, taskData);
+                    } else {
+                        this.addTodo(taskData);
+                    }
+
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('createTaskModal'));
+                    modal.hide();
+                });
+
+                // Search
+                document.getElementById('searchInput').addEventListener('input', (e) => {
+                    const searchTerm = e.target.value.toLowerCase();
+                    const todoItems = document.querySelectorAll('.todo-item');
+
+                    todoItems.forEach(item => {
+                        const title = item.querySelector('.todo-title').textContent.toLowerCase();
+                        const description = item.querySelector('.todo-description')?.textContent.toLowerCase() || '';
+
+                        if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+
+                // Sort and Filter
+                document.getElementById('sortSelect').addEventListener('change', () => this.loadTodos());
+                document.getElementById('filterSelect').addEventListener('change', () => this.loadTodos());
+
+                // Sidebar Toggle
+                document.getElementById('sidebarToggle').addEventListener('click', () => {
+                    document.getElementById('sidebar').classList.toggle('show');
+                });
+
+                // Close sidebar when clicking outside on mobile
+                document.addEventListener('click', (e) => {
+                    const sidebar = document.getElementById('sidebar');
+                    const toggleBtn = document.getElementById('sidebarToggle');
+
+                    if (window.innerWidth <= 992 &&
+                        !sidebar.contains(e.target) &&
+                        !toggleBtn.contains(e.target) &&
+                        sidebar.classList.contains('show')) {
+                        sidebar.classList.remove('show');
+                    }
+                });
+            }
+
+            getDueDateClass(dueDate) {
+                if (!dueDate) return '';
+
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                const due = new Date(dueDate);
+                due.setHours(0, 0, 0, 0);
+
+                if (due < today) return 'overdue';
+                if (due.getTime() === today.getTime()) return 'today';
+                return '';
+            }
+
+            formatStatus(status) {
+                return status.split('-').map(word =>
+                    word.charAt(0).toUpperCase() + word.slice(1)
+                ).join(' ');
+            }
+
+            showNotification(message, type = 'info') {
+                // Create notification element
+                const notification = document.createElement('div');
+                notification.className = `alert alert-${type} alert-dismissible fade show`;
+                notification.style.position = 'fixed';
+                notification.style.top = '20px';
+                notification.style.right = '20px';
+                notification.style.zIndex = '9999';
+                notification.style.minWidth = '300px';
+                notification.style.boxShadow = '0 4px 20px rgba(0,0,0,0.2)';
+
+                notification.innerHTML = `
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+
+                document.body.appendChild(notification);
+
+                // Auto remove after 3 seconds
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 3000);
+            }
         }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new TodoListApp();
+        });
     </script>
 </body>
 
