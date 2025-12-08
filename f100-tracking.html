@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F100 Tracking System</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --success-color: #198754;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --gray-color: #6c757d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px 15px 0 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+
+        .progress-section {
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar-container {
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 10px;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 15px;
+            transition: width 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background-image: linear-gradient(45deg,
+                    rgba(255, 255, 255, 0.15) 25%,
+                    transparent 25%,
+                    transparent 50%,
+                    rgba(255, 255, 255, 0.15) 50%,
+                    rgba(255, 255, 255, 0.15) 75%,
+                    transparent 75%,
+                    transparent);
+            background-size: 1rem 1rem;
+            animation: progress-bar-stripes 1s linear infinite;
+        }
+
+        @keyframes progress-bar-stripes {
+            from {
+                background-position: 1rem 0;
+            }
+
+            to {
+                background-position: 0 0;
+            }
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: 600;
+            color: #333;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+        }
+
+        .tracking-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 5px solid #4facfe;
+        }
+
+        .tracking-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .part-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.4rem 1.2rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .badge-open {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .badge-close {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .task-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .task-item:hover {
+            background: #edf2f7;
+            transform: translateX(5px);
+        }
+
+        .task-checkbox {
+            margin-right: 1rem;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            accent-color: #4facfe;
+        }
+
+        .task-content {
+            flex: 1;
+        }
+
+        .task-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.3rem;
+        }
+
+        .task-desc {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .task-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        .task-pic {
+            color: #4facfe;
+            font-weight: 500;
+        }
+
+        .task-performance {
+            color: #28a745;
+            font-weight: 500;
+        }
+
+        .task-kinerja {
+            color: #ffc107;
+            font-weight: 500;
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .summary-number {
+            font-size: 3rem;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1.2rem;
+            border: 2px solid #4facfe;
+            background: transparent;
+            color: #4facfe;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: #4facfe;
+            color: white;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .dot-green {
+            background: #28a745;
+        }
+
+        .dot-blue {
+            background: #4facfe;
+        }
+
+        .dot-red {
+            background: #f5576c;
+        }
+
+        .dot-yellow {
+            background: #ffc107;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 1.5rem;
+            }
+
+            .tracking-card {
+                padding: 1rem;
+            }
+
+            .task-meta {
+                flex-direction: column;
+                gap: 0.3rem;
+            }
+
+            .filter-buttons {
+                justify-content: center;
+            }
+        }
+
+        .completion-message {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+            border-radius: 12px;
+            margin-top: 2rem;
+            display: none;
+        }
+
+        .completion-message.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h1 class="mb-0"><i class="fas fa-clipboard-check me-2"></i>F100 Tracking System</h1>
+                <div class="text-end">
+                    <div class="status-indicator" style="background: rgba(255,255,255,0.2);">
+                        <span class="status-dot dot-green"></span>
+                        Live Tracking
+                    </div>
+                    <div class="text-white-50 mt-1">Last Updated: <span id="last-updated">Just now</span></div>
+                </div>
+            </div>
+            <p class="lead mb-0">Monitoring dan Tracking Compliance F100 - Pertamina Hulu</p>
+        </div>
+
+        <!-- Progress Overview -->
+        <div class="progress-container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="summary-card">
+                        <div class="summary-number" id="total-completed">0</div>
+                        <div class="summary-label">TOTAL COMPLETED</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="summary-card" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                        <div class="summary-number" id="total-items">52</div>
+                        <div class="summary-label">TOTAL ITEMS</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="summary-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                        <div class="summary-number" id="percentage-complete">0%</div>
+                        <div class="summary-label">COMPLETION RATE</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Progress Bar -->
+            <div class="progress-section">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h4 class="mb-0">Overall Progress</h4>
+                    <span class="text-primary fw-bold" id="main-progress-text">0%</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="main-progress-bar" style="width: 0%">
+                        <span class="progress-text" id="main-progress-number">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Buttons -->
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All Items</button>
+                <button class="filter-btn" data-filter="open">Open (2)</button>
+                <button class="filter-btn" data-filter="close">Close (50)</button>
+                <button class="filter-btn" data-filter="partI">Part I - Timeline</button>
+                <button class="filter-btn" data-filter="partII">Part II - Supervision</button>
+                <button class="filter-btn" data-filter="partIII">Part III - Skills</button>
+                <button class="filter-btn" data-filter="partIV">Part IV - Security</button>
+            </div>
+        </div>
+
+        <!-- F100 Parts Container -->
+        <div id="f100-container">
+            <!-- Data will be loaded here -->
+        </div>
+
+        <!-- Completion Message -->
+        <div class="completion-message" id="completion-message">
+            <i class="fas fa-trophy fa-3x mb-3"></i>
+            <h3>Congratulations! 🎉</h3>
+            <p class="mb-0">All F100 items have been completed successfully!</p>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend">
+            <div class="d-flex align-items-center">
+                <span class="status-dot dot-green me-2"></span>
+                <span>Completed</span>
+            </div>
+            <div class="d-flex align-items-center">
+                <span class="status-dot dot-red me-2"></span>
+                <span>Open / Pending</span>
+            </div>
+            <div class="d-flex align-items-center">
+                <span class="status-dot dot-blue me-2"></span>
+                <span>In Progress</span>
+            </div>
+            <div class="d-flex align-items-center">
+                <span class="status-dot dot-yellow me-2"></span>
+                <span>Needs Review</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // F100 Data from PDF
+        const f100Data = [
+            {
+                part: "Part I - Timelines",
+                items: [
+                    { id: "I-1", title: "Delivery Mobilization", description: "Kendaraan, Laptop, Surat Pendaftaran pekerja", status: "Close", pic: "All", kinerja: "TRUE", performance: "100", checked: true },
+                    { id: "I-2", title: "Work Completion", description: "Flow Recruitment", status: "Close", pic: "HC", kinerja: "TRUE", performance: "80" },
+                    { id: "I-3", title: "Response of Occurred Problem", description: "SPD, BBM, Asuransi", status: "Open", pic: "-", kinerja: "FALSE", performance: "80" },
+                    { id: "I-4", title: "Close Out Document", description: "Ketepatan waktu penyerahan dokumen close-out/SA, RO", status: "Close", pic: "Fierka", kinerja: "TRUE", performance: "100", checked: true },
+                    { id: "I-5", title: "Report", description: "(MPI, DIMS) per bulan", status: "Close", pic: "Thalia", kinerja: "TRUE", performance: "100", checked: true }
+                ]
+            },
+            {
+                part: "Part II - Supervision",
+                items: [
+                    { id: "II-1", title: "Presence of PMCoW", description: "-", status: "Close", pic: "N#a", kinerja: "TRUE", performance: "100", checked: true },
+                    { id: "II-2", title: "Presence of Project Manager", description: "Eviden Ke Lapangan, email terkait MWT ke pengawas", status: "Close", pic: "Fadhlan", kinerja: "TRUE", performance: "100", checked: true },
+                    { id: "II-3", title: "Presence of Management Representative Manager", description: "Eviden Ke Lapangan, foto kegiatan, beserta email undangan", status: "Close", pic: "Fadhlan", kinerja: "TRUE", performance: "100", checked: true },
+                    { id: "II-4", title: "Supervision Ability", description: "-", status: "Close", pic: "N#a", kinerja: "TRUE", performance: "100", checked: true },
+                    { id: "II-5", title: "Follow up of Findings", description: "-", status: "Close", pic: "N#a", kinerja: "TRUE", performance: "100", checked: true }
+                ]
+            },
+            {
+                part: "Part III - Skills",
+                items: [
+                    { id: "III-1", title: "Required certificate", description: "Data training ccpm", status: "Close", pic: "HC", kinerja: "TRUE", performance: "100", checked: true },
+                    { id: "III-2", title: "Employee's Ability", description: "Data training SWP", status: "Close", pic: "Thalia", kinerja: "TRUE", performance: "100", checked: true }
+                ]
+            },
+            {
+                part: "Part IV - Security",
+                items: [
+                    { id: "IV-1", title: "Security of Company Asset", description: "-", status: "Close", pic: "N#a", kinerja: "TRUE", performance: "100", checked: true },
+                    { id: "IV-2", title: "Security of workplace & surrounding area", description: "Schedule Security", status: "Close", pic: "Efrata", kinerja: "TRUE", performance: "100", checked: true },
+                    { id: "IV-3", title: "Security Plan", description: "Sosialisasi TKO security internal beserta absensi", status: "Close", pic: "Efrata", kinerja: "FALSE", performance: "80" }
+                ]
+            },
+            {
+                part: "Part V - Penyelesaian Perselisihan",
+                items: [
+                    { id: "V-1", title: "Providing of Services", description: "SOW, email new hired dari user ke pgasol", status: "Close", pic: "Fadhlan", kinerja: "TRUE", performance: "100", checked: true },
+                    { id: "V-2", title: "Refusing Work Order", description: "-", status: "Close", pic: "N#a", kinerja: "TRUE", performance: "100", checked: true },
+                    { id: "V-3", title: "Penalty KPI MPI", description: "KPI Dan MPI Email Eviden", status: "Close", pic: "Thalia", kinerja: "TRUE", performance: "100", checked: true }
+                ]
+            },
+            {
+                part: "Part VI - Materials Provided by contractor",
+                items: [
+                    { id: "VI-1", title: "Contractor's Main Material", description: "-", status: "Close", pic: "N#a", kinerja: "TRUE", performance: "100", checked: true },
+                    { id: "VI-2", title: "Contractor's supporting material", description: "serah terima APD dan foto penyerahan", status: "Close", pic: "N#a", kinerja: "TRUE", performance: "100", checked: true }
+                ]
+            },
+            {
+                part: "Part VII - Tools & Equipment provided by contractor",
+                items: [
+                    { id: "VII-1", title: "Contractor's main tools & equipment", description: "List Kendaraan", status: "Close", pic: "Thalia", kinerja: "TRUE", performance: "100", checked: true },
+                    { id: "VII-2", title: "Contractor's supporting tools & equipment", description: "List Laptop", status: "Close", pic: "Tirto", kinerja: "TRUE", performance: "100", checked: true }
+                ]
+            },
+            {
+                part: "Part VIII - Kepatuhan",
+                items: [
+                    { id: "VIII-1", title: "TKDN Self Assessment", description: "Lampiran TKDN", status: "Close", pic: "Pak Nova", kinerja: "FALSE", performance: "80" },
+                    { id: "VIII-2", title: "Comply business ethic and code of conduct", description: "TKO code of conduct", status: "Close", pic: "System", kinerja: "TRUE", performance: "100", checked: true },
+                    { id: "VIII-3", title: "Pay or adjust the worker salary to minimum", description: "slip gaji", status: "Close", pic: "HC", kinerja: "TRUE", performance: "100", checked: true },
+                    { id: "VIII-4", title: "Have pay scale and salary structure", description: "struktur skala upah", status: "Close", pic: "HC", kinerja: "TRUE", performance: "100", checked: true },
+                    { id: "VIII-5", title: "Apply yearly salary increase escalation & adjustment", description: "kenaikan upah", status: "Close", pic: "N#a", kinerja: "TRUE", performance: "100", checked: true },
+                    { id: "VIII-6", title: "Pay the salary and/or other benefits stated", description: "Slip gaji (Mutasi gaji)", status: "Close", pic: "HC", kinerja: "TRUE", performance: "100", checked: true },
+                    { id: "VIII-7", title: "Pay overtime to workers on-time", description: "Slip gaji yang ada lembur", status: "Close", pic: "HC", kinerja: "TRUE", performance: "100", checked: true },
+                    { id: "VIII-8", title: "Pay official religious holiday compensation", description: "Slip Gaji THR", status: "Close", pic: "HC", kinerja: "TRUE", performance: "100", checked: true },
+                    { id: "VIII-9", title: "Pay end of service payment on time", description: "Slip Gaji Tunjangan Akhir kontrak", status: "Close", pic: "N#a", kinerja: "TRUE", performance: "100", checked: true },
+                    { id: "VIII-10", title: "Pay BPJS/Jamsostek/Askes monthly premium", description: "pembayaran BPJS Kesehatan dan Ket", status: "Close", pic: "HC", kinerja: "TRUE", performance: "100", checked: true }
+                ]
+            }
+        ];
+
+        // Initialize with data from localStorage or default
+        let trackingData = JSON.parse(localStorage.getItem('f100Tracking')) || f100Data;
+        let totalItems = 0;
+        let completedItems = 0;
+
+        // Calculate initial stats
+        function calculateStats() {
+            totalItems = 0;
+            completedItems = 0;
+
+            trackingData.forEach(part => {
+                part.items.forEach(item => {
+                    totalItems++;
+                    if (item.checked) completedItems++;
+                });
+            });
+
+            const percentage = Math.round((completedItems / totalItems) * 100);
+
+            // Update UI
+            document.getElementById('total-items').textContent = totalItems;
+            document.getElementById('total-completed').textContent = completedItems;
+            document.getElementById('percentage-complete').textContent = percentage + '%';
+
+            // Update progress bar
+            const progressBar = document.getElementById('main-progress-bar');
+            const progressNumber = document.getElementById('main-progress-number');
+            const progressText = document.getElementById('main-progress-text');
+
+            progressBar.style.width = percentage + '%';
+            progressNumber.textContent = percentage + '%';
+            progressText.textContent = percentage + '%';
+
+            // Update completion message
+            const completionMsg = document.getElementById('completion-message');
+            if (percentage === 100) {
+                completionMsg.classList.add('show');
+            } else {
+                completionMsg.classList.remove('show');
+            }
+
+            // Update last updated time
+            const now = new Date();
+            document.getElementById('last-updated').textContent =
+                now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        // Render F100 data
+        function renderF100() {
+            const container = document.getElementById('f100-container');
+            container.innerHTML = '';
+
+            trackingData.forEach(part => {
+                const partCard = document.createElement('div');
+                partCard.className = 'tracking-card';
+                partCard.dataset.part = part.part.toLowerCase().replace(' ', '-');
+
+                // Calculate part progress
+                const partItems = part.items.length;
+                const partCompleted = part.items.filter(item => item.checked).length;
+                const partPercentage = Math.round((partCompleted / partItems) * 100);
+
+                partCard.innerHTML = `
+                    <div class="card-header">
+                        <div>
+                            <span class="part-badge">${part.part}</span>
+                            <span class="ms-3 text-muted">${partCompleted}/${partItems} completed</span>
+                        </div>
+                        <div>
+                            <span class="status-badge badge-${partCompleted === partItems ? 'close' : 'open'}">
+                                ${partPercentage}% Complete
+                            </span>
+                        </div>
+                    </div>
+                    <div class="part-progress mb-3">
+                        <div class="progress-bar-container" style="height: 12px;">
+                            <div class="progress-bar" style="width: ${partPercentage}%"></div>
+                        </div>
+                    </div>
+                    <div class="part-items">
+                        ${part.items.map(item => `
+                            <div class="task-item ${item.checked ? 'completed' : ''}" data-id="${item.id}" data-status="${item.status.toLowerCase()}">
+                                <input type="checkbox" class="task-checkbox" ${item.checked ? 'checked' : ''} 
+                                       data-part="${part.part}" data-item="${item.id}">
+                                <div class="task-content">
+                                    <div class="task-title">${item.title}</div>
+                                    <div class="task-desc">${item.description}</div>
+                                    <div class="task-meta">
+                                        <span class="task-pic"><i class="fas fa-user-circle me-1"></i> PIC: ${item.pic}</span>
+                                        <span class="task-performance"><i class="fas fa-chart-line me-1"></i> Performance: ${item.performance}%</span>
+                                        <span class="task-kinerja ${item.kinerja === 'TRUE' ? 'text-success' : 'text-warning'}">
+                                            <i class="fas ${item.kinerja === 'TRUE' ? 'fa-check-circle' : 'fa-exclamation-circle'} me-1"></i> 
+                                            Kinerja: ${item.kinerja}
+                                        </span>
+                                        <span class="status-badge ${item.status === 'Close' ? 'badge-close' : 'badge-open'}">
+                                            ${item.status}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+
+                container.appendChild(partCard);
+            });
+
+            // Add event listeners to checkboxes
+            document.querySelectorAll('.task-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', function () {
+                    const partName = this.dataset.part;
+                    const itemId = this.dataset.item;
+
+                    // Find and update the item
+                    const part = trackingData.find(p => p.part === partName);
+                    if (part) {
+                        const item = part.items.find(i => i.id === itemId);
+                        if (item) {
+                            item.checked = this.checked;
+
+                            // Update status based on checkbox
+                            item.status = this.checked ? 'Close' : 'Open';
+
+                            // Save to localStorage
+                            localStorage.setItem('f100Tracking', JSON.stringify(trackingData));
+
+                            // Recalculate and render
+                            calculateStats();
+                            renderF100();
+                        }
+                    }
+                });
+            });
+        }
+
+        // Filter functionality
+        document.querySelectorAll('.filter-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                // Update active button
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                this.classList.add('active');
+
+                const filter = this.dataset.filter;
+
+                // Show/hide cards based on filter
+                document.querySelectorAll('.tracking-card').forEach(card => {
+                    if (filter === 'all') {
+                        card.style.display = 'block';
+                    } else if (filter === 'open' || filter === 'close') {
+                        // Show cards with matching status items
+                        const hasMatchingItems = Array.from(card.querySelectorAll('.task-item'))
+                            .some(item => {
+                                if (filter === 'open') {
+                                    const status = item.dataset.status;
+                                    const checkbox = item.querySelector('.task-checkbox');
+                                    return status === 'open' && !checkbox.checked;
+                                } else {
+                                    const checkbox = item.querySelector('.task-checkbox');
+                                    return checkbox.checked;
+                                }
+                            });
+                        card.style.display = hasMatchingItems ? 'block' : 'none';
+                    } else {
+                        // Filter by part
+                        const partName = card.dataset.part;
+                        card.style.display = partName.includes(filter) ? 'block' : 'none';
+                    }
+                });
+            });
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function () {
+            calculateStats();
+            renderF100();
+
+            // Auto-save every 5 minutes
+            setInterval(() => {
+                localStorage.setItem('f100Tracking', JSON.stringify(trackingData));
+                console.log('Auto-saved tracking data');
+            }, 5 * 60 * 1000);
+
+            // Add reset button functionality (optional)
+            const resetButton = document.createElement('button');
+            resetButton.className = 'btn btn-outline-danger mt-3';
+            resetButton.innerHTML = '<i class="fas fa-redo me-2"></i> Reset All';
+            resetButton.onclick = function () {
+                if (confirm('Are you sure you want to reset all progress?')) {
+                    localStorage.removeItem('f100Tracking');
+                    trackingData = f100Data;
+                    calculateStats();
+                    renderF100();
+                }
+            };
+            document.querySelector('.legend').after(resetButton);
+        });
+    </script>
+</body>
+
+</html>
