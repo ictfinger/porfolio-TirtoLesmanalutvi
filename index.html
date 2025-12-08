@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>Tirto Lesmana Lutvi - Full Stack Developer & UI/UX Designer</title>
 
     <!-- SEO Meta Tags -->
@@ -27,6 +27,8 @@
         rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- AOS (Animate On Scroll) -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
@@ -36,7 +38,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top py-3"
         style="background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px);">
         <div class="container">
-            <a class="navbar-brand fw-bold fs-3" href="index.html">
+            <a class="navbar-brand fw-bold fs-4 fs-lg-3" href="index.html">
                 <i class="fas fa-code me-2"></i>Tirto Lesmana Lutvi
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -63,10 +65,10 @@
                         <a class="nav-link" href="#contact">Contact</a>
                     </li>
                     <li class="nav-item">
-                        <a class="btn btn-primary rounded-pill px-4"
+                        <a class="btn btn-primary rounded-pill px-3 px-md-4"
                             href="https://wa.me/6281363364465?text=Halo,%20saya%20tertarik%20dengan%20jasa%20pembuatan%20website%20Anda"
                             target="_blank">
-                            <i class="fab fa-whatsapp me-2"></i>Contact Now
+                            <i class="fab fa-whatsapp me-2"></i><span class="d-none d-md-inline">Contact Now</span>
                         </a>
                     </li>
                 </ul>
@@ -79,61 +81,61 @@
         <div class="hero-bg-gradient"></div>
         <div class="container">
             <div class="row align-items-center g-5">
-                <div class="col-lg-6">
+                <div class="col-lg-6 order-2 order-lg-1">
                     <div class="mb-4">
                         <span
-                            class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25 rounded-pill px-4 py-2 mb-3">
+                            class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25 rounded-pill px-3 px-md-4 py-2 mb-3">
                             <i class="fas fa-code me-2"></i>Full Stack Developer
                         </span>
                     </div>
-                    <h1 class="display-1 fw-bold mb-4">
-                        Creating Digital <br>
-                        <span class="text-gradient">Experiences</span> That <br>
+                    <h1 class="display-4 display-lg-1 fw-bold mb-4">
+                        Creating Digital <br class="d-none d-lg-block">
+                        <span class="text-gradient">Experiences</span> That <br class="d-none d-lg-block">
                         <span class="text-primary">Inspire</span>
                     </h1>
                     <p class="lead text-muted mb-5">
                         I blend cutting-edge technology with elegant design to build digital solutions
                         that drive business growth and deliver exceptional user experiences.
                     </p>
-                    <div class="d-flex flex-wrap gap-3">
-                        <a href="#portfolio" class="btn btn-primary btn-lg rounded-pill px-5">
+                    <div class="d-flex flex-wrap gap-3 mb-5 mb-lg-0">
+                        <a href="#portfolio" class="btn btn-primary btn-lg rounded-pill px-4 px-md-5">
                             <i class="fas fa-eye me-2"></i>View My Work
                         </a>
-                        <a href="#contact" class="btn btn-outline-light btn-lg rounded-pill px-5">
+                        <a href="#contact" class="btn btn-outline-light btn-lg rounded-pill px-4 px-md-5">
                             <i class="fas fa-envelope me-2"></i>Get In Touch
                         </a>
                     </div>
-                    <div class="mt-5 d-flex align-items-center gap-4">
+                    <div class="mt-5 d-flex flex-wrap align-items-center gap-4">
                         <div class="d-flex align-items-center">
                             <div class="stats-number text-primary fw-bold fs-3">5+</div>
                             <div class="ms-2 text-muted">Years Experience</div>
                         </div>
-                        <div class="vr"></div>
+                        <div class="vr d-none d-md-block"></div>
                         <div class="d-flex align-items-center">
                             <div class="stats-number text-primary fw-bold fs-3">50+</div>
                             <div class="ms-2 text-muted">Projects Completed</div>
                         </div>
-                        <div class="vr"></div>
+                        <div class="vr d-none d-md-block"></div>
                         <div class="d-flex align-items-center">
                             <div class="stats-number text-primary fw-bold fs-3">100%</div>
                             <div class="ms-2 text-muted">Client Satisfaction</div>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6">
-                    <div class="position-relative">
-                        <div class="hero-img-wrapper">
+                <div class="col-lg-6 order-1 order-lg-2 mb-5 mb-lg-0">
+                    <div class="position-relative" data-aos="fade-up" data-aos-delay="200">
+                        <div class="hero-img-wrapper mx-auto" style="max-width: 600px;">
                             <img src="assets/images/hero.png" alt="Hero Image"
-                                class="img-fluid rounded-4 shadow-lg position-relative z-2">
+                                class="img-fluid rounded-4 shadow-lg position-relative z-2 w-100">
                             <div class="hero-img-glow"></div>
                         </div>
-                        <div class="floating-element floating-element-1">
+                        <div class="floating-element floating-element-1 d-none d-lg-block">
                             <i class="fab fa-react text-primary"></i>
                         </div>
-                        <div class="floating-element floating-element-2">
+                        <div class="floating-element floating-element-2 d-none d-lg-block">
                             <i class="fab fa-js text-warning"></i>
                         </div>
-                        <div class="floating-element floating-element-3">
+                        <div class="floating-element floating-element-3 d-none d-lg-block">
                             <i class="fab fa-node-js text-success"></i>
                         </div>
                     </div>
@@ -146,18 +148,19 @@
     <section id="about" class="py-5">
         <div class="container py-5">
             <div class="row align-items-center g-5">
-                <div class="col-lg-6">
+                <div class="col-lg-6 mb-5 mb-lg-0">
                     <div class="position-relative">
-                        <img src="assets/images/profile.jpg" alt="Profile" class="img-fluid rounded-4 shadow-lg">
+                        <img src="assets/images/profile.jpg" alt="Profile" class="img-fluid rounded-4 shadow-lg w-100"
+                            data-aos="fade-right">
                         <div class="about-experience-badge">
                             <div class="experience-number">5+</div>
                             <div class="experience-text">Years<br>Experience</div>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-6" data-aos="fade-left" data-aos-delay="200">
                     <span
-                        class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25 rounded-pill px-4 py-2 mb-3">
+                        class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25 rounded-pill px-3 px-md-4 py-2 mb-3">
                         About Me
                     </span>
                     <h2 class="display-5 fw-bold mb-4">
@@ -172,7 +175,7 @@
                     <div class="skills-section mb-5">
                         <h4 class="h5 mb-4">Core Skills</h4>
                         <div class="row g-3">
-                            <div class="col-6">
+                            <div class="col-6 col-md-6">
                                 <div class="skill-item d-flex align-items-center">
                                     <div class="skill-icon">
                                         <i class="fas fa-code text-primary"></i>
@@ -183,7 +186,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-6">
+                            <div class="col-6 col-md-6">
                                 <div class="skill-item d-flex align-items-center">
                                     <div class="skill-icon">
                                         <i class="fas fa-paint-brush text-primary"></i>
@@ -194,7 +197,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-6">
+                            <div class="col-6 col-md-6">
                                 <div class="skill-item d-flex align-items-center">
                                     <div class="skill-icon">
                                         <i class="fas fa-mobile-alt text-primary"></i>
@@ -205,7 +208,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-6">
+                            <div class="col-6 col-md-6">
                                 <div class="skill-item d-flex align-items-center">
                                     <div class="skill-icon">
                                         <i class="fas fa-chart-line text-primary"></i>
@@ -240,9 +243,9 @@
     <!-- Services Section -->
     <section id="services" class="py-5">
         <div class="container py-5">
-            <div class="text-center mb-5">
+            <div class="text-center mb-5" data-aos="fade-up">
                 <span
-                    class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25 rounded-pill px-4 py-2 mb-3">
+                    class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25 rounded-pill px-3 px-md-4 py-2 mb-3">
                     Services
                 </span>
                 <h2 class="display-5 fw-bold mb-3">What I <span class="text-gradient">Offer</span></h2>
@@ -252,8 +255,8 @@
             </div>
 
             <div class="row g-4">
-                <div class="col-md-6 col-lg-4">
-                    <div class="service-card">
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="service-card h-100">
                         <div class="service-icon-wrapper">
                             <i class="fas fa-code"></i>
                         </div>
@@ -269,8 +272,8 @@
                         </ul>
                     </div>
                 </div>
-                <div class="col-md-6 col-lg-4">
-                    <div class="service-card">
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="service-card h-100">
                         <div class="service-icon-wrapper">
                             <i class="fas fa-paint-brush"></i>
                         </div>
@@ -286,8 +289,8 @@
                         </ul>
                     </div>
                 </div>
-                <div class="col-md-6 col-lg-4">
-                    <div class="service-card">
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="service-card h-100">
                         <div class="service-icon-wrapper">
                             <i class="fas fa-mobile-alt"></i>
                         </div>
@@ -310,9 +313,9 @@
     <!-- Portfolio Section -->
     <section id="portfolio" class="py-5">
         <div class="container py-5">
-            <div class="text-center mb-5">
+            <div class="text-center mb-5" data-aos="fade-up">
                 <span
-                    class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25 rounded-pill px-4 py-2 mb-3">
+                    class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25 rounded-pill px-3 px-md-4 py-2 mb-3">
                     Portfolio
                 </span>
                 <h2 class="display-5 fw-bold mb-3">Featured <span class="text-gradient">Projects</span></h2>
@@ -338,7 +341,7 @@
             <div class="row justify-content-center">
                 <div class="col-lg-8 text-center">
                     <span
-                        class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25 rounded-pill px-4 py-2 mb-3">
+                        class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25 rounded-pill px-3 px-md-4 py-2 mb-3">
                         Contact
                     </span>
                     <h2 class="display-5 fw-bold mb-3">Let's Build <span class="text-gradient">Something</span> Amazing
@@ -349,17 +352,18 @@
                     </p>
 
                     <div class="row g-4 mb-5">
-                        <div class="col-md-4">
-                            <div class="contact-info">
+                        <div class="col-md-4 mb-4 mb-md-0" data-aos="fade-up" data-aos-delay="100">
+                            <div class="contact-info h-100">
                                 <div class="contact-icon">
                                     <i class="fas fa-envelope"></i>
                                 </div>
                                 <h5>Email</h5>
-                                <a href="mailto:hello@example.com" class="text-muted">tirtolesmanalutvi@gmail.com</a>
+                                <a href="mailto:tirtolesmanalutvi@gmail.com"
+                                    class="text-muted">tirtolesmanalutvi@gmail.com</a>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="contact-info">
+                        <div class="col-md-4 mb-4 mb-md-0" data-aos="fade-up" data-aos-delay="200">
+                            <div class="contact-info h-100">
                                 <div class="contact-icon">
                                     <i class="fas fa-phone"></i>
                                 </div>
@@ -367,8 +371,8 @@
                                 <a href="tel:+6281363364465" class="text-muted">+62 813 6336 4465</a>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="contact-info">
+                        <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                            <div class="contact-info h-100">
                                 <div class="contact-icon">
                                     <i class="fab fa-whatsapp"></i>
                                 </div>
@@ -377,39 +381,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!--<form class="row g-4 mt-4 text-start" id="contact-form">
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="name" placeholder="Your Name" required>
-                                <label for="name">Your Name</label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="email" class="form-control" id="email" placeholder="Your Email" required>
-                                <label for="email">Your Email</label>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="subject" placeholder="Subject" required>
-                                <label for="subject">Subject</label>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-floating">
-                                <textarea class="form-control" id="message" placeholder="Message" style="height: 150px;"
-                                    required></textarea>
-                                <label for="message">Message</label>
-                            </div>
-                        </div>
-                        <div class="col-12 text-center mt-4">
-                            <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5">
-                                <i class="fas fa-paper-plane me-2"></i>Send Message
-                            </button>
-                        </div>
-                    </form>-->
                 </div>
             </div>
         </div>
@@ -449,7 +420,7 @@
                     </div>
                 </div>
                 <div class="col-lg-4">
-                    <div class="text-lg-end">
+                    <div class="text-lg-end text-center text-lg-start">
                         <a href="https://wa.me/6281363364465" target="_blank"
                             class="btn btn-outline-light rounded-pill px-4 mb-3">
                             <i class="fab fa-whatsapp me-2"></i>Start a Project
@@ -463,12 +434,27 @@
         </div>
     </footer>
 
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="btn btn-primary rounded-circle position-fixed bottom-0 end-0 m-4 p-3 shadow-lg"
+        style="z-index: 1000; display: none;">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
     <!-- Bootstrap 5.3 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- AOS (Animate On Scroll) -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <!-- Custom JS -->
     <script src="assets/js/script.js"></script>
     <script src="assets/js/github_api.js"></script>
     <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
+        });
+
         // Set current year
         document.getElementById('current-year').textContent = new Date().getFullYear();
 
@@ -486,13 +472,46 @@
             });
         });
 
-        // Form submission
-        document.getElementById('contact-form').addEventListener('submit', function (e) {
-            e.preventDefault();
-            // Add your form submission logic here
-            alert('Thank you for your message! I will get back to you soon.');
-            this.reset();
+        // Back to Top Button
+        const backToTopButton = document.getElementById('backToTop');
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopButton.style.display = 'block';
+            } else {
+                backToTopButton.style.display = 'none';
+            }
         });
+
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Responsive text adjustments
+        function adjustFontSizes() {
+            const screenWidth = window.innerWidth;
+            const heroTitle = document.querySelector('#home h1');
+
+            if (screenWidth < 768) {
+                heroTitle.classList.remove('display-4', 'display-lg-1');
+                heroTitle.classList.add('display-5');
+            } else if (screenWidth < 992) {
+                heroTitle.classList.remove('display-5', 'display-lg-1');
+                heroTitle.classList.add('display-4');
+            } else {
+                heroTitle.classList.remove('display-4', 'display-5');
+                heroTitle.classList.add('display-lg-1');
+            }
+        }
+
+        // Initial adjustment
+        adjustFontSizes();
+
+        // Adjust on resize
+        window.addEventListener('resize', adjustFontSizes);
     </script>
 </body>
 
