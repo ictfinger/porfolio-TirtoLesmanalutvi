@@ -946,6 +946,11 @@
             color: #065f46;
         }
 
+        .status-rejected {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
         .employee-info {
             display: flex;
             align-items: center;
@@ -974,6 +979,89 @@
         .employee-details p {
             font-size: 12px;
             color: var(--text-secondary);
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .btn-block {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            background: #f1f5f9;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .filter-btn:hover:not(.active) {
+            background: #e2e8f0;
+        }
+
+        .log-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .log-title h3 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .log-title p {
+            color: var(--text-secondary);
+        }
+
+        .log-filters {
+            display: flex;
+            align-items: center;
+            gap: 16px;
         }
 
         /* Modal */
@@ -1048,6 +1136,19 @@
             background-color: #f1f5f9;
         }
 
+        .modal-body {
+            padding: 24px;
+        }
+
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+        }
+
         /* Responsive */
         @media (max-width: 1200px) {
             .stats-grid {
@@ -1097,6 +1198,17 @@
 
             .leave-stats {
                 grid-template-columns: 1fr;
+            }
+
+            .log-header {
+                flex-direction: column;
+                gap: 16px;
+                align-items: flex-start;
+            }
+
+            .log-filters {
+                width: 100%;
+                justify-content: space-between;
             }
         }
 
@@ -1470,7 +1582,7 @@
                 <div class="recent-activity">
                     <div class="activity-header">
                         <h3>Aktivitas Terbaru</h3>
-                        <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 12px;">
+                        <button class="btn btn-secondary" id="viewAllActivitiesBtn">
                             Lihat Semua
                         </button>
                     </div>
@@ -1482,7 +1594,7 @@
 
             <!-- Employee Attendance Page -->
             <div id="employeeAttendance" class="employee-page">
-                <div class="log-header" style="margin-bottom: 24px;">
+                <div class="log-header">
                     <div class="log-title">
                         <h3>Riwayat Kehadiran</h3>
                         <p>Data kehadiran dan absensi Anda</p>
@@ -1583,7 +1695,7 @@
 
             <!-- Employee Leave Page -->
             <div id="employeeLeave" class="employee-page">
-                <div class="log-header" style="margin-bottom: 24px;">
+                <div class="log-header">
                     <div class="log-title">
                         <h3>Manajemen Cuti & Izin</h3>
                         <p>Kelola pengajuan cuti dan izin Anda</p>
@@ -1627,12 +1739,170 @@
                                 <th>Durasi</th>
                                 <th>Status</th>
                                 <th>Keterangan</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             <!-- Data will be loaded here -->
                         </tbody>
                     </table>
+                </div>
+            </div>
+
+            <!-- Employee Overtime Page -->
+            <div id="employeeOvertime" class="employee-page">
+                <div class="log-header">
+                    <div class="log-title">
+                        <h3>Pengajuan Lembur</h3>
+                        <p>Kelola pengajuan lembur Anda</p>
+                    </div>
+                    <div class="log-filters">
+                        <button class="btn btn-primary" id="applyOvertimeBtn">
+                            <i class="fas fa-plus"></i> Ajukan Lembur
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Overtime Summary -->
+                <div class="dashboard-cards">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <div class="card-title">Total Jam Lembur</div>
+                                <div class="card-value" id="totalOvertimeHours">8.5</div>
+                            </div>
+                            <div class="card-icon icon-overtime">
+                                <i class="fas fa-business-time"></i>
+                            </div>
+                        </div>
+                        <div class="card-change">
+                            <span>Bulan ini</span>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <div class="card-title">Pengajuan Pending</div>
+                                <div class="card-value" id="pendingOvertimeCount">2</div>
+                            </div>
+                            <div class="card-icon icon-overtime">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                        </div>
+                        <div class="card-change">
+                            <span>Menunggu persetujuan</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Overtime Table -->
+                <div class="table-container" style="margin-top: 24px;">
+                    <table class="data-table" id="employeeOvertimeTable">
+                        <thead>
+                            <tr>
+                                <th>Tanggal</th>
+                                <th>Durasi</th>
+                                <th>Alasan</th>
+                                <th>Status</th>
+                                <th>Disetujui Oleh</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Employee Profile Page -->
+            <div id="employeeProfile" class="employee-page">
+                <div class="log-header">
+                    <div class="log-title">
+                        <h3>Profil Karyawan</h3>
+                        <p>Informasi dan data pribadi Anda</p>
+                    </div>
+                    <div class="log-filters">
+                        <button class="btn btn-secondary" id="editProfileBtn">
+                            <i class="fas fa-edit"></i> Edit Profil
+                        </button>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 24px; margin-top: 24px;">
+                    <!-- Profile Info -->
+                    <div class="card">
+                        <div style="text-align: center;">
+                            <div class="user-avatar"
+                                style="width: 100px; height: 100px; font-size: 36px; margin: 0 auto 16px;">
+                                JD
+                            </div>
+                            <h3 id="profileName">John Doe</h3>
+                            <p id="profilePosition">Software Developer</p>
+                        </div>
+
+                        <div style="margin-top: 24px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                                <span>ID Karyawan</span>
+                                <strong id="profileId">EMP001</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                                <span>Departemen</span>
+                                <strong id="profileDepartment">IT</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                                <span>Email</span>
+                                <strong id="profileEmail">john.doe@company.com</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                                <span>Shift Kerja</span>
+                                <strong id="profileShift">08:00 - 17:00</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                                <span>Bergabung</span>
+                                <strong id="profileJoinDate">15 Jan 2023</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Info -->
+                    <div>
+                        <div class="card" style="margin-bottom: 16px;">
+                            <h4 style="margin-bottom: 16px;">Informasi Kontak</h4>
+                            <div class="form-group">
+                                <label class="form-label">No. Telepon</label>
+                                <input type="text" class="form-control" id="profilePhone" value="081234567890" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Alamat</label>
+                                <textarea class="form-control" id="profileAddress" rows="3"
+                                    disabled>Jl. Contoh No. 123, Jakarta</textarea>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h4 style="margin-bottom: 16px;">Ubah Password</h4>
+                            <div class="form-group">
+                                <label class="form-label">Password Saat Ini</label>
+                                <input type="password" class="form-control" id="currentPassword"
+                                    placeholder="Masukkan password saat ini">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Password Baru</label>
+                                <input type="password" class="form-control" id="newPassword"
+                                    placeholder="Masukkan password baru">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Konfirmasi Password Baru</label>
+                                <input type="password" class="form-control" id="confirmPassword"
+                                    placeholder="Konfirmasi password baru">
+                            </div>
+                            <button class="btn btn-primary" id="changePasswordBtn">
+                                <i class="fas fa-key"></i> Ubah Password
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1683,6 +1953,9 @@
                                 <h3>Statistik Kehadiran Bulanan</h3>
                                 <p>Perbandingan kehadiran 6 bulan terakhir</p>
                             </div>
+                            <button class="btn btn-secondary" id="refreshChartBtn">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
                         </div>
                         <div class="chart-container">
                             <canvas id="adminAttendanceChart"></canvas>
@@ -1706,7 +1979,7 @@
                 <div class="recent-activity">
                     <div class="activity-header">
                         <h3>Kehadiran Terbaru</h3>
-                        <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 12px;">
+                        <button class="btn btn-secondary" id="viewAllAttendanceBtn">
                             Lihat Semua
                         </button>
                     </div>
@@ -1782,7 +2055,7 @@
 
             <!-- Employee Management Page -->
             <div id="employeeManagement" class="admin-page">
-                <div class="log-header" style="margin-bottom: 24px;">
+                <div class="log-header">
                     <div class="log-title">
                         <h3>Manajemen Karyawan</h3>
                         <p>Kelola data dan informasi karyawan</p>
@@ -1818,7 +2091,7 @@
 
             <!-- Attendance Management Page -->
             <div id="attendanceManagement" class="admin-page">
-                <div class="log-header" style="margin-bottom: 24px;">
+                <div class="log-header">
                     <div class="log-title">
                         <h3>Manajemen Kehadiran</h3>
                         <p>Monitor dan kelola kehadiran karyawan</p>
@@ -1880,7 +2153,105 @@
                 </div>
             </div>
 
-            <!-- Other pages can be added similarly... -->
+            <!-- Leave Management Page -->
+            <div id="leaveManagement" class="admin-page">
+                <div class="log-header">
+                    <div class="log-title">
+                        <h3>Manajemen Cuti & Izin</h3>
+                        <p>Kelola pengajuan cuti karyawan</p>
+                    </div>
+                    <div class="log-filters">
+                        <button class="btn btn-secondary" id="exportLeaveBtn">
+                            <i class="fas fa-file-export"></i> Export
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Leave Requests Table -->
+                <div class="table-container">
+                    <table class="data-table" id="adminLeaveTable">
+                        <thead>
+                            <tr>
+                                <th>Karyawan</th>
+                                <th>Jenis Cuti</th>
+                                <th>Tanggal Mulai</th>
+                                <th>Tanggal Selesai</th>
+                                <th>Durasi</th>
+                                <th>Alasan</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Other admin pages (simplified) -->
+            <div id="locations" class="admin-page">
+                <div class="log-header">
+                    <div class="log-title">
+                        <h3>Lokasi Kerja</h3>
+                        <p>Kelola lokasi kerja perusahaan</p>
+                    </div>
+                    <div class="log-filters">
+                        <button class="btn btn-primary" id="addLocationBtn">
+                            <i class="fas fa-plus"></i> Tambah Lokasi
+                        </button>
+                    </div>
+                </div>
+                <div class="card">
+                    <p>Halaman lokasi kerja - Dalam pengembangan</p>
+                </div>
+            </div>
+
+            <div id="shifts" class="admin-page">
+                <div class="log-header">
+                    <div class="log-title">
+                        <h3>Shift Kerja</h3>
+                        <p>Kelola jadwal shift karyawan</p>
+                    </div>
+                    <div class="log-filters">
+                        <button class="btn btn-primary" id="addShiftBtn">
+                            <i class="fas fa-plus"></i> Tambah Shift
+                        </button>
+                    </div>
+                </div>
+                <div class="card">
+                    <p>Halaman shift kerja - Dalam pengembangan</p>
+                </div>
+            </div>
+
+            <div id="reports" class="admin-page">
+                <div class="log-header">
+                    <div class="log-title">
+                        <h3>Laporan HR</h3>
+                        <p>Generate laporan kehadiran dan HR</p>
+                    </div>
+                    <div class="log-filters">
+                        <button class="btn btn-primary" id="generateReportBtn">
+                            <i class="fas fa-download"></i> Generate Laporan
+                        </button>
+                    </div>
+                </div>
+                <div class="card">
+                    <p>Halaman laporan - Dalam pengembangan</p>
+                </div>
+            </div>
+
+            <div id="settings" class="admin-page">
+                <div class="log-header">
+                    <div class="log-title">
+                        <h3>Pengaturan Sistem</h3>
+                        <p>Konfigurasi sistem TalentaHR</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <p>Halaman pengaturan - Dalam pengembangan</p>
+                </div>
+            </div>
 
         </div>
     </div>
@@ -1897,9 +2268,10 @@
                     <label class="form-label">Lokasi</label>
                     <select class="form-control form-select" id="checkInLocation">
                         <option value="">Pilih lokasi...</option>
-                        <option value="office">Kantor Pusat</option>
-                        <option value="warehouse">Gudang Utama</option>
-                        <option value="site">Site Proyek</option>
+                        <option value="Kantor Pusat">Kantor Pusat</option>
+                        <option value="Gudang Utama">Gudang Utama</option>
+                        <option value="Site Proyek">Site Proyek</option>
+                        <option value="WFH">Work From Home</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -2018,11 +2390,48 @@
         </div>
     </div>
 
+    <!-- Overtime Modal -->
+    <div class="modal" id="overtimeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Pengajuan Lembur</h3>
+                <button class="modal-close" id="closeOvertimeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="overtimeForm">
+                    <div class="form-group">
+                        <label class="form-label">Tanggal Lembur</label>
+                        <input type="date" class="form-control" id="overtimeDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Durasi (jam)</label>
+                        <input type="number" class="form-control" id="overtimeDuration" min="1" max="12" step="0.5"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Alasan Lembur</label>
+                        <textarea class="form-control" id="overtimeReason" rows="3" required
+                            placeholder="Jelaskan alasan lembur..."></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> Ajukan Lembur
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="cancelOvertimeBtn">
+                            Batal
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Data storage
         let employees = JSON.parse(localStorage.getItem('talenta_employees')) || [];
         let attendance = JSON.parse(localStorage.getItem('talenta_attendance')) || [];
         let leaves = JSON.parse(localStorage.getItem('talenta_leaves')) || [];
+        let overtimeRequests = JSON.parse(localStorage.getItem('talenta_overtime')) || [];
         let currentUser = JSON.parse(localStorage.getItem('talenta_currentUser')) || null;
         let isAdmin = false;
 
@@ -2136,11 +2545,10 @@
         const checkInModal = document.getElementById('checkInModal');
         const applyLeaveModal = document.getElementById('applyLeaveModal');
         const addEmployeeModal = document.getElementById('addEmployeeModal');
-        const closeCheckInModal = document.getElementById('closeCheckInModal');
-        const closeLeaveModal = document.getElementById('closeLeaveModal');
-        const closeEmployeeModal = document.getElementById('closeEmployeeModal');
-        const cancelLeaveBtn = document.getElementById('cancelLeaveBtn');
-        const cancelEmployeeBtn = document.getElementById('cancelEmployeeBtn');
+        const overtimeModal = document.getElementById('overtimeModal');
+
+        // Notification button
+        const notificationBtn = document.getElementById('notificationBtn');
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function () {
@@ -2249,7 +2657,7 @@
                 });
             });
 
-            // Quick actions
+            // Quick actions (Employee Dashboard)
             document.getElementById('quickCheckIn')?.addEventListener('click', function () {
                 openCheckInModal('checkin');
             });
@@ -2262,11 +2670,21 @@
                 openApplyLeaveModal();
             });
 
+            document.getElementById('quickOvertime')?.addEventListener('click', function () {
+                openApplyOvertimeModal();
+            });
+
+            // Apply leave button
             document.getElementById('applyLeaveBtn')?.addEventListener('click', function () {
                 openApplyLeaveModal();
             });
 
-            // Check-in/out button
+            // Apply overtime button
+            document.getElementById('applyOvertimeBtn')?.addEventListener('click', function () {
+                openApplyOvertimeModal();
+            });
+
+            // Check-in/out button in widget
             document.getElementById('checkInOutBtn')?.addEventListener('click', function () {
                 if (this.textContent.includes('Check-in')) {
                     openCheckInModal('checkin');
@@ -2281,24 +2699,33 @@
             });
 
             // Modal close buttons
-            closeCheckInModal.addEventListener('click', function () {
+            document.getElementById('closeCheckInModal')?.addEventListener('click', function () {
                 checkInModal.classList.remove('active');
             });
 
-            closeLeaveModal.addEventListener('click', function () {
+            document.getElementById('closeLeaveModal')?.addEventListener('click', function () {
                 applyLeaveModal.classList.remove('active');
             });
 
-            closeEmployeeModal.addEventListener('click', function () {
+            document.getElementById('closeEmployeeModal')?.addEventListener('click', function () {
                 addEmployeeModal.classList.remove('active');
             });
 
-            cancelLeaveBtn.addEventListener('click', function () {
+            document.getElementById('closeOvertimeModal')?.addEventListener('click', function () {
+                overtimeModal.classList.remove('active');
+            });
+
+            // Cancel buttons
+            document.getElementById('cancelLeaveBtn')?.addEventListener('click', function () {
                 applyLeaveModal.classList.remove('active');
             });
 
-            cancelEmployeeBtn.addEventListener('click', function () {
+            document.getElementById('cancelEmployeeBtn')?.addEventListener('click', function () {
                 addEmployeeModal.classList.remove('active');
+            });
+
+            document.getElementById('cancelOvertimeBtn')?.addEventListener('click', function () {
+                overtimeModal.classList.remove('active');
             });
 
             // Submit check-in
@@ -2322,6 +2749,12 @@
                 applyLeave();
             });
 
+            // Submit overtime form
+            document.getElementById('overtimeForm')?.addEventListener('submit', function (e) {
+                e.preventDefault();
+                applyOvertime();
+            });
+
             // Submit new employee form
             document.getElementById('newEmployeeForm')?.addEventListener('submit', function (e) {
                 e.preventDefault();
@@ -2338,7 +2771,8 @@
                     // Reload data based on filter
                     const page = document.querySelector('.employee-page.active')?.id || document.querySelector('.admin-page.active')?.id;
                     if (page) {
-                        loadPageData(page.replace('employee', '').replace('admin', '').replace('Management', ''));
+                        const pageName = page.replace('employee', '').replace('admin', '').replace('Management', '');
+                        loadPageData(pageName);
                     }
                 });
             });
@@ -2346,6 +2780,66 @@
             // Filter attendance (admin)
             document.getElementById('filterAttendanceBtn')?.addEventListener('click', function () {
                 loadAdminAttendanceTable();
+            });
+
+            // View all activities button
+            document.getElementById('viewAllActivitiesBtn')?.addEventListener('click', function () {
+                alert('Fitur "Lihat Semua Aktivitas" dalam pengembangan');
+            });
+
+            // View all attendance button (admin)
+            document.getElementById('viewAllAttendanceBtn')?.addEventListener('click', function () {
+                showPage('attendanceManagement');
+            });
+
+            // Refresh chart button
+            document.getElementById('refreshChartBtn')?.addEventListener('click', function () {
+                loadAdminCharts();
+                alert('Chart berhasil di-refresh!');
+            });
+
+            // Export buttons
+            document.getElementById('exportAttendanceBtn')?.addEventListener('click', function () {
+                alert('Data kehadiran berhasil diexport dalam format CSV!');
+            });
+
+            document.getElementById('exportLeaveBtn')?.addEventListener('click', function () {
+                alert('Data cuti berhasil diexport dalam format CSV!');
+            });
+
+            // Admin page buttons
+            document.getElementById('addLocationBtn')?.addEventListener('click', function () {
+                alert('Fitur "Tambah Lokasi" dalam pengembangan');
+            });
+
+            document.getElementById('addShiftBtn')?.addEventListener('click', function () {
+                alert('Fitur "Tambah Shift" dalam pengembangan');
+            });
+
+            document.getElementById('generateReportBtn')?.addEventListener('click', function () {
+                alert('Laporan berhasil digenerate!');
+            });
+
+            // Profile page buttons
+            document.getElementById('editProfileBtn')?.addEventListener('click', function () {
+                toggleProfileEditMode();
+            });
+
+            document.getElementById('changePasswordBtn')?.addEventListener('click', function () {
+                changePassword();
+            });
+
+            // Notification button
+            notificationBtn?.addEventListener('click', function () {
+                showNotifications();
+            });
+
+            // Search functionality
+            document.querySelector('.search-input')?.addEventListener('keyup', function (e) {
+                if (e.key === 'Enter') {
+                    const query = this.value.toLowerCase();
+                    searchData(query);
+                }
             });
         }
 
@@ -2404,6 +2898,10 @@
                 if (adminPage) {
                     adminPage.style.display = 'block';
                     loadPageData(page);
+                } else {
+                    // Fallback to admin dashboard
+                    document.getElementById('adminDashboard').style.display = 'block';
+                    loadPageData('adminDashboard');
                 }
             } else {
                 const employeePage = document.getElementById('employee' + page.charAt(0).toUpperCase() + page.slice(1));
@@ -2471,6 +2969,12 @@
                 case 'leave':
                     loadEmployeeLeave();
                     break;
+                case 'overtime':
+                    loadEmployeeOvertime();
+                    break;
+                case 'profile':
+                    loadEmployeeProfile();
+                    break;
                 case 'adminDashboard':
                     loadAdminDashboard();
                     break;
@@ -2479,6 +2983,9 @@
                     break;
                 case 'attendanceManagement':
                     loadAdminAttendance();
+                    break;
+                case 'leaveManagement':
+                    loadAdminLeaveManagement();
                     break;
             }
         }
@@ -2700,50 +3207,120 @@
             const tableBody = document.querySelector('#employeeLeaveTable tbody');
             tableBody.innerHTML = '';
 
-            // Sample leave data
-            const sampleLeaves = [
-                {
-                    type: 'Cuti Tahunan',
-                    startDate: '2024-03-15',
-                    endDate: '2024-03-17',
-                    duration: 3,
-                    status: 'approved',
-                    notes: 'Liburan keluarga'
-                },
-                {
-                    type: 'Cuti Sakit',
-                    startDate: '2024-02-10',
-                    endDate: '2024-02-10',
-                    duration: 1,
-                    status: 'approved',
-                    notes: 'Flu dan demam'
-                },
-                {
-                    type: 'Izin Pribadi',
-                    startDate: '2024-01-20',
-                    endDate: '2024-01-20',
-                    duration: 1,
-                    status: 'approved',
-                    notes: 'Urusan keluarga'
-                }
-            ];
+            // Filter user's leaves
+            const userLeaves = leaves.filter(leave => leave.employeeId === currentUser.id);
 
-            sampleLeaves.forEach(leave => {
+            if (userLeaves.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px;">
+                            <i class="fas fa-calendar-alt" style="font-size: 48px; color: var(--text-light); margin-bottom: 16px; display: block;"></i>
+                            <p style="color: var(--text-secondary);">Belum ada pengajuan cuti</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            userLeaves.forEach(leave => {
                 const row = document.createElement('tr');
                 const statusClass = leave.status === 'approved' ? 'status-approved' :
-                    leave.status === 'pending' ? 'status-pending' : 'status-absent';
+                    leave.status === 'pending' ? 'status-pending' : 'status-rejected';
                 const statusText = leave.status === 'approved' ? 'Disetujui' :
                     leave.status === 'pending' ? 'Pending' : 'Ditolak';
 
+                const typeText = leave.type === 'annual' ? 'Cuti Tahunan' :
+                    leave.type === 'sick' ? 'Cuti Sakit' :
+                        leave.type === 'special' ? 'Cuti Khusus' : 'Izin Pribadi';
+
                 row.innerHTML = `
-                    <td>${leave.type}</td>
+                    <td>${typeText}</td>
                     <td>${new Date(leave.startDate).toLocaleDateString('id-ID')}</td>
                     <td>${new Date(leave.endDate).toLocaleDateString('id-ID')}</td>
                     <td>${leave.duration} hari</td>
                     <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-                    <td>${leave.notes}</td>
+                    <td>${leave.reason}</td>
+                    <td>
+                        ${leave.status === 'pending' ? `
+                            <button class="btn btn-secondary" onclick="cancelLeave('${leave.id}')" style="padding: 4px 8px; font-size: 12px;">
+                                <i class="fas fa-times"></i> Batalkan
+                            </button>
+                        ` : ''}
+                    </td>
                 `;
                 tableBody.appendChild(row);
+            });
+        }
+
+        // Load employee overtime
+        function loadEmployeeOvertime() {
+            // Filter user's overtime requests
+            const userOvertime = overtimeRequests.filter(ot => ot.employeeId === currentUser.id);
+
+            // Update statistics
+            const totalHours = userOvertime.reduce((sum, ot) => sum + (ot.status === 'approved' ? parseFloat(ot.duration) : 0), 0);
+            const pendingCount = userOvertime.filter(ot => ot.status === 'pending').length;
+
+            document.getElementById('totalOvertimeHours').textContent = totalHours.toFixed(1);
+            document.getElementById('pendingOvertimeCount').textContent = pendingCount;
+
+            // Load overtime table
+            const tableBody = document.querySelector('#employeeOvertimeTable tbody');
+            tableBody.innerHTML = '';
+
+            if (userOvertime.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 40px;">
+                            <i class="fas fa-business-time" style="font-size: 48px; color: var(--text-light); margin-bottom: 16px; display: block;"></i>
+                            <p style="color: var(--text-secondary);">Belum ada pengajuan lembur</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            userOvertime.forEach(ot => {
+                const row = document.createElement('tr');
+                const statusClass = ot.status === 'approved' ? 'status-approved' :
+                    ot.status === 'pending' ? 'status-pending' : 'status-rejected';
+                const statusText = ot.status === 'approved' ? 'Disetujui' :
+                    ot.status === 'pending' ? 'Pending' : 'Ditolak';
+
+                row.innerHTML = `
+                    <td>${new Date(ot.date).toLocaleDateString('id-ID')}</td>
+                    <td>${ot.duration} jam</td>
+                    <td>${ot.reason}</td>
+                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    <td>${ot.approvedBy || '-'}</td>
+                    <td>
+                        ${ot.status === 'pending' ? `
+                            <button class="btn btn-secondary" onclick="cancelOvertime('${ot.id}')" style="padding: 4px 8px; font-size: 12px;">
+                                <i class="fas fa-times"></i> Batalkan
+                            </button>
+                        ` : ''}
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Load employee profile
+        function loadEmployeeProfile() {
+            const employee = employees.find(emp => emp.id === currentUser.id);
+            if (!employee) return;
+
+            // Set profile data
+            document.getElementById('profileName').textContent = employee.name;
+            document.getElementById('profilePosition').textContent = employee.position;
+            document.getElementById('profileId').textContent = employee.id;
+            document.getElementById('profileDepartment').textContent = employee.department;
+            document.getElementById('profileEmail').textContent = employee.email;
+            document.getElementById('profileShift').textContent = employee.shift === 'morning' ? '08:00 - 17:00' : '13:00 - 22:00';
+            document.getElementById('profileJoinDate').textContent = new Date(employee.joinDate).toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric'
             });
         }
 
@@ -2757,14 +3334,29 @@
             const lateToday = todayAttendance.filter(a => a.status === 'late').length;
             const absentToday = employees.length - presentToday - lateToday;
 
+            // Calculate pending requests
+            const pendingLeaves = leaves.filter(l => l.status === 'pending').length;
+            const pendingOvertime = overtimeRequests.filter(ot => ot.status === 'pending').length;
+
+            // Calculate new employees this month
+            const now = new Date();
+            const newEmployees = employees.filter(emp => {
+                const joinDate = new Date(emp.joinDate);
+                return joinDate.getMonth() === now.getMonth() && joinDate.getFullYear() === now.getFullYear();
+            }).length;
+
             document.getElementById('totalEmployeesAdmin').textContent = employees.length;
             document.getElementById('presentTodayAdmin').textContent = presentToday;
             document.getElementById('lateTodayAdmin').textContent = lateToday;
             document.getElementById('absentTodayAdmin').textContent = absentToday;
-            document.getElementById('pendingLeavesAdmin').textContent = '3';
-            document.getElementById('pendingOvertimeAdmin').textContent = '5';
-            document.getElementById('newEmployeesAdmin').textContent = '2';
+            document.getElementById('pendingLeavesAdmin').textContent = pendingLeaves;
+            document.getElementById('pendingOvertimeAdmin').textContent = pendingOvertime;
+            document.getElementById('newEmployeesAdmin').textContent = newEmployees;
             document.getElementById('avgAttendanceAdmin').textContent = '94%';
+
+            // Update badge counts
+            document.getElementById('pendingLeaveRequestsBadge').textContent = pendingLeaves;
+            document.getElementById('pendingAttendanceBadge').textContent = lateToday;
 
             // Load admin charts
             loadAdminCharts();
@@ -2964,8 +3556,11 @@
                     </td>
                     <td>${formattedDate}</td>
                     <td>
-                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">
+                        <button class="btn btn-secondary" onclick="editEmployee('${employee.id}')" style="padding: 4px 8px; font-size: 12px;">
                             <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-secondary" onclick="deleteEmployee('${employee.id}')" style="padding: 4px 8px; font-size: 12px; margin-left: 4px;">
+                            <i class="fas fa-trash"></i>
                         </button>
                     </td>
                 `;
@@ -2979,8 +3574,13 @@
             tableBody.innerHTML = '';
 
             const today = new Date().toISOString().split('T')[0];
-            const selectedDate = document.getElementById('attendanceDate').value || today;
-            const selectedDept = document.getElementById('attendanceDepartment').value;
+            const selectedDate = document.getElementById('attendanceDate')?.value || today;
+            const selectedDept = document.getElementById('attendanceDepartment')?.value;
+
+            // Set default date if empty
+            if (document.getElementById('attendanceDate')) {
+                document.getElementById('attendanceDate').value = selectedDate;
+            }
 
             // Filter attendance
             let filteredAttendance = attendance.filter(a => a.date === selectedDate && a.type === 'checkin');
@@ -3049,8 +3649,66 @@
                     <td><span class="status-badge ${statusClass}">${statusText}</span></td>
                     <td>${record.location || 'Kantor Pusat'}</td>
                     <td>
-                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">
+                        <button class="btn btn-secondary" onclick="editAttendance('${record.id}')" style="padding: 4px 8px; font-size: 12px;">
                             <i class="fas fa-edit"></i>
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Load admin leave management
+        function loadAdminLeaveManagement() {
+            const tableBody = document.querySelector('#adminLeaveTable tbody');
+            tableBody.innerHTML = '';
+
+            // Filter pending leaves first
+            const pendingLeaves = leaves.filter(l => l.status === 'pending');
+
+            if (pendingLeaves.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 40px;">
+                            <i class="fas fa-calendar-check" style="font-size: 48px; color: var(--text-light); margin-bottom: 16px; display: block;"></i>
+                            <p style="color: var(--text-secondary);">Tidak ada pengajuan cuti pending</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            pendingLeaves.forEach(leave => {
+                const employee = employees.find(e => e.id === leave.employeeId);
+                if (!employee) return;
+
+                const typeText = leave.type === 'annual' ? 'Cuti Tahunan' :
+                    leave.type === 'sick' ? 'Cuti Sakit' :
+                        leave.type === 'special' ? 'Cuti Khusus' : 'Izin Pribadi';
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <div class="employee-info">
+                            <div class="employee-avatar">${employee.avatar}</div>
+                            <div class="employee-details">
+                                <h4>${employee.name}</h4>
+                                <p>${employee.department}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${typeText}</td>
+                    <td>${new Date(leave.startDate).toLocaleDateString('id-ID')}</td>
+                    <td>${new Date(leave.endDate).toLocaleDateString('id-ID')}</td>
+                    <td>${leave.duration} hari</td>
+                    <td>${leave.reason}</td>
+                    <td><span class="status-badge status-pending">Pending</span></td>
+                    <td>
+                        <button class="btn btn-secondary" onclick="approveLeave('${leave.id}')" style="padding: 4px 8px; font-size: 12px;">
+                            <i class="fas fa-check"></i> Setuju
+                        </button>
+                        <button class="btn btn-secondary" onclick="rejectLeave('${leave.id}')" style="padding: 4px 8px; font-size: 12px; margin-left: 4px;">
+                            <i class="fas fa-times"></i> Tolak
                         </button>
                     </td>
                 `;
@@ -3072,6 +3730,10 @@
                 submitBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Konfirmasi Check-out';
             }
 
+            // Reset form
+            document.getElementById('checkInLocation').value = '';
+            document.getElementById('checkInNotes').value = '';
+
             modal.classList.add('active');
         }
 
@@ -3084,12 +3746,24 @@
             document.getElementById('leaveStartDate').value = today.toISOString().split('T')[0];
             document.getElementById('leaveEndDate').value = tomorrow.toISOString().split('T')[0];
             document.getElementById('leaveDuration').value = 1;
+            document.getElementById('leaveReason').value = '';
 
             applyLeaveModal.classList.add('active');
         }
 
+        // Open apply overtime modal
+        function openApplyOvertimeModal() {
+            const today = new Date();
+            document.getElementById('overtimeDate').value = today.toISOString().split('T')[0];
+            document.getElementById('overtimeDuration').value = 1;
+            document.getElementById('overtimeReason').value = '';
+
+            overtimeModal.classList.add('active');
+        }
+
         // Open add employee modal
         function openAddEmployeeModal() {
+            document.getElementById('newEmployeeForm').reset();
             addEmployeeModal.classList.add('active');
         }
 
@@ -3144,11 +3818,12 @@
             checkInModal.classList.remove('active');
             alert(`${type === 'checkin' ? 'Check-in' : 'Check-out'} berhasil di ${location}!`);
 
-            // Reload dashboard
-            if (isAdmin) {
-                loadAdminDashboard();
-            } else {
-                loadEmployeeDashboard();
+            // Reload current page
+            const currentPage = document.querySelector('.employee-page.active')?.id ||
+                document.querySelector('.admin-page.active')?.id;
+            if (currentPage) {
+                const pageName = currentPage.replace('employee', '').replace('admin', '').replace('Management', '');
+                loadPageData(pageName);
             }
         }
 
@@ -3159,6 +3834,11 @@
             const endDate = document.getElementById('leaveEndDate').value;
             const duration = parseInt(document.getElementById('leaveDuration').value);
             const reason = document.getElementById('leaveReason').value;
+
+            if (!type) {
+                alert('Pilih jenis cuti terlebih dahulu');
+                return;
+            }
 
             // Check remaining leave balance
             const leaveType = type === 'annual' ? 'annual' :
@@ -3204,6 +3884,43 @@
             // Reload leave page
             if (!isAdmin) {
                 loadEmployeeLeave();
+            } else {
+                loadAdminLeaveManagement();
+            }
+        }
+
+        // Apply for overtime
+        function applyOvertime() {
+            const date = document.getElementById('overtimeDate').value;
+            const duration = parseFloat(document.getElementById('overtimeDuration').value);
+            const reason = document.getElementById('overtimeReason').value;
+
+            // Create overtime record
+            const overtimeRecord = {
+                id: `OT${Date.now()}`,
+                employeeId: currentUser.id,
+                employeeName: currentUser.name,
+                date: date,
+                duration: duration,
+                reason: reason,
+                status: 'pending',
+                appliedDate: new Date().toISOString().split('T')[0],
+                department: currentUser.department
+            };
+
+            overtimeRequests.push(overtimeRecord);
+            localStorage.setItem('talenta_overtime', JSON.stringify(overtimeRequests));
+
+            // Close modal and show success
+            overtimeModal.classList.remove('active');
+            alert('Pengajuan lembur berhasil dikirim! Menunggu persetujuan.');
+
+            // Reset form
+            document.getElementById('overtimeForm').reset();
+
+            // Reload overtime page
+            if (!isAdmin) {
+                loadEmployeeOvertime();
             }
         }
 
@@ -3251,7 +3968,145 @@
             // Reload employee management
             if (isAdmin) {
                 loadEmployeeManagement();
+                loadAdminDashboard();
             }
+        }
+
+        // Edit employee
+        function editEmployee(employeeId) {
+            alert(`Edit karyawan ${employeeId} - Fitur dalam pengembangan`);
+        }
+
+        // Delete employee
+        function deleteEmployee(employeeId) {
+            if (confirm(`Apakah Anda yakin ingin menghapus karyawan ${employeeId}?`)) {
+                employees = employees.filter(emp => emp.id !== employeeId);
+                localStorage.setItem('talenta_employees', JSON.stringify(employees));
+                alert('Karyawan berhasil dihapus');
+                loadEmployeeManagement();
+                loadAdminDashboard();
+            }
+        }
+
+        // Edit attendance
+        function editAttendance(attendanceId) {
+            alert(`Edit kehadiran ${attendanceId} - Fitur dalam pengembangan`);
+        }
+
+        // Approve leave
+        function approveLeave(leaveId) {
+            const leaveIndex = leaves.findIndex(l => l.id === leaveId);
+            if (leaveIndex !== -1) {
+                leaves[leaveIndex].status = 'approved';
+                leaves[leaveIndex].approvedBy = currentUser.name;
+                leaves[leaveIndex].approvedDate = new Date().toISOString().split('T')[0];
+                localStorage.setItem('talenta_leaves', JSON.stringify(leaves));
+                alert('Pengajuan cuti telah disetujui');
+                loadAdminLeaveManagement();
+                loadAdminDashboard();
+            }
+        }
+
+        // Reject leave
+        function rejectLeave(leaveId) {
+            const leaveIndex = leaves.findIndex(l => l.id === leaveId);
+            if (leaveIndex !== -1) {
+                leaves[leaveIndex].status = 'rejected';
+                leaves[leaveIndex].approvedBy = currentUser.name;
+                leaves[leaveIndex].approvedDate = new Date().toISOString().split('T')[0];
+                localStorage.setItem('talenta_leaves', JSON.stringify(leaves));
+                alert('Pengajuan cuti telah ditolak');
+                loadAdminLeaveManagement();
+                loadAdminDashboard();
+            }
+        }
+
+        // Cancel leave
+        function cancelLeave(leaveId) {
+            if (confirm('Apakah Anda yakin ingin membatalkan pengajuan cuti ini?')) {
+                leaves = leaves.filter(l => l.id !== leaveId);
+                localStorage.setItem('talenta_leaves', JSON.stringify(leaves));
+                alert('Pengajuan cuti telah dibatalkan');
+                loadEmployeeLeave();
+            }
+        }
+
+        // Cancel overtime
+        function cancelOvertime(overtimeId) {
+            if (confirm('Apakah Anda yakin ingin membatalkan pengajuan lembur ini?')) {
+                overtimeRequests = overtimeRequests.filter(ot => ot.id !== overtimeId);
+                localStorage.setItem('talenta_overtime', JSON.stringify(overtimeRequests));
+                alert('Pengajuan lembur telah dibatalkan');
+                loadEmployeeOvertime();
+            }
+        }
+
+        // Toggle profile edit mode
+        function toggleProfileEditMode() {
+            const phoneInput = document.getElementById('profilePhone');
+            const addressInput = document.getElementById('profileAddress');
+            const editBtn = document.getElementById('editProfileBtn');
+
+            if (phoneInput.disabled) {
+                // Enable editing
+                phoneInput.disabled = false;
+                addressInput.disabled = false;
+                editBtn.innerHTML = '<i class="fas fa-save"></i> Simpan Profil';
+                editBtn.classList.remove('btn-secondary');
+                editBtn.classList.add('btn-primary');
+            } else {
+                // Save changes
+                phoneInput.disabled = true;
+                addressInput.disabled = true;
+                editBtn.innerHTML = '<i class="fas fa-edit"></i> Edit Profil';
+                editBtn.classList.remove('btn-primary');
+                editBtn.classList.add('btn-secondary');
+                alert('Profil berhasil diperbarui!');
+            }
+        }
+
+        // Change password
+        function changePassword() {
+            const currentPass = document.getElementById('currentPassword').value;
+            const newPass = document.getElementById('newPassword').value;
+            const confirmPass = document.getElementById('confirmPassword').value;
+
+            if (!currentPass || !newPass || !confirmPass) {
+                alert('Harap isi semua field password');
+                return;
+            }
+
+            if (newPass !== confirmPass) {
+                alert('Password baru dan konfirmasi password tidak cocok');
+                return;
+            }
+
+            // In a real app, you would verify current password with server
+            alert('Password berhasil diubah!');
+
+            // Clear password fields
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+        }
+
+        // Show notifications
+        function showNotifications() {
+            const notificationCount = document.getElementById('notificationCount');
+            alert(`Anda memiliki ${notificationCount.textContent} notifikasi baru`);
+
+            // Mark as read
+            notificationCount.textContent = '0';
+        }
+
+        // Search data
+        function searchData(query) {
+            alert(`Mencari: ${query} - Fitur pencarian dalam pengembangan`);
+        }
+
+        // Load admin attendance table (separate function for filter button)
+        function loadAdminAttendanceTable() {
+            loadAdminAttendance();
         }
     </script>
 </body>
