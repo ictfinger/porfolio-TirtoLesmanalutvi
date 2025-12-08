@@ -4,15 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>Tirto Lesmana Lutvi - Full Stack Developer & UI/UX Designer</title>
+    <title id="page-title">Tirto Lesmana Lutvi - Full Stack Developer & UI/UX Designer</title>
 
     <!-- SEO Meta Tags -->
-    <meta name="description"
+    <meta id="meta-description" name="description"
         content="Portfolio of Tirto Lesmana Lutvi - Passionate Full Stack Developer & UI/UX Designer with 5+ years experience in web development.">
     <meta name="keywords" content="full stack developer, UI/UX designer, web development, mobile apps, portfolio">
     <meta name="author" content="Tirto Lesmana Lutvi">
-    <meta property="og:title" content="Tirto Lesmana Lutvi - Full Stack Developer & UI/UX Designer">
-    <meta property="og:description" content="Creating digital experiences that blend design and technology.">
+    <meta id="og-title" property="og:title" content="Tirto Lesmana Lutvi - Full Stack Developer & UI/UX Designer">
+    <meta id="og-description" property="og:description"
+        content="Creating digital experiences that blend design and technology.">
     <meta property="og:image" content="assets/images/hero.png">
     <meta property="og:url" content="https://yourportfolio.com">
 
@@ -29,6 +30,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- AOS (Animate On Scroll) -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Flag Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icons/6.6.6/css/flag-icons.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
@@ -41,34 +44,48 @@
             <a class="navbar-brand fw-bold fs-4 fs-lg-3" href="index.html">
                 <i class="fas fa-code me-2"></i>Tirto Lesmana Lutvi
             </a>
+
+            <!-- Language Switcher -->
+            <div class="language-switcher me-3">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-sm btn-outline-light language-btn active" data-lang="en">
+                        <span class="fi fi-us me-1"></span> EN
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-light language-btn" data-lang="id">
+                        <span class="fi fi-id me-1"></span> ID
+                    </button>
+                </div>
+            </div>
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center gap-3">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#home">Home</a>
+                        <a class="nav-link active" href="#home" data-i18n="nav.home">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#about">About</a>
+                        <a class="nav-link" href="#about" data-i18n="nav.about">About</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#services">Services</a>
+                        <a class="nav-link" href="#services" data-i18n="nav.services">Services</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#portfolio">Portfolio</a>
+                        <a class="nav-link" href="#portfolio" data-i18n="nav.portfolio">Portfolio</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="projects.html">Project</a>
+                        <a class="nav-link" href="projects.html" data-i18n="nav.projects">Project</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#contact">Contact</a>
+                        <a class="nav-link" href="#contact" data-i18n="nav.contact">Contact</a>
                     </li>
                     <li class="nav-item">
                         <a class="btn btn-primary rounded-pill px-3 px-md-4"
                             href="https://wa.me/6281363364465?text=Halo,%20saya%20tertarik%20dengan%20jasa%20pembuatan%20website%20Anda"
                             target="_blank">
-                            <i class="fab fa-whatsapp me-2"></i><span class="d-none d-md-inline">Contact Now</span>
+                            <i class="fab fa-whatsapp me-2"></i><span class="d-none d-md-inline"
+                                data-i18n="nav.contactNow">Contact Now</span>
                         </a>
                     </li>
                 </ul>
@@ -85,40 +102,41 @@
                     <div class="mb-4">
                         <span
                             class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25 rounded-pill px-3 px-md-4 py-2 mb-3">
-                            <i class="fas fa-code me-2"></i>Full Stack Developer
+                            <i class="fas fa-code me-2"></i><span data-i18n="hero.titleBadge">Full Stack
+                                Developer</span>
                         </span>
                     </div>
-                    <h1 class="display-4 display-lg-1 fw-bold mb-4">
+                    <h1 class="display-4 display-lg-1 fw-bold mb-4" data-i18n="hero.title">
                         Creating Digital <br class="d-none d-lg-block">
                         <span class="text-gradient">Experiences</span> That <br class="d-none d-lg-block">
                         <span class="text-primary">Inspire</span>
                     </h1>
-                    <p class="lead text-muted mb-5">
+                    <p class="lead text-muted mb-5" data-i18n="hero.subtitle">
                         I blend cutting-edge technology with elegant design to build digital solutions
                         that drive business growth and deliver exceptional user experiences.
                     </p>
                     <div class="d-flex flex-wrap gap-3 mb-5 mb-lg-0">
                         <a href="#portfolio" class="btn btn-primary btn-lg rounded-pill px-4 px-md-5">
-                            <i class="fas fa-eye me-2"></i>View My Work
+                            <i class="fas fa-eye me-2"></i><span data-i18n="hero.viewWork">View My Work</span>
                         </a>
                         <a href="#contact" class="btn btn-outline-light btn-lg rounded-pill px-4 px-md-5">
-                            <i class="fas fa-envelope me-2"></i>Get In Touch
+                            <i class="fas fa-envelope me-2"></i><span data-i18n="hero.getInTouch">Get In Touch</span>
                         </a>
                     </div>
                     <div class="mt-5 d-flex flex-wrap align-items-center gap-4">
                         <div class="d-flex align-items-center">
                             <div class="stats-number text-primary fw-bold fs-3">5+</div>
-                            <div class="ms-2 text-muted">Years Experience</div>
+                            <div class="ms-2 text-muted" data-i18n="hero.experience">Years Experience</div>
                         </div>
                         <div class="vr d-none d-md-block"></div>
                         <div class="d-flex align-items-center">
                             <div class="stats-number text-primary fw-bold fs-3">50+</div>
-                            <div class="ms-2 text-muted">Projects Completed</div>
+                            <div class="ms-2 text-muted" data-i18n="hero.projects">Projects Completed</div>
                         </div>
                         <div class="vr d-none d-md-block"></div>
                         <div class="d-flex align-items-center">
                             <div class="stats-number text-primary fw-bold fs-3">100%</div>
-                            <div class="ms-2 text-muted">Client Satisfaction</div>
+                            <div class="ms-2 text-muted" data-i18n="hero.satisfaction">Client Satisfaction</div>
                         </div>
                     </div>
                 </div>
@@ -154,26 +172,26 @@
                             data-aos="fade-right">
                         <div class="about-experience-badge">
                             <div class="experience-number">5+</div>
-                            <div class="experience-text">Years<br>Experience</div>
+                            <div class="experience-text" data-i18n="about.experienceText">Years<br>Experience</div>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-6" data-aos="fade-left" data-aos-delay="200">
                     <span
                         class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25 rounded-pill px-3 px-md-4 py-2 mb-3">
-                        About Me
+                        <span data-i18n="about.titleBadge">About Me</span>
                     </span>
-                    <h2 class="display-5 fw-bold mb-4">
+                    <h2 class="display-5 fw-bold mb-4" data-i18n="about.title">
                         Passionate About Creating <span class="text-gradient">Digital Solutions</span>
                     </h2>
-                    <p class="lead text-muted mb-4">
+                    <p class="lead text-muted mb-4" data-i18n="about.description">
                         I'm a Full Stack Developer with over 5 years of experience building modern web applications.
                         My expertise spans across both frontend and backend technologies, allowing me to deliver
                         complete digital solutions.
                     </p>
 
                     <div class="skills-section mb-5">
-                        <h4 class="h5 mb-4">Core Skills</h4>
+                        <h4 class="h5 mb-4" data-i18n="about.skillsTitle">Core Skills</h4>
                         <div class="row g-3">
                             <div class="col-6 col-md-6">
                                 <div class="skill-item d-flex align-items-center">
@@ -181,8 +199,9 @@
                                         <i class="fas fa-code text-primary"></i>
                                     </div>
                                     <div class="ms-3">
-                                        <h6 class="mb-0">Clean Code</h6>
-                                        <small class="text-muted">Maintainable & Scalable</small>
+                                        <h6 class="mb-0" data-i18n="about.skill1">Clean Code</h6>
+                                        <small class="text-muted" data-i18n="about.skill1Desc">Maintainable &
+                                            Scalable</small>
                                     </div>
                                 </div>
                             </div>
@@ -192,8 +211,8 @@
                                         <i class="fas fa-paint-brush text-primary"></i>
                                     </div>
                                     <div class="ms-3">
-                                        <h6 class="mb-0">Modern Design</h6>
-                                        <small class="text-muted">UI/UX Focused</small>
+                                        <h6 class="mb-0" data-i18n="about.skill2">Modern Design</h6>
+                                        <small class="text-muted" data-i18n="about.skill2Desc">UI/UX Focused</small>
                                     </div>
                                 </div>
                             </div>
@@ -203,8 +222,8 @@
                                         <i class="fas fa-mobile-alt text-primary"></i>
                                     </div>
                                     <div class="ms-3">
-                                        <h6 class="mb-0">Responsive</h6>
-                                        <small class="text-muted">All Devices</small>
+                                        <h6 class="mb-0" data-i18n="about.skill3">Responsive</h6>
+                                        <small class="text-muted" data-i18n="about.skill3Desc">All Devices</small>
                                     </div>
                                 </div>
                             </div>
@@ -214,8 +233,8 @@
                                         <i class="fas fa-chart-line text-primary"></i>
                                     </div>
                                     <div class="ms-3">
-                                        <h6 class="mb-0">SEO Optimized</h6>
-                                        <small class="text-muted">High Ranking</small>
+                                        <h6 class="mb-0" data-i18n="about.skill4">SEO Optimized</h6>
+                                        <small class="text-muted" data-i18n="about.skill4Desc">High Ranking</small>
                                     </div>
                                 </div>
                             </div>
@@ -223,7 +242,7 @@
                     </div>
 
                     <div class="tech-stack">
-                        <h4 class="h5 mb-4">Tech Stack</h4>
+                        <h4 class="h5 mb-4" data-i18n="about.techStackTitle">Tech Stack</h4>
                         <div class="d-flex flex-wrap gap-2">
                             <span class="tech-badge">React</span>
                             <span class="tech-badge">Vue.js</span>
@@ -246,10 +265,11 @@
             <div class="text-center mb-5" data-aos="fade-up">
                 <span
                     class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25 rounded-pill px-3 px-md-4 py-2 mb-3">
-                    Services
+                    <span data-i18n="services.titleBadge">Services</span>
                 </span>
-                <h2 class="display-5 fw-bold mb-3">What I <span class="text-gradient">Offer</span></h2>
-                <p class="lead text-muted mx-auto" style="max-width: 600px;">
+                <h2 class="display-5 fw-bold mb-3" data-i18n="services.title">What I <span
+                        class="text-gradient">Offer</span></h2>
+                <p class="lead text-muted mx-auto" style="max-width: 600px;" data-i18n="services.subtitle">
                     Comprehensive digital solutions tailored to your business needs
                 </p>
             </div>
@@ -260,15 +280,15 @@
                         <div class="service-icon-wrapper">
                             <i class="fas fa-code"></i>
                         </div>
-                        <h4 class="h3 fw-bold mb-3">Web Development</h4>
-                        <p class="text-muted">
+                        <h4 class="h3 fw-bold mb-3" data-i18n="services.webDev.title">Web Development</h4>
+                        <p class="text-muted" data-i18n="services.webDev.description">
                             Building fast, responsive, and scalable websites using modern frameworks and best practices.
                         </p>
                         <ul class="service-features">
-                            <li>Custom Web Applications</li>
-                            <li>E-commerce Solutions</li>
-                            <li>API Development</li>
-                            <li>Performance Optimization</li>
+                            <li data-i18n="services.webDev.feature1">Custom Web Applications</li>
+                            <li data-i18n="services.webDev.feature2">E-commerce Solutions</li>
+                            <li data-i18n="services.webDev.feature3">API Development</li>
+                            <li data-i18n="services.webDev.feature4">Performance Optimization</li>
                         </ul>
                     </div>
                 </div>
@@ -277,15 +297,15 @@
                         <div class="service-icon-wrapper">
                             <i class="fas fa-paint-brush"></i>
                         </div>
-                        <h4 class="h3 fw-bold mb-3">UI/UX Design</h4>
-                        <p class="text-muted">
+                        <h4 class="h3 fw-bold mb-3" data-i18n="services.uiUx.title">UI/UX Design</h4>
+                        <p class="text-muted" data-i18n="services.uiUx.description">
                             Creating intuitive and beautiful interfaces that provide exceptional user experiences.
                         </p>
                         <ul class="service-features">
-                            <li>User Research</li>
-                            <li>Wireframing & Prototyping</li>
-                            <li>Visual Design</li>
-                            <li>Design Systems</li>
+                            <li data-i18n="services.uiUx.feature1">User Research</li>
+                            <li data-i18n="services.uiUx.feature2">Wireframing & Prototyping</li>
+                            <li data-i18n="services.uiUx.feature3">Visual Design</li>
+                            <li data-i18n="services.uiUx.feature4">Design Systems</li>
                         </ul>
                     </div>
                 </div>
@@ -294,15 +314,15 @@
                         <div class="service-icon-wrapper">
                             <i class="fas fa-mobile-alt"></i>
                         </div>
-                        <h4 class="h3 fw-bold mb-3">Mobile Apps</h4>
-                        <p class="text-muted">
+                        <h4 class="h3 fw-bold mb-3" data-i18n="services.mobile.title">Mobile Apps</h4>
+                        <p class="text-muted" data-i18n="services.mobile.description">
                             Developing cross-platform mobile applications for iOS and Android using React Native.
                         </p>
                         <ul class="service-features">
-                            <li>Cross-Platform Development</li>
-                            <li>Native App Development</li>
-                            <li>App Store Deployment</li>
-                            <li>Maintenance & Updates</li>
+                            <li data-i18n="services.mobile.feature1">Cross-Platform Development</li>
+                            <li data-i18n="services.mobile.feature2">Native App Development</li>
+                            <li data-i18n="services.mobile.feature3">App Store Deployment</li>
+                            <li data-i18n="services.mobile.feature4">Maintenance & Updates</li>
                         </ul>
                     </div>
                 </div>
@@ -316,10 +336,11 @@
             <div class="text-center mb-5" data-aos="fade-up">
                 <span
                     class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25 rounded-pill px-3 px-md-4 py-2 mb-3">
-                    Portfolio
+                    <span data-i18n="portfolio.titleBadge">Portfolio</span>
                 </span>
-                <h2 class="display-5 fw-bold mb-3">Featured <span class="text-gradient">Projects</span></h2>
-                <p class="lead text-muted mx-auto" style="max-width: 600px;">
+                <h2 class="display-5 fw-bold mb-3" data-i18n="portfolio.title">Featured <span
+                        class="text-gradient">Projects</span></h2>
+                <p class="lead text-muted mx-auto" style="max-width: 600px;" data-i18n="portfolio.subtitle">
                     A selection of my recent work and open source contributions
                 </p>
             </div>
@@ -342,11 +363,12 @@
                 <div class="col-lg-8 text-center">
                     <span
                         class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25 rounded-pill px-3 px-md-4 py-2 mb-3">
-                        Contact
+                        <span data-i18n="contact.titleBadge">Contact</span>
                     </span>
-                    <h2 class="display-5 fw-bold mb-3">Let's Build <span class="text-gradient">Something</span> Amazing
+                    <h2 class="display-5 fw-bold mb-3" data-i18n="contact.title">Let's Build <span
+                            class="text-gradient">Something</span> Amazing
                     </h2>
-                    <p class="lead text-muted mb-5 mx-auto" style="max-width: 600px;">
+                    <p class="lead text-muted mb-5 mx-auto" style="max-width: 600px;" data-i18n="contact.subtitle">
                         Have a project in mind? I'd love to hear about it. Send me a message and let's discuss how we
                         can work together.
                     </p>
@@ -357,7 +379,7 @@
                                 <div class="contact-icon">
                                     <i class="fas fa-envelope"></i>
                                 </div>
-                                <h5>Email</h5>
+                                <h5 data-i18n="contact.email">Email</h5>
                                 <a href="mailto:tirtolesmanalutvi@gmail.com"
                                     class="text-muted">tirtolesmanalutvi@gmail.com</a>
                             </div>
@@ -367,7 +389,7 @@
                                 <div class="contact-icon">
                                     <i class="fas fa-phone"></i>
                                 </div>
-                                <h5>Phone</h5>
+                                <h5 data-i18n="contact.phone">Phone</h5>
                                 <a href="tel:+6281363364465" class="text-muted">+62 813 6336 4465</a>
                             </div>
                         </div>
@@ -376,8 +398,9 @@
                                 <div class="contact-icon">
                                     <i class="fab fa-whatsapp"></i>
                                 </div>
-                                <h5>WhatsApp</h5>
-                                <a href="https://wa.me/6281363364465" target="_blank" class="text-muted">Chat Now</a>
+                                <h5 data-i18n="contact.whatsapp">WhatsApp</h5>
+                                <a href="https://wa.me/6281363364465" target="_blank" class="text-muted"
+                                    data-i18n="contact.chatNow">Chat Now</a>
                             </div>
                         </div>
                     </div>
@@ -394,7 +417,7 @@
                     <a href="index.html" class="navbar-brand fw-bold fs-3 mb-3 d-block">
                         <span class="text-gradient">Tirto Lesmana Lutvi</span>
                     </a>
-                    <p class="text-muted">
+                    <p class="text-muted" data-i18n="footer.description">
                         Creating digital experiences that blend design and technology to drive business success.
                     </p>
                 </div>
@@ -414,7 +437,7 @@
                                 <i class="fab fa-instagram"></i>
                             </a>
                         </div>
-                        <p class="text-muted small mb-0">
+                        <p class="text-muted small mb-0" data-i18n="footer.availability">
                             Available for freelance work and collaborations
                         </p>
                     </div>
@@ -423,10 +446,12 @@
                     <div class="text-lg-end text-center text-lg-start">
                         <a href="https://wa.me/6281363364465" target="_blank"
                             class="btn btn-outline-light rounded-pill px-4 mb-3">
-                            <i class="fab fa-whatsapp me-2"></i>Start a Project
+                            <i class="fab fa-whatsapp me-2"></i><span data-i18n="footer.startProject">Start a
+                                Project</span>
                         </a>
                         <p class="text-muted small">
-                            © <span id="current-year"></span> Tirto Lesmana Lutvi. All rights reserved.
+                            © <span id="current-year"></span> <span data-i18n="footer.copyright">Tirto Lesmana Lutvi.
+                                All rights reserved.</span>
                         </p>
                     </div>
                 </div>
@@ -447,6 +472,7 @@
     <!-- Custom JS -->
     <script src="assets/js/script.js"></script>
     <script src="assets/js/github_api.js"></script>
+    <script src="assets/js/i18n.js"></script>
     <script>
         // Initialize AOS
         AOS.init({
