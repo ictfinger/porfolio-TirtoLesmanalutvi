@@ -1,43 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Portfolio - Tirto Lesmana Lutvi</title>
+    <title>Tirto Lesmana Lutvi - Full Stack Developer & UI/UX Designer</title>
 
     <!-- SEO Meta Tags -->
     <meta name="description"
-        content="Portfolio of a passionate Full Stack Developer & UI/UX Enthusiast with over 5 years of experience in building web applications.">
-    <meta name="keywords" content="web developer, full stack developer, UI/UX designer, portfolio">
-    <meta name="author" content="Portfolio">
+        content="Portfolio of Tirto Lesmana Lutvi - Passionate Full Stack Developer & UI/UX Designer with 5+ years experience in web development.">
+    <meta name="keywords" content="full stack developer, UI/UX designer, web development, mobile apps, portfolio">
+    <meta name="author" content="Tirto Lesmana Lutvi">
+    <meta property="og:title" content="Tirto Lesmana Lutvi - Full Stack Developer & UI/UX Designer">
+    <meta property="og:description" content="Creating digital experiences that blend design and technology.">
+    <meta property="og:image" content="assets/images/hero.png">
+    <meta property="og:url" content="https://yourportfolio.com">
 
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/github_style.css">
 </head>
 
-<body>
-
-    <nav class="navbar navbar-expand-lg fixed-top">
+<body class="bg-dark text-light">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top py-3"
+        style="background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px);">
         <div class="container">
-            <a class="navbar-brand" href="index.html">Tirto Lesmana Lutvi</a>
-            <button class="navbar-toggler navbar-dark" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
-                aria-label="Toggle navigation">
+            <a class="navbar-brand fw-bold fs-3" href="index.html">
+                <span class="text-gradient">Tirto Lesmana Lutvi</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <ul class="navbar-nav align-items-center">
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center gap-3">
                     <li class="nav-item">
                         <a class="nav-link active" href="#home">Home</a>
                     </li>
@@ -51,12 +57,14 @@
                         <a class="nav-link" href="#portfolio">Portfolio</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="projects.html">Projects</a>
+                        <a class="nav-link" href="#contact">Contact</a>
                     </li>
-                    <li class="nav-item ms-lg-3">
-                        <a class="btn btn-primary"
+                    <li class="nav-item">
+                        <a class="btn btn-primary rounded-pill px-4"
                             href="https://wa.me/6281363364465?text=Halo,%20saya%20tertarik%20dengan%20jasa%20pembuatan%20website%20Anda"
-                            target="_blank"><i class="fab fa-whatsapp me-2"></i>WhatsApp</a>
+                            target="_blank">
+                            <i class="fab fa-whatsapp me-2"></i>Contact Now
+                        </a>
                     </li>
                 </ul>
             </div>
@@ -64,26 +72,67 @@
     </nav>
 
     <!-- Hero Section -->
-    <section id="home" class="hero-section d-flex align-items-center">
-        <div class="hero-bg-glow"></div>
+    <section id="home" class="hero-section min-vh-100 d-flex align-items-center position-relative overflow-hidden">
+        <div class="hero-bg-gradient"></div>
         <div class="container">
-            <div class="row align-items-center">
+            <div class="row align-items-center g-5">
                 <div class="col-lg-6">
-                    <h1 class="display-3 fw-bold mb-4">Creative <br><span class="text-gradient">Developer</span> & <span
-                            class="text-gradient">Designer</span></h1>
-                    <p class="hero-subtitle mb-5">I build digital experiences that blend design and technology to create
-                        impactful solutions.</p>
-                    <div class="d-flex gap-3">
-                        <a href="#portfolio" class="btn btn-primary btn-lg">View My Work</a>
-                        <a href="https://wa.me/6281363364465?text=Halo,%20saya%20tertarik%20dengan%20jasa%20pembuatan%20website%20Anda"
-                            target="_blank" class="btn btn-outline-light btn-lg"><i
-                                class="fab fa-whatsapp me-2"></i>WhatsApp</a>
+                    <div class="mb-4">
+                        <span
+                            class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25 rounded-pill px-4 py-2 mb-3">
+                            <i class="fas fa-code me-2"></i>Full Stack Developer
+                        </span>
+                    </div>
+                    <h1 class="display-1 fw-bold mb-4">
+                        Creating Digital <br>
+                        <span class="text-gradient">Experiences</span> That <br>
+                        <span class="text-primary">Inspire</span>
+                    </h1>
+                    <p class="lead text-muted mb-5">
+                        I blend cutting-edge technology with elegant design to build digital solutions
+                        that drive business growth and deliver exceptional user experiences.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="#portfolio" class="btn btn-primary btn-lg rounded-pill px-5">
+                            <i class="fas fa-eye me-2"></i>View My Work
+                        </a>
+                        <a href="#contact" class="btn btn-outline-light btn-lg rounded-pill px-5">
+                            <i class="fas fa-envelope me-2"></i>Get In Touch
+                        </a>
+                    </div>
+                    <div class="mt-5 d-flex align-items-center gap-4">
+                        <div class="d-flex align-items-center">
+                            <div class="stats-number text-primary fw-bold fs-3">5+</div>
+                            <div class="ms-2 text-muted">Years Experience</div>
+                        </div>
+                        <div class="vr"></div>
+                        <div class="d-flex align-items-center">
+                            <div class="stats-number text-primary fw-bold fs-3">50+</div>
+                            <div class="ms-2 text-muted">Projects Completed</div>
+                        </div>
+                        <div class="vr"></div>
+                        <div class="d-flex align-items-center">
+                            <div class="stats-number text-primary fw-bold fs-3">100%</div>
+                            <div class="ms-2 text-muted">Client Satisfaction</div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-lg-6 mt-5 mt-lg-0">
-                    <div class="hero-img-wrapper position-relative">
-                        <img src="assets/images/hero.png" alt="Hero Image"
-                            class="img-fluid rounded-4 shadow-lg position-relative z-1">
+                <div class="col-lg-6">
+                    <div class="position-relative">
+                        <div class="hero-img-wrapper">
+                            <img src="assets/images/hero.png" alt="Hero Image"
+                                class="img-fluid rounded-4 shadow-lg position-relative z-2">
+                            <div class="hero-img-glow"></div>
+                        </div>
+                        <div class="floating-element floating-element-1">
+                            <i class="fab fa-react text-primary"></i>
+                        </div>
+                        <div class="floating-element floating-element-2">
+                            <i class="fab fa-js text-warning"></i>
+                        </div>
+                        <div class="floating-element floating-element-3">
+                            <i class="fab fa-node-js text-success"></i>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -93,69 +142,91 @@
     <!-- About Section -->
     <section id="about" class="py-5">
         <div class="container py-5">
-            <div class="row align-items-center">
-                <div class="col-lg-6 mb-5 mb-lg-0">
-                    <div class="position-relative p-4">
-                        <div
-                            class="position-absolute top-0 start-0 w-100 h-100 bg-gradient-primary rounded-4 opacity-10 blur-3xl">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6">
+                    <div class="position-relative">
+                        <img src="assets/images/profile.jpg" alt="Profile" class="img-fluid rounded-4 shadow-lg">
+                        <div class="about-experience-badge">
+                            <div class="experience-number">5+</div>
+                            <div class="experience-text">Years<br>Experience</div>
                         </div>
-                        <img src="assets/images/profile.jpg" alt="About Me"
-                            class="img-fluid rounded-4 position-relative z-1 border border-white border-opacity-10 shadow-lg">
                     </div>
                 </div>
-                <div class="col-lg-6 ps-lg-5">
-                    <h2 class="section-title">About Me</h2>
-                    <p class="section-subtitle mb-4">Passionate Full Stack Developer & UI/UX Enthusiast</p>
+                <div class="col-lg-6">
+                    <span
+                        class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25 rounded-pill px-4 py-2 mb-3">
+                        About Me
+                    </span>
+                    <h2 class="display-5 fw-bold mb-4">
+                        Passionate About Creating <span class="text-gradient">Digital Solutions</span>
+                    </h2>
+                    <p class="lead text-muted mb-4">
+                        I'm a Full Stack Developer with over 5 years of experience building modern web applications.
+                        My expertise spans across both frontend and backend technologies, allowing me to deliver
+                        complete digital solutions.
+                    </p>
 
-                    <p class="text-muted mb-4">With over 5 years of experience in building web applications, I
-                        specialize in
-                        creating seamless, user-centric digital products. My expertise spans across modern frontend
-                        frameworks and robust backend systems.</p>
+                    <div class="skills-section mb-5">
+                        <h4 class="h5 mb-4">Core Skills</h4>
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <div class="skill-item d-flex align-items-center">
+                                    <div class="skill-icon">
+                                        <i class="fas fa-code text-primary"></i>
+                                    </div>
+                                    <div class="ms-3">
+                                        <h6 class="mb-0">Clean Code</h6>
+                                        <small class="text-muted">Maintainable & Scalable</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="skill-item d-flex align-items-center">
+                                    <div class="skill-icon">
+                                        <i class="fas fa-paint-brush text-primary"></i>
+                                    </div>
+                                    <div class="ms-3">
+                                        <h6 class="mb-0">Modern Design</h6>
+                                        <small class="text-muted">UI/UX Focused</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="skill-item d-flex align-items-center">
+                                    <div class="skill-icon">
+                                        <i class="fas fa-mobile-alt text-primary"></i>
+                                    </div>
+                                    <div class="ms-3">
+                                        <h6 class="mb-0">Responsive</h6>
+                                        <small class="text-muted">All Devices</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="skill-item d-flex align-items-center">
+                                    <div class="skill-icon">
+                                        <i class="fas fa-chart-line text-primary"></i>
+                                    </div>
+                                    <div class="ms-3">
+                                        <h6 class="mb-0">SEO Optimized</h6>
+                                        <small class="text-muted">High Ranking</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                    <div class="row g-4 mb-4">
-                        <div class="col-6">
-                            <div class="d-flex align-items-center">
-                                <div class="flex-shrink-0 btn-sm-square rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center"
-                                    style="width: 40px; height: 40px;">
-                                    <i class="fas fa-check"></i>
-                                </div>
-                                <div class="ms-3">
-                                    <h6 class="mb-0 text-white">Clean Code</h6>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="d-flex align-items-center">
-                                <div class="flex-shrink-0 btn-sm-square rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center"
-                                    style="width: 40px; height: 40px;">
-                                    <i class="fas fa-check"></i>
-                                </div>
-                                <div class="ms-3">
-                                    <h6 class="mb-0 text-white">Modern Design</h6>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="d-flex align-items-center">
-                                <div class="flex-shrink-0 btn-sm-square rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center"
-                                    style="width: 40px; height: 40px;">
-                                    <i class="fas fa-check"></i>
-                                </div>
-                                <div class="ms-3">
-                                    <h6 class="mb-0 text-white">Responsive</h6>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="d-flex align-items-center">
-                                <div class="flex-shrink-0 btn-sm-square rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center"
-                                    style="width: 40px; height: 40px;">
-                                    <i class="fas fa-check"></i>
-                                </div>
-                                <div class="ms-3">
-                                    <h6 class="mb-0 text-white">SEO Optimized</h6>
-                                </div>
-                            </div>
+                    <div class="tech-stack">
+                        <h4 class="h5 mb-4">Tech Stack</h4>
+                        <div class="d-flex flex-wrap gap-2">
+                            <span class="tech-badge">React</span>
+                            <span class="tech-badge">Vue.js</span>
+                            <span class="tech-badge">Node.js</span>
+                            <span class="tech-badge">Express</span>
+                            <span class="tech-badge">MongoDB</span>
+                            <span class="tech-badge">PostgreSQL</span>
+                            <span class="tech-badge">TypeScript</span>
+                            <span class="tech-badge">Docker</span>
                         </div>
                     </div>
                 </div>
@@ -167,93 +238,173 @@
     <section id="services" class="py-5">
         <div class="container py-5">
             <div class="text-center mb-5">
-                <h2 class="section-title">My Services</h2>
-                <p class="section-subtitle mx-auto">I offer a wide range of services to help you build your digital
-                    presence.</p>
+                <span
+                    class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25 rounded-pill px-4 py-2 mb-3">
+                    Services
+                </span>
+                <h2 class="display-5 fw-bold mb-3">What I <span class="text-gradient">Offer</span></h2>
+                <p class="lead text-muted mx-auto" style="max-width: 600px;">
+                    Comprehensive digital solutions tailored to your business needs
+                </p>
             </div>
 
             <div class="row g-4">
-                <div class="col-md-4">
+                <div class="col-md-6 col-lg-4">
                     <div class="service-card">
-                        <div class="service-icon">
+                        <div class="service-icon-wrapper">
                             <i class="fas fa-code"></i>
                         </div>
-                        <h4>Web Development</h4>
-                        <p class="text-muted mt-3">Building fast, responsive, and secure websites using the latest
-                            technologies.</p>
+                        <h4 class="h3 fw-bold mb-3">Web Development</h4>
+                        <p class="text-muted">
+                            Building fast, responsive, and scalable websites using modern frameworks and best practices.
+                        </p>
+                        <ul class="service-features">
+                            <li>Custom Web Applications</li>
+                            <li>E-commerce Solutions</li>
+                            <li>API Development</li>
+                            <li>Performance Optimization</li>
+                        </ul>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6 col-lg-4">
                     <div class="service-card">
-                        <div class="service-icon">
+                        <div class="service-icon-wrapper">
                             <i class="fas fa-paint-brush"></i>
                         </div>
-                        <h4>UI/UX Design</h4>
-                        <p class="text-muted mt-3">Creating intuitive and beautiful interfaces that provide great user
-                            experiences.</p>
+                        <h4 class="h3 fw-bold mb-3">UI/UX Design</h4>
+                        <p class="text-muted">
+                            Creating intuitive and beautiful interfaces that provide exceptional user experiences.
+                        </p>
+                        <ul class="service-features">
+                            <li>User Research</li>
+                            <li>Wireframing & Prototyping</li>
+                            <li>Visual Design</li>
+                            <li>Design Systems</li>
+                        </ul>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6 col-lg-4">
                     <div class="service-card">
-                        <div class="service-icon">
+                        <div class="service-icon-wrapper">
                             <i class="fas fa-mobile-alt"></i>
                         </div>
-                        <h4>Mobile Apps</h4>
-                        <p class="text-muted mt-3">Developing cross-platform mobile applications for iOS and Android.
+                        <h4 class="h3 fw-bold mb-3">Mobile Apps</h4>
+                        <p class="text-muted">
+                            Developing cross-platform mobile applications for iOS and Android using React Native.
                         </p>
+                        <ul class="service-features">
+                            <li>Cross-Platform Development</li>
+                            <li>Native App Development</li>
+                            <li>App Store Deployment</li>
+                            <li>Maintenance & Updates</li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Portfolio Section (GitHub Repos) -->
+    <!-- Portfolio Section -->
     <section id="portfolio" class="py-5">
         <div class="container py-5">
             <div class="text-center mb-5">
-                <h2 class="section-title">Open Source</h2>
-                <p class="section-subtitle mx-auto">My contributions to the open source community.</p>
+                <span
+                    class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25 rounded-pill px-4 py-2 mb-3">
+                    Portfolio
+                </span>
+                <h2 class="display-5 fw-bold mb-3">Featured <span class="text-gradient">Projects</span></h2>
+                <p class="lead text-muted mx-auto" style="max-width: 600px;">
+                    A selection of my recent work and open source contributions
+                </p>
             </div>
 
             <div class="row g-4" id="github-repos-container">
-                <!-- Repos will be loaded here -->
+                <!-- GitHub repos will be loaded here -->
                 <div class="col-12 text-center">
                     <div class="spinner-border text-primary" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
                 </div>
             </div>
-            <div class="text-center mt-5">
-                <a href="https://github.com/" target="_blank" id="github-profile-link"
-                    class="btn btn-outline-light rounded-pill">View All Repositories</a>
-            </div>
         </div>
     </section>
-
 
     <!-- Contact Section -->
     <section id="contact" class="py-5">
         <div class="container py-5">
             <div class="row justify-content-center">
                 <div class="col-lg-8 text-center">
-                    <h2 class="section-title">Get In Touch</h2>
-                    <p class="section-subtitle mx-auto">Have a project in mind? Let's talk about it.</p>
+                    <span
+                        class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25 rounded-pill px-4 py-2 mb-3">
+                        Contact
+                    </span>
+                    <h2 class="display-5 fw-bold mb-3">Let's Build <span class="text-gradient">Something</span> Amazing
+                    </h2>
+                    <p class="lead text-muted mb-5 mx-auto" style="max-width: 600px;">
+                        Have a project in mind? I'd love to hear about it. Send me a message and let's discuss how we
+                        can work together.
+                    </p>
+
+                    <div class="row g-4 mb-5">
+                        <div class="col-md-4">
+                            <div class="contact-info">
+                                <div class="contact-icon">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <h5>Email</h5>
+                                <a href="mailto:hello@example.com" class="text-muted">hello@example.com</a>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="contact-info">
+                                <div class="contact-icon">
+                                    <i class="fas fa-phone"></i>
+                                </div>
+                                <h5>Phone</h5>
+                                <a href="tel:+6281363364465" class="text-muted">+62 813 6336 4465</a>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="contact-info">
+                                <div class="contact-icon">
+                                    <i class="fab fa-whatsapp"></i>
+                                </div>
+                                <h5>WhatsApp</h5>
+                                <a href="https://wa.me/6281363364465" target="_blank" class="text-muted">Chat Now</a>
+                            </div>
+                        </div>
+                    </div>
 
                     <form class="row g-4 mt-4 text-start" id="contact-form">
                         <div class="col-md-6">
-                            <input type="text" class="form-control" placeholder="Your Name" required>
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="name" placeholder="Your Name" required>
+                                <label for="name">Your Name</label>
+                            </div>
                         </div>
                         <div class="col-md-6">
-                            <input type="email" class="form-control" placeholder="Your Email" required>
+                            <div class="form-floating">
+                                <input type="email" class="form-control" id="email" placeholder="Your Email" required>
+                                <label for="email">Your Email</label>
+                            </div>
                         </div>
                         <div class="col-12">
-                            <input type="text" class="form-control" placeholder="Subject" required>
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="subject" placeholder="Subject" required>
+                                <label for="subject">Subject</label>
+                            </div>
                         </div>
                         <div class="col-12">
-                            <textarea class="form-control" rows="5" placeholder="Message" required></textarea>
+                            <div class="form-floating">
+                                <textarea class="form-control" id="message" placeholder="Message" style="height: 150px;"
+                                    required></textarea>
+                                <label for="message">Message</label>
+                            </div>
                         </div>
                         <div class="col-12 text-center mt-4">
-                            <button type="submit" class="btn btn-primary btn-lg px-5">Send Message</button>
+                            <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5">
+                                <i class="fas fa-paper-plane me-2"></i>Send Message
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -261,27 +412,84 @@
         </div>
     </section>
 
-    <footer class="text-center">
+    <!-- Footer -->
+    <footer class="py-5">
         <div class="container">
-            <div class="d-flex justify-content-center mb-4">
-                <a href="https://github.com/ictfinger" target="_blank" class="social-link"><i
-                        class="fab fa-github"></i></a>
-                <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
-                <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+            <div class="row align-items-center">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <a href="index.html" class="navbar-brand fw-bold fs-3 mb-3 d-block">
+                        <span class="text-gradient">Tirto Lesmana Lutvi</span>
+                    </a>
+                    <p class="text-muted">
+                        Creating digital experiences that blend design and technology to drive business success.
+                    </p>
+                </div>
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <div class="text-center">
+                        <div class="social-links d-flex justify-content-center gap-3 mb-4">
+                            <a href="https://github.com/ictfinger" target="_blank" class="social-link">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            <a href="#" class="social-link">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                            <a href="#" class="social-link">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="social-link">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                        </div>
+                        <p class="text-muted small mb-0">
+                            Available for freelance work and collaborations
+                        </p>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="text-lg-end">
+                        <a href="https://wa.me/6281363364465" target="_blank"
+                            class="btn btn-outline-light rounded-pill px-4 mb-3">
+                            <i class="fab fa-whatsapp me-2"></i>Start a Project
+                        </a>
+                        <p class="text-muted small">
+                            © <span id="current-year"></span> Tirto Lesmana Lutvi. All rights reserved.
+                        </p>
+                    </div>
+                </div>
             </div>
-            <p class="mb-0 text-muted small">&copy; <span id="current-year"></span> Portfolio. All rights reserved.</p>
         </div>
     </footer>
 
-    <!-- Bootstrap 5 JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap 5.3 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Custom JS -->
     <script src="assets/js/script.js"></script>
     <script src="assets/js/github_api.js"></script>
     <script>
         // Set current year
         document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Form submission
+        document.getElementById('contact-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            // Add your form submission logic here
+            alert('Thank you for your message! I will get back to you soon.');
+            this.reset();
+        });
     </script>
 </body>
 
