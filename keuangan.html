@@ -4,15 +4,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>MoneyScan - Aplikasi Keuangan & Scan Barcode</title>
+    <title>ReceiptScan - Scan Struk & Analisis Keuangan</title>
+
     <!-- Bootstrap 5.3 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- QuaggaJS for Barcode Scanner -->
-    <script src="https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js"></script>
+
+    <!-- Tesseract.js for OCR -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+
+    <!-- Cropper.js for image editing -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+
     <!-- Animate CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 
@@ -20,309 +29,38 @@
         :root {
             --primary-color: #4361ee;
             --secondary-color: #3a0ca3;
-            --success-color: #4cc9f0;
-            --danger-color: #f72585;
-            --warning-color: #f8961e;
-            --info-color: #7209b7;
+            --success-color: #06d6a0;
+            --danger-color: #ef476f;
+            --warning-color: #ffd166;
+            --info-color: #118ab2;
             --light-bg: #f8f9fa;
-            --dark-bg: #212529;
-            --card-radius: 15px;
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --dark-bg: #121826;
+            --card-radius: 16px;
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 15px 40px rgba(0, 0, 0, 0.12);
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --gradient-primary: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+            --gradient-success: linear-gradient(135deg, #06d6a0 0%, #049e76 100%);
+            --gradient-danger: linear-gradient(135deg, #ef476f 0%, #c51c4a 100%);
         }
 
         [data-bs-theme="dark"] {
-            --light-bg: #1a1d28;
-            --dark-bg: #12141c;
+            --light-bg: #1a1f36;
+            --dark-bg: #0f1320;
         }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            background: var(--light-bg);
+            color: var(--bs-body-color);
             min-height: 100vh;
             overflow-x: hidden;
-        }
-
-        [data-bs-theme="dark"] body {
-            background: linear-gradient(135deg, #12141c 0%, #1a1d28 100%);
-        }
-
-        /* Header */
-        .app-header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 1.5rem 0;
-            border-radius: 0 0 var(--card-radius) var(--card-radius);
-            box-shadow: var(--shadow);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .app-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
-        }
-
-        /* Card Styles */
-        .finance-card {
-            background: var(--bs-body-bg);
-            border-radius: var(--card-radius);
-            box-shadow: var(--shadow);
-            border: none;
-            transition: var(--transition);
-            margin-bottom: 1.5rem;
-        }
-
-        .finance-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-        }
-
-        /* Scanner Modal */
-        .scanner-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 1050;
-            display: none;
-        }
-
-        .scanner-container {
-            position: relative;
-            width: 100%;
-            max-width: 600px;
-            margin: 2rem auto;
-        }
-
-        #scanner {
-            width: 100%;
-            height: 400px;
-            background: #000;
-            border-radius: var(--card-radius);
-            overflow: hidden;
-        }
-
-        .scanner-overlay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80%;
-            height: 200px;
-            border: 2px solid var(--primary-color);
-            border-radius: 10px;
-            animation: scanner-pulse 2s infinite;
-        }
-
-        @keyframes scanner-pulse {
-            0% {
-                border-color: var(--primary-color);
-            }
-
-            50% {
-                border-color: var(--success-color);
-            }
-
-            100% {
-                border-color: var(--primary-color);
-            }
-        }
-
-        /* Expense List */
-        .expense-list {
-            max-height: 400px;
-            overflow-y: auto;
-            padding-right: 10px;
-        }
-
-        .expense-item {
-            background: var(--bs-body-bg);
-            border-radius: 10px;
-            padding: 1rem;
-            margin-bottom: 0.75rem;
-            border-left: 4px solid;
-            transition: var(--transition);
-            border: 1px solid var(--bs-border-color);
-        }
-
-        .expense-item:hover {
-            transform: translateX(5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .expense-item.food {
-            border-left-color: #ff6b6b;
-        }
-
-        .expense-item.transport {
-            border-left-color: #4ecdc4;
-        }
-
-        .expense-item.shopping {
-            border-left-color: #ffd166;
-        }
-
-        .expense-item.entertainment {
-            border-left-color: #06d6a0;
-        }
-
-        .expense-item.bills {
-            border-left-color: #118ab2;
-        }
-
-        .expense-item.other {
-            border-left-color: #9d4edd;
-        }
-
-        /* Budget Progress */
-        .budget-progress {
-            height: 20px;
-            border-radius: 10px;
-            overflow: hidden;
-            background: var(--bs-secondary-bg);
-        }
-
-        .budget-progress-bar {
-            height: 100%;
-            border-radius: 10px;
-            transition: width 1s ease;
-        }
-
-        /* Quick Actions */
-        .quick-action-btn {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            box-shadow: var(--shadow);
-            cursor: pointer;
-            transition: var(--transition);
-            border: none;
-        }
-
-        .quick-action-btn:hover {
-            transform: scale(1.1) rotate(5deg);
-        }
-
-        /* AI Suggestion */
-        .ai-suggestion {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: var(--card-radius);
-            padding: 1.5rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .ai-suggestion::before {
-            content: '🤖';
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 2rem;
-            opacity: 0.2;
-        }
-
-        /* Dark Mode Toggle */
-        .theme-toggle {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1000;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: var(--primary-color);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: var(--shadow);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .theme-toggle:hover {
-            transform: rotate(30deg) scale(1.1);
-        }
-
-        /* Animations */
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.05);
-            }
-
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        .shake {
-            animation: shake 0.5s;
-        }
-
-        @keyframes shake {
-
-            0%,
-            100% {
-                transform: translateX(0);
-            }
-
-            10%,
-            30%,
-            50%,
-            70%,
-            90% {
-                transform: translateX(-5px);
-            }
-
-            20%,
-            40%,
-            60%,
-            80% {
-                transform: translateX(5px);
-            }
-        }
-
-        /* Mobile Optimizations */
-        @media (max-width: 768px) {
-            .scanner-container {
-                margin: 1rem;
-            }
-
-            #scanner {
-                height: 300px;
-            }
-
-            .quick-action-btn {
-                width: 50px;
-                height: 50px;
-                font-size: 1.2rem;
-            }
         }
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
+            height: 8px;
         }
 
         ::-webkit-scrollbar-track {
@@ -335,12 +73,185 @@
             border-radius: 10px;
         }
 
+        /* Navbar */
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Dashboard Cards */
+        .dashboard-card {
+            background: var(--bs-body-bg);
+            border-radius: var(--card-radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--bs-border-color);
+            transition: var(--transition);
+            overflow: hidden;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .dashboard-card .card-header {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 1.25rem;
+        }
+
+        .dashboard-card .card-body {
+            padding: 1.5rem;
+        }
+
+        /* Stat Cards */
+        .stat-card {
+            background: var(--bs-body-bg);
+            border-radius: var(--card-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--bs-border-color);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Scanner Modal */
+        .scanner-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1050;
+            display: none;
+        }
+
+        .scanner-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+
+        .scanner-preview {
+            width: 100%;
+            height: 400px;
+            background: #000;
+            border-radius: var(--card-radius);
+            overflow: hidden;
+            position: relative;
+        }
+
+        #scannerCanvas {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .scanner-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 200px;
+            border: 2px dashed rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+            pointer-events: none;
+        }
+
+        /* Expense Items */
+        .expense-item {
+            background: var(--bs-body-bg);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border-left: 4px solid;
+            transition: var(--transition);
+            border: 1px solid var(--bs-border-color);
+        }
+
+        .expense-item:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow);
+        }
+
+        .expense-item.food {
+            border-left-color: #06d6a0;
+        }
+
+        .expense-item.transport {
+            border-left-color: #4361ee;
+        }
+
+        .expense-item.shopping {
+            border-left-color: #ffd166;
+        }
+
+        .expense-item.entertainment {
+            border-left-color: #ef476f;
+        }
+
+        .expense-item.bills {
+            border-left-color: #118ab2;
+        }
+
+        .expense-item.health {
+            border-left-color: #9d4edd;
+        }
+
+        .expense-item.education {
+            border-left-color: #f8961e;
+        }
+
+        .expense-item.other {
+            border-left-color: #6c757d;
+        }
+
         /* Category Badges */
         .category-badge {
             padding: 0.25rem 0.75rem;
             border-radius: 20px;
             font-size: 0.75rem;
             font-weight: 600;
+            background: var(--bs-secondary-bg);
+            color: var(--bs-body-color);
+        }
+
+        /* Progress Bars */
+        .budget-progress {
+            height: 10px;
+            border-radius: 5px;
+            background: var(--bs-secondary-bg);
+            overflow: hidden;
+        }
+
+        .budget-progress-bar {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 0.5s ease;
         }
 
         /* Toast Notifications */
@@ -348,8 +259,8 @@
             position: fixed;
             top: 20px;
             right: 20px;
-            z-index: 1050;
-            max-width: 300px;
+            z-index: 1060;
+            max-width: 350px;
         }
 
         /* Loading Spinner */
@@ -368,15 +279,153 @@
                 transform: rotate(360deg);
             }
         }
+
+        /* AI Suggestions */
+        .ai-suggestion {
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.1) 0%, rgba(58, 12, 163, 0.1) 100%);
+            border: 1px solid rgba(67, 97, 238, 0.2);
+            border-radius: var(--card-radius);
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-suggestion::before {
+            content: '🤖';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 2rem;
+            opacity: 0.1;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bs-secondary-bg);
+            border: 1px solid var(--bs-border-color);
+            color: var(--bs-body-color);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            background: var(--bs-primary-bg-subtle);
+            transform: rotate(30deg);
+        }
+
+        /* Quick Actions */
+        .quick-action-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            background: var(--bs-body-bg);
+            border: 1px solid var(--bs-border-color);
+            color: var(--bs-body-color);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .quick-action-btn:hover {
+            transform: translateY(-3px);
+            background: var(--bs-primary-bg-subtle);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        /* OCR Results */
+        .ocr-results {
+            max-height: 300px;
+            overflow-y: auto;
+            background: var(--bs-secondary-bg);
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+        }
+
+        /* Animation Classes */
+        .animate-pop {
+            animation: pop 0.3s ease;
+        }
+
+        @keyframes pop {
+            0% {
+                transform: scale(0.95);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .slide-up {
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            0% {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .scanner-container {
+                margin: 1rem;
+                padding: 0.5rem;
+            }
+
+            .scanner-preview {
+                height: 300px;
+            }
+
+            .dashboard-card .card-body {
+                padding: 1rem;
+            }
+        }
+
+        /* Chart Containers */
+        .chart-container {
+            position: relative;
+            height: 250px;
+            width: 100%;
+        }
+
+        /* Merchant Logo */
+        .merchant-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            background: var(--bs-secondary-bg);
+            color: var(--bs-body-color);
+        }
     </style>
 </head>
 
 <body>
-    <!-- Theme Toggle -->
-    <div class="theme-toggle" id="themeToggle">
-        <i class="bi bi-moon-fill" id="themeIcon"></i>
-    </div>
-
     <!-- Toast Container -->
     <div id="toastContainer" class="custom-toast"></div>
 
@@ -384,359 +433,401 @@
     <div class="scanner-modal" id="scannerModal">
         <div class="scanner-container">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="text-white mb-0">Scan Barcode Produk</h5>
-                <button class="btn btn-danger" onclick="closeScanner()">
-                    <i class="bi bi-x-lg"></i>
-                </button>
+                <h5 class="text-white mb-0">
+                    <i class="bi bi-receipt me-2"></i>Scan Struk Belanja
+                </h5>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-light btn-sm" onclick="toggleCamera()">
+                        <i class="bi bi-camera-video"></i>
+                    </button>
+                    <button class="btn btn-outline-light btn-sm" onclick="takePhoto()">
+                        <i class="bi bi-camera"></i>
+                    </button>
+                    <button class="btn btn-danger" onclick="closeScanner()">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
             </div>
-            <div id="scanner"></div>
-            <div class="scanner-overlay"></div>
+
+            <div class="scanner-preview">
+                <video id="cameraFeed" autoplay playsinline style="display: none; width: 100%; height: 100%;"></video>
+                <canvas id="scannerCanvas"></canvas>
+                <div class="scanner-overlay"></div>
+            </div>
+
             <div class="text-center mt-3">
-                <p class="text-white mb-2">Arahkan kamera ke barcode produk</p>
-                <button class="btn btn-outline-light" onclick="toggleCamera()">
-                    <i class="bi bi-camera-video"></i> Ganti Kamera
+                <p class="text-white mb-3">Arahkan kamera ke struk belanja atau upload gambar</p>
+                <div class="d-flex justify-content-center gap-2">
+                    <button class="btn btn-primary" onclick="startCamera()">
+                        <i class="bi bi-camera"></i> Buka Kamera
+                    </button>
+                    <label class="btn btn-success" for="receiptUpload">
+                        <i class="bi bi-upload"></i> Upload Gambar
+                    </label>
+                    <input type="file" id="receiptUpload" accept="image/*" style="display: none;"
+                        onchange="uploadReceipt(event)">
+                    <button class="btn btn-warning" onclick="processOCR()" id="processBtn" disabled>
+                        <i class="bi bi-gear"></i> Proses OCR
+                    </button>
+                </div>
+            </div>
+
+            <div class="mt-4" id="ocrResultsContainer" style="display: none;">
+                <h6 class="text-white mb-2">Hasil Scan:</h6>
+                <div class="ocr-results" id="ocrResults"></div>
+                <button class="btn btn-success w-100 mt-3" onclick="extractExpenseData()">
+                    <i class="bi bi-check-lg"></i> Ekstrak Data Pengeluaran
                 </button>
             </div>
         </div>
     </div>
 
-    <div class="container-fluid px-3 px-md-4 px-lg-5 pb-5">
-        <!-- Header -->
-        <header class="app-header mb-4">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-md-6">
-                        <h1 class="display-6 fw-bold mb-2">
-                            <i class="bi bi-cash-stack"></i> MoneyScan
-                        </h1>
-                        <p class="mb-0">Kelola keuangan, scan barcode, analisis pengeluaran secara real-time</p>
-                    </div>
-                    <div class="col-md-6 text-end">
-                        <div class="d-flex justify-content-end gap-3">
-                            <button class="btn btn-outline-light" onclick="exportData()">
-                                <i class="bi bi-download"></i> Export
-                            </button>
-                            <button class="btn btn-light" onclick="importData()">
-                                <i class="bi bi-upload"></i> Import
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </header>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-body border-bottom sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-receipt-cutoff me-2"></i>ReceiptScan
+            </a>
 
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">
+                            <i class="bi bi-speedometer2 me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showExpenseHistory()">
+                            <i class="bi bi-clock-history me-1"></i>Riwayat
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showAnalytics()">
+                            <i class="bi bi-graph-up me-1"></i>Analisis
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showBudget()">
+                            <i class="bi bi-wallet2 me-1"></i>Budget
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="d-flex align-items-center gap-3">
+                    <div class="theme-toggle" id="themeToggle">
+                        <i class="bi bi-moon-fill" id="themeIcon"></i>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="openScanner()">
+                        <i class="bi bi-camera me-1"></i>Scan Struk
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid px-3 px-md-4 px-lg-5 py-4">
         <!-- Quick Stats -->
-        <div class="row mb-4">
-            <div class="col-md-3 col-sm-6">
-                <div class="finance-card p-3">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-muted mb-1">Saldo Hari Ini</h6>
-                            <h3 class="mb-0" id="todayBalance">Rp 0</h3>
+        <div class="row mb-4 g-3">
+            <div class="col-xl-3 col-md-6">
+                <div class="stat-card slide-up">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon bg-primary bg-opacity-10 text-primary">
+                            <i class="bi bi-cash-stack"></i>
                         </div>
-                        <div class="fs-1 text-success">
-                            <i class="bi bi-wallet2"></i>
+                        <div class="ms-3">
+                            <h6 class="text-muted mb-1">Total Bulan Ini</h6>
+                            <h3 class="mb-0" id="monthTotal">Rp 0</h3>
                         </div>
                     </div>
-                    <div class="mt-2">
+                    <div class="mt-3">
                         <small class="text-success">
-                            <i class="bi bi-arrow-up-right"></i> Dibandingkan kemarin
+                            <i class="bi bi-arrow-up-right me-1"></i>
+                            <span id="monthChange">0%</span> vs bulan lalu
                         </small>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 col-sm-6">
-                <div class="finance-card p-3">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-muted mb-1">Pengeluaran Bulan Ini</h6>
-                            <h3 class="mb-0" id="monthExpense">Rp 0</h3>
+
+            <div class="col-xl-3 col-md-6">
+                <div class="stat-card slide-up" style="animation-delay: 0.1s;">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon bg-success bg-opacity-10 text-success">
+                            <i class="bi bi-calendar-check"></i>
                         </div>
-                        <div class="fs-1 text-danger">
-                            <i class="bi bi-arrow-down-left"></i>
+                        <div class="ms-3">
+                            <h6 class="text-muted mb-1">Hari Ini</h6>
+                            <h3 class="mb-0" id="todayTotal">Rp 0</h3>
                         </div>
                     </div>
-                    <div class="mt-2">
-                        <small class="text-danger" id="monthComparison">
-                            <i class="bi bi-arrow-down-right"></i> 0% vs bulan lalu
+                    <div class="mt-3">
+                        <small class="text-danger" id="todayStatus">
+                            <i class="bi bi-dash-circle me-1"></i>Belum ada pengeluaran
                         </small>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 col-sm-6">
-                <div class="finance-card p-3">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-muted mb-1">Target Hemat</h6>
-                            <h3 class="mb-0" id="savingTarget">Rp 0</h3>
+
+            <div class="col-xl-3 col-md-6">
+                <div class="stat-card slide-up" style="animation-delay: 0.2s;">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon bg-warning bg-opacity-10 text-warning">
+                            <i class="bi bi-pie-chart"></i>
                         </div>
-                        <div class="fs-1 text-warning">
-                            <i class="bi bi-piggy-bank"></i>
-                        </div>
-                    </div>
-                    <div class="mt-2">
-                        <small class="text-warning" id="savingProgress">
-                            <i class="bi bi-circle"></i> 0% tercapai
-                        </small>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6">
-                <div class="finance-card p-3">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-muted mb-1">Transaksi Hari Ini</h6>
-                            <h3 class="mb-0" id="todayTransactions">0</h3>
-                        </div>
-                        <div class="fs-1 text-info">
-                            <i class="bi bi-receipt"></i>
+                        <div class="ms-3">
+                            <h6 class="text-muted mb-1">Rata-rata Harian</h6>
+                            <h3 class="mb-0" id="dailyAverage">Rp 0</h3>
                         </div>
                     </div>
-                    <div class="mt-2">
+                    <div class="mt-3">
                         <small class="text-info">
-                            <i class="bi bi-clock-history"></i> Update real-time
+                            <i class="bi bi-graph-up me-1"></i>Trend pengeluaran
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6">
+                <div class="stat-card slide-up" style="animation-delay: 0.3s;">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon bg-info bg-opacity-10 text-info">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+                        <div class="ms-3">
+                            <h6 class="text-muted mb-1">Budget Tersisa</h6>
+                            <h3 class="mb-0" id="budgetRemaining">Rp 0</h3>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <small class="text-primary" id="budgetStatus">
+                            <i class="bi bi-circle me-1"></i>0% terpakai
                         </small>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Main Content -->
-        <div class="row">
-            <!-- Left Column - Input & Scanner -->
-            <div class="col-lg-4">
-                <!-- Quick Add Expense -->
-                <div class="finance-card p-4 mb-4">
-                    <h5 class="mb-3">
-                        <i class="bi bi-plus-circle"></i> Tambah Pengeluaran
-                    </h5>
-                    <div class="mb-3">
-                        <label class="form-label">Jumlah (Rp)</label>
-                        <input type="number" class="form-control" id="amountInput" placeholder="Contoh: 50000" min="0">
+        <!-- Main Dashboard -->
+        <div class="row g-4">
+            <!-- Left Column - Charts -->
+            <div class="col-lg-8">
+                <!-- Monthly Overview -->
+                <div class="dashboard-card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-calendar-month me-2"></i>Overview Bulanan
+                        </h5>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Kategori</label>
-                        <select class="form-select" id="categorySelect">
-                            <option value="food">Makanan & Minuman</option>
-                            <option value="transport">Transportasi</option>
-                            <option value="shopping">Belanja</option>
-                            <option value="entertainment">Hiburan</option>
-                            <option value="bills">Tagihan & Utilitas</option>
-                            <option value="other">Lainnya</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Deskripsi</label>
-                        <input type="text" class="form-control" id="descriptionInput" placeholder="Contoh: Makan siang">
-                    </div>
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-primary" onclick="addExpense()">
-                            <i class="bi bi-check-lg"></i> Simpan Pengeluaran
-                        </button>
-                        <button class="btn btn-outline-primary" onclick="openScanner()">
-                            <i class="bi bi-upc-scan"></i> Scan Barcode
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Quick Actions -->
-                <div class="finance-card p-4 mb-4">
-                    <h5 class="mb-3">
-                        <i class="bi bi-lightning"></i> Aksi Cepat
-                    </h5>
-                    <div class="row g-2">
-                        <div class="col-4">
-                            <button class="quick-action-btn btn btn-success w-100"
-                                onclick="quickExpense(10000, 'food')">
-                                <i class="bi bi-cup-hot"></i>
-                            </button>
-                            <small class="d-block text-center mt-1">Kopi</small>
-                        </div>
-                        <div class="col-4">
-                            <button class="quick-action-btn btn btn-info w-100"
-                                onclick="quickExpense(5000, 'transport')">
-                                <i class="bi bi-bus-front"></i>
-                            </button>
-                            <small class="d-block text-center mt-1">Transport</small>
-                        </div>
-                        <div class="col-4">
-                            <button class="quick-action-btn btn btn-warning w-100"
-                                onclick="quickExpense(20000, 'food')">
-                                <i class="bi bi-egg-fried"></i>
-                            </button>
-                            <small class="d-block text-center mt-1">Makan</small>
-                        </div>
-                        <div class="col-4">
-                            <button class="quick-action-btn btn btn-danger w-100" onclick="setBudget()">
-                                <i class="bi bi-calculator"></i>
-                            </button>
-                            <small class="d-block text-center mt-1">Budget</small>
-                        </div>
-                        <div class="col-4">
-                            <button class="quick-action-btn btn btn-primary w-100" onclick="showInsights()">
-                                <i class="bi bi-graph-up"></i>
-                            </button>
-                            <small class="d-block text-center mt-1">Analisis</small>
-                        </div>
-                        <div class="col-4">
-                            <button class="quick-action-btn btn btn-secondary w-100" onclick="showReport()">
-                                <i class="bi bi-file-text"></i>
-                            </button>
-                            <small class="d-block text-center mt-1">Laporan</small>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="monthlyChart"></canvas>
                         </div>
                     </div>
                 </div>
 
-                <!-- Budget Progress -->
-                <div class="finance-card p-4">
-                    <h5 class="mb-3">
-                        <i class="bi bi-speedometer2"></i> Progress Budget
-                    </h5>
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between mb-1">
-                            <span>Makanan</span>
-                            <span id="foodProgress">Rp 0/500k</span>
-                        </div>
-                        <div class="budget-progress">
-                            <div class="budget-progress-bar bg-danger" id="foodBar" style="width: 0%"></div>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between mb-1">
-                            <span>Transportasi</span>
-                            <span id="transportProgress">Rp 0/300k</span>
-                        </div>
-                        <div class="budget-progress">
-                            <div class="budget-progress-bar bg-info" id="transportBar" style="width: 0%"></div>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between mb-1">
-                            <span>Belanja</span>
-                            <span id="shoppingProgress">Rp 0/1jt</span>
-                        </div>
-                        <div class="budget-progress">
-                            <div class="budget-progress-bar bg-warning" id="shoppingBar" style="width: 0%"></div>
+                <!-- Recent Transactions & Quick Add -->
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="dashboard-card h-100">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-clock-history me-2"></i>Transaksi Terbaru
+                                </h5>
+                                <button class="btn btn-sm btn-light" onclick="refreshExpenses()">
+                                    <i class="bi bi-arrow-clockwise"></i>
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div class="expense-list" id="expenseList" style="max-height: 300px;">
+                                    <!-- Expenses will be loaded here -->
+                                    <div class="text-center py-4">
+                                        <i class="bi bi-receipt fs-1 text-muted mb-3"></i>
+                                        <p class="text-muted">Belum ada transaksi</p>
+                                        <button class="btn btn-primary btn-sm" onclick="openScanner()">
+                                            <i class="bi bi-camera me-1"></i>Scan Struk Pertama
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <button class="btn btn-outline-primary w-100" onclick="setBudget()">
-                        <i class="bi bi-pencil"></i> Atur Budget
-                    </button>
+
+                    <div class="col-md-6">
+                        <div class="dashboard-card h-100">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-plus-circle me-2"></i>Tambah Cepat
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <form id="quickExpenseForm" onsubmit="return addQuickExpense()">
+                                    <div class="mb-3">
+                                        <label class="form-label">Jumlah (Rp)</label>
+                                        <input type="number" class="form-control" id="quickAmount" placeholder="50.000"
+                                            required min="0">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Kategori</label>
+                                        <select class="form-select" id="quickCategory" required>
+                                            <option value="food">🍔 Makanan & Minuman</option>
+                                            <option value="transport">🚗 Transportasi</option>
+                                            <option value="shopping">🛍️ Belanja</option>
+                                            <option value="entertainment">🎬 Hiburan</option>
+                                            <option value="bills">💡 Tagihan</option>
+                                            <option value="health">🏥 Kesehatan</option>
+                                            <option value="education">📚 Pendidikan</option>
+                                            <option value="other">📦 Lainnya</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Deskripsi</label>
+                                        <input type="text" class="form-control" id="quickDescription"
+                                            placeholder="Contoh: Makan siang di resto" required>
+                                    </div>
+
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="bi bi-check-lg me-1"></i>Simpan
+                                        </button>
+                                    </div>
+                                </form>
+
+                                <div class="mt-3">
+                                    <p class="text-muted small mb-2">Klik cepat:</p>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <button class="btn btn-sm btn-outline-primary" onclick="setQuickAmount(20000)">
+                                            Rp 20K
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-primary" onclick="setQuickAmount(50000)">
+                                            Rp 50K
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-primary" onclick="setQuickAmount(100000)">
+                                            Rp 100K
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-success" onclick="scanFromCamera()">
+                                            <i class="bi bi-camera"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Middle Column - Recent Expenses & AI Suggestions -->
-            <div class="col-lg-5">
-                <!-- Recent Expenses -->
-                <div class="finance-card p-4 mb-4">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
+            <!-- Right Column - Analytics & AI -->
+            <div class="col-lg-4">
+                <!-- Category Distribution -->
+                <div class="dashboard-card mb-4">
+                    <div class="card-header">
                         <h5 class="mb-0">
-                            <i class="bi bi-clock-history"></i> Pengeluaran Terbaru
+                            <i class="bi bi-pie-chart me-2"></i>Distribusi Kategori
                         </h5>
-                        <button class="btn btn-sm btn-outline-secondary" onclick="clearAllExpenses()">
-                            <i class="bi bi-trash"></i> Hapus Semua
-                        </button>
                     </div>
-                    <div class="expense-list" id="expenseList">
-                        <!-- Expenses will be loaded here -->
-                        <div class="text-center py-5">
-                            <i class="bi bi-receipt fs-1 text-muted"></i>
-                            <p class="text-muted mt-2">Belum ada pengeluaran hari ini</p>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="categoryChart"></canvas>
+                        </div>
+                        <div class="mt-3" id="categoryStats">
+                            <!-- Category stats will be loaded here -->
                         </div>
                     </div>
                 </div>
 
                 <!-- AI Suggestions -->
                 <div class="ai-suggestion mb-4">
-                    <h5 class="mb-2">
-                        <i class="bi bi-robot"></i> Saran Keuangan AI
-                    </h5>
-                    <p id="aiSuggestionText">
-                        Mulai catat pengeluaran Anda untuk mendapatkan saran personal!
+                    <h6 class="mb-2">
+                        <i class="bi bi-robot me-2"></i>Saran Keuangan AI
+                    </h6>
+                    <p id="aiSuggestionText" class="mb-3">
+                        Scan struk belanja Anda untuk mendapatkan analisis pengeluaran yang lebih akurat.
                     </p>
                     <div class="d-flex gap-2">
-                        <button class="btn btn-light btn-sm" onclick="getAISuggestion()">
-                            <i class="bi bi-arrow-clockwise"></i> Saran Baru
+                        <button class="btn btn-sm btn-light" onclick="getAISuggestion()">
+                            <i class="bi bi-lightbulb"></i> Saran Baru
                         </button>
-                        <button class="btn btn-outline-light btn-sm" onclick="showDetailedAnalysis()">
-                            <i class="bi bi-bar-chart"></i> Analisis Detail
+                        <button class="btn btn-sm btn-outline-light" onclick="showSpendingPatterns()">
+                            <i class="bi bi-graph-up"></i> Pola Pengeluaran
                         </button>
                     </div>
                 </div>
 
-                <!-- Monthly Analysis -->
-                <div class="finance-card p-4">
-                    <h5 class="mb-3">
-                        <i class="bi bi-calendar-month"></i> Analisis Bulanan
-                    </h5>
-                    <div class="chart-container">
-                        <canvas id="monthlyChart" height="200"></canvas>
+                <!-- Budget Progress -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-speedometer2 me-2"></i>Progress Budget
+                        </h5>
                     </div>
-                </div>
-            </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <small>Makanan & Minuman</small>
+                                <small id="foodBudget">Rp 0/500k</small>
+                            </div>
+                            <div class="budget-progress">
+                                <div class="budget-progress-bar bg-success" id="foodProgress" style="width: 0%"></div>
+                            </div>
+                        </div>
 
-            <!-- Right Column - Charts & Analysis -->
-            <div class="col-lg-3">
-                <!-- Expense Distribution -->
-                <div class="finance-card p-4 mb-4">
-                    <h5 class="mb-3">
-                        <i class="bi bi-pie-chart"></i> Distribusi Pengeluaran
-                    </h5>
-                    <div class="chart-container">
-                        <canvas id="categoryChart" height="250"></canvas>
-                    </div>
-                </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <small>Transportasi</small>
+                                <small id="transportBudget">Rp 0/300k</small>
+                            </div>
+                            <div class="budget-progress">
+                                <div class="budget-progress-bar bg-primary" id="transportProgress" style="width: 0%">
+                                </div>
+                            </div>
+                        </div>
 
-                <!-- Daily Trend -->
-                <div class="finance-card p-4">
-                    <h5 class="mb-3">
-                        <i class="bi bi-graph-up-arrow"></i> Tren Harian
-                    </h5>
-                    <div class="chart-container">
-                        <canvas id="dailyChart" height="200"></canvas>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <small>Belanja</small>
+                                <small id="shoppingBudget">Rp 0/1jt</small>
+                            </div>
+                            <div class="budget-progress">
+                                <div class="budget-progress-bar bg-warning" id="shoppingProgress" style="width: 0%">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-outline-primary w-100 btn-sm" onclick="manageBudgets()">
+                            <i class="bi bi-pencil me-1"></i>Kelola Budget
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Detailed Analysis Modal (Hidden) -->
-        <div class="finance-card p-4 mt-4 d-none" id="detailedAnalysis">
-            <div class="d-flex justify-content-between align-items-center mb-3">
+        <!-- Weekly Trend -->
+        <div class="dashboard-card mt-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">
-                    <i class="bi bi-bar-chart-fill"></i> Analisis Detail Pengeluaran
+                    <i class="bi bi-graph-up-arrow me-2"></i>Tren Mingguan
                 </h5>
-                <button class="btn btn-sm btn-outline-secondary" onclick="hideDetailedAnalysis()">
-                    <i class="bi bi-x"></i> Tutup
-                </button>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="mb-4">
-                        <h6>Pengeluaran Tertinggi</h6>
-                        <div id="topExpenses">
-                            <!-- Top expenses will be loaded here -->
-                        </div>
-                    </div>
-                    <div class="mb-4">
-                        <h6>Kebiasaan Pengeluaran</h6>
-                        <div id="spendingHabits">
-                            <!-- Spending habits will be loaded here -->
-                        </div>
-                    </div>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button type="button" class="btn btn-outline-primary active" onclick="setChartPeriod('week')">
+                        Minggu
+                    </button>
+                    <button type="button" class="btn btn-outline-primary" onclick="setChartPeriod('month')">
+                        Bulan
+                    </button>
+                    <button type="button" class="btn btn-outline-primary" onclick="setChartPeriod('year')">
+                        Tahun
+                    </button>
                 </div>
-                <div class="col-md-6">
-                    <div class="mb-4">
-                        <h6>Rekomendasi Penghematan</h6>
-                        <div id="savingRecommendations">
-                            <!-- Saving recommendations will be loaded here -->
-                        </div>
-                    </div>
-                    <div class="mb-4">
-                        <h6>Prediksi Bulan Depan</h6>
-                        <div id="monthPrediction">
-                            <!-- Month prediction will be loaded here -->
-                        </div>
-                    </div>
+            </div>
+            <div class="card-body">
+                <div class="chart-container" style="height: 300px;">
+                    <canvas id="trendChart"></canvas>
                 </div>
             </div>
         </div>
@@ -758,28 +849,33 @@
             transport: 300000,
             shopping: 1000000,
             entertainment: 200000,
-            bills: 1500000,
-            other: 500000
+            bills: 400000,
+            health: 300000,
+            education: 500000,
+            other: 300000
         };
+        let merchants = {};
         let currentMonth = new Date().getMonth();
         let currentYear = new Date().getFullYear();
 
         // Charts
         let categoryChart = null;
         let monthlyChart = null;
-        let dailyChart = null;
+        let trendChart = null;
+        let chartPeriod = 'week';
 
-        // Scanner
-        let scannerActive = false;
+        // Scanner Variables
+        let cameraStream = null;
         let currentCamera = 'environment';
+        let scannedImage = null;
+        let ocrResults = null;
 
         // Initialize the app
         function initApp() {
             loadFromLocalStorage();
-            updateUI();
+            updateDashboard();
             updateCharts();
             updateAISuggestion();
-            initializeTooltips();
 
             // Set theme from localStorage
             const savedTheme = localStorage.getItem('theme') || 'light';
@@ -792,8 +888,9 @@
 
         // Load data from localStorage
         function loadFromLocalStorage() {
-            const savedExpenses = localStorage.getItem('moneyScanExpenses');
-            const savedBudgets = localStorage.getItem('moneyScanBudgets');
+            const savedExpenses = localStorage.getItem('receiptScanExpenses');
+            const savedBudgets = localStorage.getItem('receiptScanBudgets');
+            const savedMerchants = localStorage.getItem('receiptScanMerchants');
 
             if (savedExpenses) {
                 expenses = JSON.parse(savedExpenses);
@@ -802,50 +899,93 @@
             if (savedBudgets) {
                 budgets = JSON.parse(savedBudgets);
             }
+
+            if (savedMerchants) {
+                merchants = JSON.parse(savedMerchants);
+            }
         }
 
         // Save data to localStorage
         function saveToLocalStorage() {
-            localStorage.setItem('moneyScanExpenses', JSON.stringify(expenses));
-            localStorage.setItem('moneyScanBudgets', JSON.stringify(budgets));
+            localStorage.setItem('receiptScanExpenses', JSON.stringify(expenses));
+            localStorage.setItem('receiptScanBudgets', JSON.stringify(budgets));
+            localStorage.setItem('receiptScanMerchants', JSON.stringify(merchants));
+            localStorage.setItem('lastAccess', new Date().toDateString());
         }
 
-        // Update all UI elements
-        function updateUI() {
-            updateBalance();
+        // Update dashboard
+        function updateDashboard() {
+            updateStats();
             updateExpenseList();
             updateBudgetProgress();
-            updateStats();
         }
 
-        // Update balance and stats
-        function updateBalance() {
+        // Update stats
+        function updateStats() {
             const today = new Date().toDateString();
-            const todayExpenses = expenses.filter(exp => exp.date === today);
             const monthExpenses = expenses.filter(exp => {
                 const expDate = new Date(exp.date);
                 return expDate.getMonth() === currentMonth && expDate.getFullYear() === currentYear;
             });
+            const todayExpenses = expenses.filter(exp => exp.date === today);
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayExpenses = expenses.filter(exp => exp.date === yesterday.toDateString());
 
             // Calculate totals
-            const todayTotal = todayExpenses.reduce((sum, exp) => sum + exp.amount, 0);
             const monthTotal = monthExpenses.reduce((sum, exp) => sum + exp.amount, 0);
+            const todayTotal = todayExpenses.reduce((sum, exp) => sum + exp.amount, 0);
+            const yesterdayTotal = yesterdayExpenses.reduce((sum, exp) => sum + exp.amount, 0);
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const daysPassed = new Date().getDate();
+            const dailyAverage = daysPassed > 0 ? Math.round(monthTotal / daysPassed) : 0;
 
             // Update UI
-            document.getElementById('todayBalance').textContent = formatCurrency(todayTotal);
-            document.getElementById('monthExpense').textContent = formatCurrency(monthTotal);
-            document.getElementById('todayTransactions').textContent = todayExpenses.length;
+            document.getElementById('monthTotal').textContent = formatCurrency(monthTotal);
+            document.getElementById('todayTotal').textContent = formatCurrency(todayTotal);
+            document.getElementById('dailyAverage').textContent = formatCurrency(dailyAverage);
 
-            // Calculate month comparison
+            // Month change
             const lastMonthTotal = calculateLastMonthTotal();
-            const comparison = lastMonthTotal > 0 ? ((monthTotal - lastMonthTotal) / lastMonthTotal * 100).toFixed(1) : 0;
-            document.getElementById('monthComparison').innerHTML = `
-                <i class="bi bi-arrow-${comparison > 0 ? 'up' : 'down'}-right"></i> 
-                ${Math.abs(comparison)}% ${comparison > 0 ? 'naik' : 'turun'} vs bulan lalu
-            `;
+            const monthChange = lastMonthTotal > 0 ?
+                ((monthTotal - lastMonthTotal) / lastMonthTotal * 100).toFixed(1) : 0;
+            document.getElementById('monthChange').textContent = `${Math.abs(monthChange)}%`;
+            document.getElementById('monthChange').parentElement.className =
+                `text-${monthChange >= 0 ? 'danger' : 'success'}`;
+            document.getElementById('monthChange').previousElementSibling.className =
+                `bi bi-arrow-${monthChange >= 0 ? 'up' : 'down'}-right me-1`;
 
-            // Update saving target
-            updateSavingTarget();
+            // Today status
+            const todayStatus = document.getElementById('todayStatus');
+            if (todayTotal === 0) {
+                todayStatus.innerHTML = '<i class="bi bi-dash-circle me-1"></i>Belum ada pengeluaran';
+                todayStatus.className = 'text-muted';
+            } else if (todayTotal > dailyAverage * 1.5) {
+                todayStatus.innerHTML = `<i class="bi bi-exclamation-triangle me-1"></i>Hari ini boros!`;
+                todayStatus.className = 'text-danger';
+            } else if (todayTotal < dailyAverage * 0.5) {
+                todayStatus.innerHTML = `<i class="bi bi-check-circle me-1"></i>Hari ini hemat!`;
+                todayStatus.className = 'text-success';
+            } else {
+                todayStatus.innerHTML = `<i class="bi bi-info-circle me-1"></i>Pengeluaran normal`;
+                todayStatus.className = 'text-info';
+            }
+
+            // Budget remaining
+            const totalBudget = Object.values(budgets).reduce((a, b) => a + b, 0);
+            const budgetUsed = monthTotal;
+            const budgetRemaining = Math.max(0, totalBudget - budgetUsed);
+            const budgetPercentage = totalBudget > 0 ? (budgetUsed / totalBudget * 100) : 0;
+
+            document.getElementById('budgetRemaining').textContent = formatCurrency(budgetRemaining);
+            const budgetStatus = document.getElementById('budgetStatus');
+            budgetStatus.innerHTML = `
+                <i class="bi bi-${budgetPercentage >= 100 ? 'exclamation-triangle' :
+                    budgetPercentage >= 80 ? 'exclamation-circle' : 'circle'} me-1"></i>
+                ${budgetPercentage.toFixed(1)}% terpakai
+            `;
+            budgetStatus.className = budgetPercentage >= 100 ? 'text-danger' :
+                budgetPercentage >= 80 ? 'text-warning' : 'text-success';
         }
 
         // Calculate last month's total
@@ -859,61 +999,79 @@
             }).reduce((sum, exp) => sum + exp.amount, 0);
         }
 
-        // Update saving target
-        function updateSavingTarget() {
-            const monthlyIncome = 5000000; // Default monthly income
-            const monthExpenses = expenses.filter(exp => {
-                const expDate = new Date(exp.date);
-                return expDate.getMonth() === currentMonth && expDate.getFullYear() === currentYear;
-            }).reduce((sum, exp) => sum + exp.amount, 0);
-
-            const targetSaving = monthlyIncome * 0.2; // 20% of income
-            const currentSaving = monthlyIncome - monthExpenses;
-            const progress = Math.min(100, Math.max(0, (currentSaving / targetSaving) * 100));
-
-            document.getElementById('savingTarget').textContent = formatCurrency(targetSaving);
-            document.getElementById('savingProgress').innerHTML = `
-                <i class="bi bi-${progress >= 100 ? 'check-circle' : 'circle'}"></i> 
-                ${progress.toFixed(1)}% tercapai
-            `;
-        }
-
         // Update expense list
         function updateExpenseList() {
             const expenseList = document.getElementById('expenseList');
             const today = new Date().toDateString();
-            const todayExpenses = expenses.filter(exp => exp.date === today).reverse();
+            const recentExpenses = expenses
+                .sort((a, b) => b.timestamp - a.timestamp)
+                .slice(0, 10);
 
-            if (todayExpenses.length === 0) {
+            if (recentExpenses.length === 0) {
                 expenseList.innerHTML = `
-                    <div class="text-center py-5">
-                        <i class="bi bi-receipt fs-1 text-muted"></i>
-                        <p class="text-muted mt-2">Belum ada pengeluaran hari ini</p>
+                    <div class="text-center py-4">
+                        <i class="bi bi-receipt fs-1 text-muted mb-3"></i>
+                        <p class="text-muted">Belum ada transaksi</p>
+                        <button class="btn btn-primary btn-sm" onclick="openScanner()">
+                            <i class="bi bi-camera me-1"></i>Scan Struk Pertama
+                        </button>
                     </div>`;
                 return;
             }
 
-            expenseList.innerHTML = todayExpenses.map(exp => `
-                <div class="expense-item ${exp.category}">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
+            expenseList.innerHTML = recentExpenses.map(exp => `
+                <div class="expense-item ${exp.category} animate-pop">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div class="flex-grow-1">
                             <div class="d-flex align-items-center mb-1">
-                                <span class="fw-bold">${exp.description}</span>
-                                <span class="category-badge ms-2 ${getCategoryColor(exp.category)}">
-                                    ${getCategoryName(exp.category)}
-                                </span>
+                                <div class="merchant-logo me-2">
+                                    <i class="bi bi-${getMerchantIcon(exp.merchant)}"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold">${exp.description}</div>
+                                    <small class="text-muted">${exp.time} • ${exp.merchant || 'Toko'}</small>
+                                </div>
                             </div>
-                            <small class="text-muted">${exp.time}</small>
                         </div>
-                        <div>
-                            <span class="fw-bold fs-5">${formatCurrency(exp.amount)}</span>
-                            <button class="btn btn-sm btn-outline-danger ms-2" onclick="deleteExpense('${exp.id}')">
-                                <i class="bi bi-trash"></i>
-                            </button>
+                        <div class="text-end">
+                            <div class="fw-bold fs-5">${formatCurrency(exp.amount)}</div>
+                            <span class="category-badge">${getCategoryName(exp.category)}</span>
                         </div>
                     </div>
                 </div>
             `).join('');
+        }
+
+        // Get merchant icon
+        function getMerchantIcon(merchant) {
+            const icons = {
+                'alfamart': 'shop',
+                'indomaret': 'shop',
+                'hypermart': 'cart',
+                'supermarket': 'cart',
+                'restoran': 'cup',
+                'cafe': 'cup',
+                'warung': 'house',
+                'minimarket': 'shop',
+                'apotek': 'capsule',
+                'rumah sakit': 'hospital',
+                'spbu': 'fuel-pump',
+                'toko': 'shop',
+                'mall': 'building',
+                'bioskop': 'film',
+                'default': 'receipt'
+            };
+
+            if (!merchant) return 'receipt';
+
+            const merchantLower = merchant.toLowerCase();
+            for (const [key, icon] of Object.entries(icons)) {
+                if (merchantLower.includes(key)) {
+                    return icon;
+                }
+            }
+
+            return 'receipt';
         }
 
         // Get category name
@@ -924,46 +1082,27 @@
                 shopping: 'Belanja',
                 entertainment: 'Hiburan',
                 bills: 'Tagihan',
+                health: 'Kesehatan',
+                education: 'Pendidikan',
                 other: 'Lainnya'
             };
             return categories[category] || 'Lainnya';
         }
 
-        // Get category color
-        function getCategoryColor(category) {
-            const colors = {
-                food: 'bg-danger',
-                transport: 'bg-info',
-                shopping: 'bg-warning',
-                entertainment: 'bg-success',
-                bills: 'bg-primary',
-                other: 'bg-secondary'
-            };
-            return colors[category] || 'bg-secondary';
-        }
-
-        // Add new expense
-        function addExpense() {
-            const amountInput = document.getElementById('amountInput');
-            const categorySelect = document.getElementById('categorySelect');
-            const descriptionInput = document.getElementById('descriptionInput');
-
-            const amount = parseInt(amountInput.value);
-            const category = categorySelect.value;
-            const description = descriptionInput.value.trim();
+        // Add quick expense
+        function addQuickExpense() {
+            const amount = parseInt(document.getElementById('quickAmount').value);
+            const category = document.getElementById('quickCategory').value;
+            const description = document.getElementById('quickDescription').value.trim();
 
             if (!amount || amount <= 0) {
                 showToast('Error', 'Masukkan jumlah yang valid', 'danger');
-                amountInput.classList.add('shake');
-                setTimeout(() => amountInput.classList.remove('shake'), 500);
-                return;
+                return false;
             }
 
             if (!description) {
                 showToast('Error', 'Masukkan deskripsi pengeluaran', 'danger');
-                descriptionInput.classList.add('shake');
-                setTimeout(() => descriptionInput.classList.remove('shake'), 500);
-                return;
+                return false;
             }
 
             const now = new Date();
@@ -972,71 +1111,62 @@
                 amount: amount,
                 category: category,
                 description: description,
+                merchant: extractMerchant(description),
                 date: now.toDateString(),
                 time: now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
-                timestamp: now.getTime()
+                timestamp: now.getTime(),
+                source: 'manual'
             };
 
             expenses.push(expense);
             saveToLocalStorage();
-            updateUI();
+            updateDashboard();
             updateCharts();
             updateAISuggestion();
 
             // Reset form
-            amountInput.value = '';
-            descriptionInput.value = '';
+            document.getElementById('quickAmount').value = '';
+            document.getElementById('quickDescription').value = '';
 
-            // Show success message
             showToast('Berhasil!', 'Pengeluaran berhasil dicatat', 'success');
             playNotificationSound();
-
-            // Check budget warning
             checkBudgetWarning(category, amount);
+
+            return false;
         }
 
-        // Quick expense
-        function quickExpense(amount, category) {
-            const descriptions = {
-                food: ['Makan siang', 'Makan malam', 'Cemilan', 'Minuman'],
-                transport: ['Gojek', 'Bensin', 'Parkir', 'Tol'],
-                shopping: ['Belanja bulanan', 'Pakaian', 'Elektronik'],
-                entertainment: ['Nonton bioskop', 'Karaoke', 'Game']
+        // Set quick amount
+        function setQuickAmount(amount) {
+            document.getElementById('quickAmount').value = amount;
+            document.getElementById('quickDescription').focus();
+        }
+
+        // Extract merchant from description
+        function extractMerchant(description) {
+            const merchantPatterns = {
+                'alfamart': /alfamart/i,
+                'indomaret': /indomaret/i,
+                'hypermart': /hypermart/i,
+                'supermarket': /supermarket|super market/i,
+                'restoran': /restoran|restaurant|rumah makan/i,
+                'cafe': /cafe|kafe|coffee shop/i,
+                'warung': /warung|warteg|warung makan/i,
+                'minimarket': /minimarket|mini market/i,
+                'apotek': /apotek|apotik|pharmacy/i,
+                'rumah sakit': /rumah sakit|rs |hospital/i,
+                'spbu': /spbu|pertamina|shell/i,
+                'toko': /toko|store|shop/i,
+                'mall': /mall|plaza|pasaraya/i,
+                'bioskop': /bioskop|cinema|theater/i
             };
 
-            const descList = descriptions[category] || ['Pengeluaran lainnya'];
-            const randomDesc = descList[Math.floor(Math.random() * descList.length)];
+            for (const [merchant, pattern] of Object.entries(merchantPatterns)) {
+                if (pattern.test(description)) {
+                    return merchant;
+                }
+            }
 
-            document.getElementById('amountInput').value = amount;
-            document.getElementById('categorySelect').value = category;
-            document.getElementById('descriptionInput').value = randomDesc;
-
-            addExpense();
-        }
-
-        // Delete expense
-        function deleteExpense(id) {
-            if (!confirm('Hapus pengeluaran ini?')) return;
-
-            expenses = expenses.filter(exp => exp.id !== id);
-            saveToLocalStorage();
-            updateUI();
-            updateCharts();
-
-            showToast('Dihapus', 'Pengeluaran berhasil dihapus', 'warning');
-        }
-
-        // Clear all expenses
-        function clearAllExpenses() {
-            if (!confirm('Hapus SEMUA pengeluaran? Tindakan ini tidak dapat dibatalkan!')) return;
-
-            const today = new Date().toDateString();
-            expenses = expenses.filter(exp => exp.date !== today);
-            saveToLocalStorage();
-            updateUI();
-            updateCharts();
-
-            showToast('Dihapus', 'Semua pengeluaran hari ini dihapus', 'warning');
+            return 'Toko';
         }
 
         // Update budget progress
@@ -1044,8 +1174,6 @@
             const today = new Date();
             const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
             const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-            const daysInMonth = lastDay.getDate();
-            const daysPassed = today.getDate();
 
             Object.keys(budgets).forEach(category => {
                 const monthExpenses = expenses.filter(exp => {
@@ -1056,23 +1184,20 @@
                 const total = monthExpenses.reduce((sum, exp) => sum + exp.amount, 0);
                 const budget = budgets[category];
                 const progress = Math.min(100, (total / budget) * 100);
-                const dailyBudget = budget / daysInMonth;
-                const expected = dailyBudget * daysPassed;
 
                 // Update progress bars
-                document.getElementById(`${category}Bar`).style.width = `${progress}%`;
-                document.getElementById(`${category}Progress`).textContent =
-                    `${formatCurrency(total)}/${formatCurrency(budget)}`;
+                if (document.getElementById(`${category}Progress`)) {
+                    document.getElementById(`${category}Progress`).style.width = `${progress}%`;
+                    document.getElementById(`${category}Budget`).textContent =
+                        `${formatCurrency(total)}/${formatCurrency(budget)}`;
 
-                // Add warning class if over budget
-                const bar = document.getElementById(`${category}Bar`);
-                bar.className = `budget-progress-bar ${progress >= 100 ? 'bg-danger' : getCategoryColor(category).replace('bg-', 'bg-')}`;
-
-                // Add pulse animation if close to budget
-                if (progress >= 80) {
-                    bar.classList.add('pulse');
-                } else {
-                    bar.classList.remove('pulse');
+                    // Color coding
+                    const bar = document.getElementById(`${category}Progress`);
+                    bar.className = `budget-progress-bar ${progress >= 100 ? 'bg-danger' :
+                            progress >= 80 ? 'bg-warning' :
+                                progress >= 50 ? 'bg-info' :
+                                    progress >= 20 ? 'bg-success' : 'bg-primary'
+                        }`;
                 }
             });
         }
@@ -1109,37 +1234,63 @@
             }
         }
 
-        // Set budget
-        function setBudget() {
-            const newBudgets = {};
+        // Manage budgets
+        function manageBudgets() {
+            let budgetsHTML = `
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Kategori</th>
+                                <th>Budget Saat Ini</th>
+                                <th>Budget Baru</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+
             Object.keys(budgets).forEach(category => {
-                const current = budgets[category];
-                const newAmount = prompt(`Budget ${getCategoryName(category)} (Rp):`, current);
-                if (newAmount && !isNaN(newAmount)) {
-                    newBudgets[category] = parseInt(newAmount);
-                } else {
-                    newBudgets[category] = current;
-                }
+                budgetsHTML += `
+                    <tr>
+                        <td>${getCategoryName(category)}</td>
+                        <td>${formatCurrency(budgets[category])}</td>
+                        <td>
+                            <input type="number" class="form-control form-control-sm" 
+                                   id="budget_${category}" value="${budgets[category]}" 
+                                   placeholder="Masukkan budget baru">
+                        </td>
+                    </tr>`;
             });
 
-            budgets = newBudgets;
-            saveToLocalStorage();
-            updateBudgetProgress();
-            showToast('Berhasil!', 'Budget berhasil diupdate', 'success');
+            budgetsHTML += `
+                        </tbody>
+                    </table>
+                </div>`;
+
+            if (confirm(`Kelola Budget:\n\n${budgetsHTML}\n\nSimpan perubahan?`)) {
+                Object.keys(budgets).forEach(category => {
+                    const input = document.getElementById(`budget_${category}`);
+                    if (input && input.value) {
+                        budgets[category] = parseInt(input.value) || budgets[category];
+                    }
+                });
+                saveToLocalStorage();
+                updateDashboard();
+                showToast('Berhasil!', 'Budget berhasil diperbarui', 'success');
+            }
         }
 
         // Update charts
         function updateCharts() {
             updateCategoryChart();
             updateMonthlyChart();
-            updateDailyChart();
+            updateTrendChart();
         }
 
         // Update category chart
         function updateCategoryChart() {
             const ctx = document.getElementById('categoryChart').getContext('2d');
-            const categories = ['food', 'transport', 'shopping', 'entertainment', 'bills', 'other'];
-            const colors = ['#ff6b6b', '#4ecdc4', '#ffd166', '#06d6a0', '#118ab2', '#9d4edd'];
+            const categories = ['food', 'transport', 'shopping', 'entertainment', 'bills', 'health', 'education', 'other'];
+            const colors = ['#06d6a0', '#4361ee', '#ffd166', '#ef476f', '#118ab2', '#9d4edd', '#f8961e', '#6c757d'];
 
             const data = categories.map(category => {
                 return expenses.filter(exp => exp.category === category)
@@ -1157,25 +1308,49 @@
                     datasets: [{
                         data: data,
                         backgroundColor: colors,
-                        borderWidth: 1
+                        borderWidth: 1,
+                        borderColor: 'var(--bs-body-bg)'
                     }]
                 },
                 options: {
                     responsive: true,
                     plugins: {
                         legend: {
-                            position: 'bottom'
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true
+                            }
                         }
-                    }
+                    },
+                    cutout: '65%'
                 }
             });
+
+            // Update category stats
+            const total = data.reduce((a, b) => a + b, 0);
+            let statsHTML = '';
+            categories.forEach((category, index) => {
+                const amount = data[index];
+                if (amount > 0) {
+                    const percentage = total > 0 ? ((amount / total) * 100).toFixed(1) : 0;
+                    statsHTML += `
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>
+                                <span class="badge" style="background-color: ${colors[index]}; width: 10px; height: 10px; display: inline-block; border-radius: 50%; margin-right: 8px;"></span>
+                                ${getCategoryName(category)}
+                            </span>
+                            <span class="fw-bold">${percentage}%</span>
+                        </div>`;
+                }
+            });
+            document.getElementById('categoryStats').innerHTML = statsHTML;
         }
 
         // Update monthly chart
         function updateMonthlyChart() {
             const ctx = document.getElementById('monthlyChart').getContext('2d');
             const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-            const currentYear = new Date().getFullYear();
 
             const data = months.map((_, index) => {
                 return expenses.filter(exp => {
@@ -1189,24 +1364,44 @@
             }
 
             monthlyChart = new Chart(ctx, {
-                type: 'bar',
+                type: 'line',
                 data: {
                     labels: months,
                     datasets: [{
                         label: 'Pengeluaran',
                         data: data,
-                        backgroundColor: '#4361ee',
-                        borderColor: '#3a0ca3',
-                        borderWidth: 1
+                        borderColor: '#4361ee',
+                        backgroundColor: 'rgba(67, 97, 238, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#4361ee',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 5,
+                        pointHoverRadius: 7
                     }]
                 },
                 options: {
                     responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
                     scales: {
                         y: {
                             beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            },
                             ticks: {
                                 callback: value => formatCurrency(value, true)
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
                             }
                         }
                     }
@@ -1214,52 +1409,104 @@
             });
         }
 
-        // Update daily chart
-        function updateDailyChart() {
-            const ctx = document.getElementById('dailyChart').getContext('2d');
-            const today = new Date();
-            const weekDays = [];
-            const weekData = [];
+        // Update trend chart
+        function updateTrendChart() {
+            const ctx = document.getElementById('trendChart').getContext('2d');
 
-            for (let i = 6; i >= 0; i--) {
-                const date = new Date();
-                date.setDate(today.getDate() - i);
-                weekDays.push(date.toLocaleDateString('id-ID', { weekday: 'short' }));
+            let labels = [];
+            let data = [];
 
-                const dayExpenses = expenses.filter(exp => exp.date === date.toDateString());
-                weekData.push(dayExpenses.reduce((sum, exp) => sum + exp.amount, 0));
+            if (chartPeriod === 'week') {
+                // Weekly data
+                const today = new Date();
+                for (let i = 6; i >= 0; i--) {
+                    const date = new Date();
+                    date.setDate(today.getDate() - i);
+                    labels.push(date.toLocaleDateString('id-ID', { weekday: 'short' }));
+
+                    const dayExpenses = expenses.filter(exp => exp.date === date.toDateString());
+                    data.push(dayExpenses.reduce((sum, exp) => sum + exp.amount, 0));
+                }
+            } else if (chartPeriod === 'month') {
+                // Monthly data
+                const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+                const today = new Date().getDate();
+
+                for (let i = 1; i <= today; i++) {
+                    labels.push(i.toString());
+
+                    const dateStr = new Date(currentYear, currentMonth, i).toDateString();
+                    const dayExpenses = expenses.filter(exp => exp.date === dateStr);
+                    data.push(dayExpenses.reduce((sum, exp) => sum + exp.amount, 0));
+                }
+            } else {
+                // Yearly data
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+                labels = months;
+
+                data = months.map((_, index) => {
+                    return expenses.filter(exp => {
+                        const expDate = new Date(exp.date);
+                        return expDate.getMonth() === index && expDate.getFullYear() === currentYear;
+                    }).reduce((sum, exp) => sum + exp.amount, 0);
+                });
             }
 
-            if (dailyChart) {
-                dailyChart.destroy();
+            if (trendChart) {
+                trendChart.destroy();
             }
 
-            dailyChart = new Chart(ctx, {
-                type: 'line',
+            trendChart = new Chart(ctx, {
+                type: 'bar',
                 data: {
-                    labels: weekDays,
+                    labels: labels,
                     datasets: [{
-                        label: 'Pengeluaran Harian',
-                        data: weekData,
-                        borderColor: '#f72585',
-                        backgroundColor: 'rgba(247, 37, 133, 0.1)',
-                        borderWidth: 2,
-                        tension: 0.4,
-                        fill: true
+                        label: chartPeriod === 'week' ? 'Harian' : chartPeriod === 'month' ? 'Mingguan' : 'Bulanan',
+                        data: data,
+                        backgroundColor: '#4361ee',
+                        borderColor: '#3a0ca3',
+                        borderWidth: 1,
+                        borderRadius: 5
                     }]
                 },
                 options: {
                     responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
                     scales: {
                         y: {
                             beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            },
                             ticks: {
                                 callback: value => formatCurrency(value, true)
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
                             }
                         }
                     }
                 }
             });
+        }
+
+        // Set chart period
+        function setChartPeriod(period) {
+            chartPeriod = period;
+
+            // Update button states
+            document.querySelectorAll('.btn-group .btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            updateTrendChart();
         }
 
         // Update AI suggestion
@@ -1272,7 +1519,7 @@
             });
 
             if (todayExpenses.length === 0) {
-                suggestionText.textContent = 'Mulai catat pengeluaran Anda untuk mendapatkan saran personal!';
+                suggestionText.textContent = 'Scan struk belanja pertama Anda untuk memulai analisis keuangan!';
                 return;
             }
 
@@ -1282,37 +1529,36 @@
             const today = new Date().getDate();
             const avgDaily = monthTotal / today;
             const projected = avgDaily * daysInMonth;
+            const totalBudget = Object.values(budgets).reduce((a, b) => a + b, 0);
 
             let suggestion = '';
 
             if (todayTotal > avgDaily * 1.5) {
                 suggestion = `⚠️ Hari ini Anda boros! Pengeluaran ${formatCurrency(todayTotal)} melebihi rata-rata harian.`;
-                if (todayTotal > avgDaily * 2) {
-                    suggestion += ' Coba kurangi pengeluaran esok hari.';
-                }
             } else if (todayTotal < avgDaily * 0.5) {
-                suggestion = `👍 Bagus! Anda hemat hari ini. Pengeluaran ${formatCurrency(todayTotal)} di bawah rata-rata.`;
+                suggestion = `👍 Hemat hari ini! Pengeluaran ${formatCurrency(todayTotal)} di bawah rata-rata.`;
             } else {
-                suggestion = `📊 Pengeluaran hari ini ${formatCurrency(todayTotal)}. Rata-rata harian: ${formatCurrency(avgDaily)}.`;
+                suggestion = `📊 Pengeluaran hari ini normal: ${formatCurrency(todayTotal)}.`;
             }
 
-            if (projected > 5000000) {
-                suggestion += ` Proyeksi bulan ini: ${formatCurrency(projected)}. Perlu penghematan!`;
+            if (projected > totalBudget) {
+                suggestion += ` Proyeksi bulan ini: ${formatCurrency(projected)} (melebihi budget!).`;
+            } else if (projected > totalBudget * 0.8) {
+                suggestion += ` Proyeksi bulan ini: ${formatCurrency(projected)} (mendekati budget).`;
             }
 
-            // Check category spending
+            // Check for unusual spending patterns
             const categoryTotals = {};
-            todayExpenses.forEach(exp => {
+            monthExpenses.forEach(exp => {
                 categoryTotals[exp.category] = (categoryTotals[exp.category] || 0) + exp.amount;
             });
 
-            const highestCategory = Object.keys(categoryTotals).reduce((a, b) =>
-                categoryTotals[a] > categoryTotals[b] ? a : b
-            );
-
-            if (categoryTotals[highestCategory] > todayTotal * 0.5) {
-                suggestion += ` Perhatikan pengeluaran ${getCategoryName(highestCategory)} yang mencapai ${Math.round(categoryTotals[highestCategory] / todayTotal * 100)}% dari total hari ini.`;
-            }
+            Object.entries(categoryTotals).forEach(([category, amount]) => {
+                const budget = budgets[category] || 0;
+                if (budget > 0 && amount > budget) {
+                    suggestion += ` Perhatian: ${getCategoryName(category)} sudah melebihi budget!`;
+                }
+            });
 
             suggestionText.textContent = suggestion;
         }
@@ -1320,216 +1566,83 @@
         // Get new AI suggestion
         function getAISuggestion() {
             const tips = [
-                "💡 Coba alokasikan 50-30-20: 50% kebutuhan, 30% keinginan, 20% tabungan.",
-                "📱 Gunakan fitur scan barcode untuk mencatat pengeluaran dengan cepat.",
-                "📊 Review pengeluaran mingguan untuk menemukan pola boros.",
-                "💰 Setiap kali dapat bonus, alokasikan 30% untuk tabungan darurat.",
-                "🛒 Buat daftar belanja dan patuhi untuk hindari impulse buying.",
-                "☕ Kurangi jajan di luar, masak sendiri bisa hemat hingga 70%.",
-                "🚲 Pertimbangkan transportasi umum untuk hemat biaya transport.",
-                "📅 Bayar tagihan tepat waktu untuk hindari denda.",
-                "🎯 Set target tabungan bulanan dan pantau progress-nya.",
-                "🧾 Simpan semua struk untuk tracking pengeluaran yang akurat."
+                "💡 Gunakan fitur scan struk untuk input pengeluaran lebih cepat dan akurat.",
+                "📱 Simpan semua struk belanja dan scan sekaligus di akhir hari.",
+                "📊 Review pola pengeluaran mingguan untuk identifikasi kebiasaan boros.",
+                "💰 Alokasikan 20% pendapatan untuk tabungan dan investasi.",
+                "🛒 Buat daftar belanja sebelum pergi ke supermarket.",
+                "☕ Kurangi jajan kopi di luar, hemat hingga Rp 300.000/bulan.",
+                "🚲 Pertimbangkan transportasi umum untuk perjalanan rutin.",
+                "📅 Bayar semua tagihan tepat waktu untuk hindari denda.",
+                "🎯 Set target penghematan spesifik per kategori.",
+                "🧾 Scan struk membantu tracking pengeluaran yang detail."
             ];
 
             const randomTip = tips[Math.floor(Math.random() * tips.length)];
             document.getElementById('aiSuggestionText').textContent = randomTip;
         }
 
-        // Show detailed analysis
-        function showDetailedAnalysis() {
-            const analysisDiv = document.getElementById('detailedAnalysis');
-            analysisDiv.classList.remove('d-none');
-
-            // Scroll to analysis
-            analysisDiv.scrollIntoView({ behavior: 'smooth' });
-
-            // Populate analysis
-            populateTopExpenses();
-            populateSpendingHabits();
-            populateSavingRecommendations();
-            populateMonthPrediction();
-        }
-
-        // Hide detailed analysis
-        function hideDetailedAnalysis() {
-            document.getElementById('detailedAnalysis').classList.add('d-none');
-        }
-
-        // Populate top expenses
-        function populateTopExpenses() {
+        // Show spending patterns
+        function showSpendingPatterns() {
             const monthExpenses = expenses.filter(exp => {
                 const expDate = new Date(exp.date);
                 return expDate.getMonth() === currentMonth && expDate.getFullYear() === currentYear;
             });
 
-            // Group by description
-            const expenseMap = {};
+            if (monthExpenses.length === 0) {
+                alert('Belum ada data pengeluaran untuk dianalisis.');
+                return;
+            }
+
+            // Analyze spending patterns
+            const categoryTotals = {};
+            const dayOfWeekTotals = {};
+            const timeOfDayTotals = { morning: 0, afternoon: 0, evening: 0, night: 0 };
+
             monthExpenses.forEach(exp => {
-                expenseMap[exp.description] = (expenseMap[exp.description] || 0) + exp.amount;
-            });
+                // By category
+                categoryTotals[exp.category] = (categoryTotals[exp.category] || 0) + exp.amount;
 
-            // Get top 5
-            const top5 = Object.entries(expenseMap)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 5);
+                // By day of week
+                const date = new Date(exp.date);
+                const dayOfWeek = date.getDay();
+                dayOfWeekTotals[dayOfWeek] = (dayOfWeekTotals[dayOfWeek] || 0) + exp.amount;
 
-            document.getElementById('topExpenses').innerHTML = top5.map(([desc, amount]) => `
-                <div class="d-flex justify-content-between mb-2">
-                    <span>${desc}</span>
-                    <span class="fw-bold">${formatCurrency(amount)}</span>
-                </div>
-            `).join('');
-        }
-
-        // Populate spending habits
-        function populateSpendingHabits() {
-            const monthExpenses = expenses.filter(exp => {
-                const expDate = new Date(exp.date);
-                return expDate.getMonth() === currentMonth && expDate.getFullYear() === currentYear;
-            });
-
-            // Calculate average per category
-            const categoryAverages = {};
-            const categories = ['food', 'transport', 'shopping', 'entertainment', 'bills', 'other'];
-
-            categories.forEach(category => {
-                const catExpenses = monthExpenses.filter(exp => exp.category === category);
-                if (catExpenses.length > 0) {
-                    const total = catExpenses.reduce((sum, exp) => sum + exp.amount, 0);
-                    categoryAverages[category] = total / catExpenses.length;
-                }
-            });
-
-            // Find highest average
-            const highestCat = Object.keys(categoryAverages).reduce((a, b) =>
-                categoryAverages[a] > categoryAverages[b] ? a : b, 'food'
-            );
-
-            document.getElementById('spendingHabits').innerHTML = `
-                <div class="mb-2">
-                    <small>Rata-rata per transaksi tertinggi:</small>
-                    <div class="fw-bold">${getCategoryName(highestCat)} - ${formatCurrency(categoryAverages[highestCat])}</div>
-                </div>
-                <div>
-                    <small>Frekuensi belanja terbanyak:</small>
-                    <div class="fw-bold">Hari ${getMostFrequentDay(monthExpenses)}</div>
-                </div>
-            `;
-        }
-
-        // Get most frequent day
-        function getMostFrequentDay(expenses) {
-            const dayCount = {};
-            expenses.forEach(exp => {
-                const day = new Date(exp.date).getDay();
-                dayCount[day] = (dayCount[day] || 0) + 1;
+                // By time of day
+                const hour = new Date(exp.timestamp).getHours();
+                if (hour >= 5 && hour < 12) timeOfDayTotals.morning += exp.amount;
+                else if (hour >= 12 && hour < 17) timeOfDayTotals.afternoon += exp.amount;
+                else if (hour >= 17 && hour < 22) timeOfDayTotals.evening += exp.amount;
+                else timeOfDayTotals.night += exp.amount;
             });
 
             const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-            const mostDay = Object.keys(dayCount).reduce((a, b) =>
-                dayCount[a] > dayCount[b] ? a : b, 0
+            const highestDay = Object.keys(dayOfWeekTotals).reduce((a, b) =>
+                dayOfWeekTotals[a] > dayOfWeekTotals[b] ? a : b, 0
             );
 
-            return days[mostDay];
-        }
+            const highestTime = Object.keys(timeOfDayTotals).reduce((a, b) =>
+                timeOfDayTotals[a] > timeOfDayTotals[b] ? a : b
+            );
 
-        // Populate saving recommendations
-        function populateSavingRecommendations() {
-            const monthExpenses = expenses.filter(exp => {
-                const expDate = new Date(exp.date);
-                return expDate.getMonth() === currentMonth && expDate.getFullYear() === currentYear;
-            });
-
-            const categoryTotals = {};
-            monthExpenses.forEach(exp => {
-                categoryTotals[exp.category] = (categoryTotals[exp.category] || 0) + exp.amount;
-            });
-
-            // Find category with highest spending
-            let highestCat = 'food';
-            let highestAmount = 0;
-            Object.entries(categoryTotals).forEach(([cat, amount]) => {
-                if (amount > highestAmount) {
-                    highestAmount = amount;
-                    highestCat = cat;
-                }
-            });
-
-            const recommendations = {
-                food: 'Kurangi makan di luar, masak sendiri bisa hemat hingga 500rb/bulan.',
-                transport: 'Gunakan transportasi umum atau carpool untuk hemat bensin.',
-                shopping: 'Beli hanya yang diperlukan, hindari diskon yang tidak perlu.',
-                entertainment: 'Kurangi hiburan mahal, cari alternatif gratis.',
-                bills: 'Cek penggunaan listrik/air, matikan alat elektronik tidak terpakai.',
-                other: 'Review pengeluaran lainnya, mungkin ada yang bisa dipotong.'
+            const timeLabels = {
+                morning: 'Pagi (05:00-11:59)',
+                afternoon: 'Siang (12:00-16:59)',
+                evening: 'Sore (17:00-21:59)',
+                night: 'Malam (22:00-04:59)'
             };
 
-            document.getElementById('savingRecommendations').innerHTML = `
-                <div class="alert alert-info">
-                    <i class="bi bi-lightbulb"></i> 
-                    ${recommendations[highestCat]}
-                </div>
-                <small>Potensi hemat: ${formatCurrency(highestAmount * 0.3)}/bulan</small>
+            const report = `
+                POLA PENGELUARAN ANDA:
+
+                🔍 Hari dengan pengeluaran terbanyak: ${days[highestDay]}
+                ⏰ Waktu favorit belanja: ${timeLabels[highestTime]}
+
+                💰 Rekomendasi:
+                - Hindari belanja di hari ${days[highestDay]} jika ingin hemat
+                - Rencanakan belanja di ${timeLabels[highestTime === 'evening' ? 'pagi' : 'siang']}
+                - Gunakan fitur scan struk untuk tracking real-time
             `;
-        }
-
-        // Populate month prediction
-        function populateMonthPrediction() {
-            const monthExpenses = expenses.filter(exp => {
-                const expDate = new Date(exp.date);
-                return expDate.getMonth() === currentMonth && expDate.getFullYear() === currentYear;
-            });
-
-            const today = new Date();
-            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-            const daysPassed = today.getDate();
-
-            const currentTotal = monthExpenses.reduce((sum, exp) => sum + exp.amount, 0);
-            const avgDaily = currentTotal / daysPassed;
-            const projected = avgDaily * daysInMonth;
-
-            const status = projected > 5000000 ? 'danger' : projected > 4000000 ? 'warning' : 'success';
-            const icon = projected > 5000000 ? '⚠️' : projected > 4000000 ? 'ℹ️' : '✅';
-            const message = projected > 5000000 ? 'Perlu penghematan ketat!' :
-                projected > 4000000 ? 'Tetap waspada dengan pengeluaran' : 'Keuangan Anda sehat!';
-
-            document.getElementById('monthPrediction').innerHTML = `
-                <div class="alert alert-${status}">
-                    ${icon} <strong>Proyeksi akhir bulan:</strong> ${formatCurrency(projected)}
-                    <div class="small mt-1">${message}</div>
-                </div>
-                <small>Rata-rata harian: ${formatCurrency(avgDaily)}</small>
-            `;
-        }
-
-        // Show insights
-        function showInsights() {
-            showDetailedAnalysis();
-        }
-
-        // Show report
-        function showReport() {
-            const monthExpenses = expenses.filter(exp => {
-                const expDate = new Date(exp.date);
-                return expDate.getMonth() === currentMonth && expDate.getFullYear() === currentYear;
-            });
-
-            const total = monthExpenses.reduce((sum, exp) => sum + exp.amount, 0);
-            const categoryBreakdown = {};
-            monthExpenses.forEach(exp => {
-                categoryBreakdown[exp.category] = (categoryBreakdown[exp.category] || 0) + exp.amount;
-            });
-
-            let report = `LAPORAN KEUANGAN ${new Date().toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}\n\n`;
-            report += `Total Pengeluaran: ${formatCurrency(total)}\n`;
-            report += `Jumlah Transaksi: ${monthExpenses.length}\n\n`;
-            report += `Rincian per Kategori:\n`;
-
-            Object.entries(categoryBreakdown).forEach(([cat, amount]) => {
-                const percentage = ((amount / total) * 100).toFixed(1);
-                report += `- ${getCategoryName(cat)}: ${formatCurrency(amount)} (${percentage}%)\n`;
-            });
 
             alert(report);
         }
@@ -1537,180 +1650,210 @@
         // Scanner functions
         function openScanner() {
             document.getElementById('scannerModal').style.display = 'block';
-            initScanner();
+            document.getElementById('processBtn').disabled = true;
+            document.getElementById('ocrResultsContainer').style.display = 'none';
         }
 
         function closeScanner() {
             document.getElementById('scannerModal').style.display = 'none';
-            stopScanner();
+            stopCamera();
         }
 
-        function initScanner() {
-            if (scannerActive) return;
-
-            Quagga.init({
-                inputStream: {
-                    name: "Live",
-                    type: "LiveStream",
-                    target: document.querySelector('#scanner'),
-                    constraints: {
-                        facingMode: currentCamera
+        async function startCamera() {
+            try {
+                const constraints = {
+                    video: {
+                        facingMode: currentCamera,
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
                     }
-                },
-                decoder: {
-                    readers: [
-                        "ean_reader",
-                        "ean_8_reader",
-                        "code_128_reader",
-                        "upc_reader",
-                        "upc_e_reader"
-                    ]
-                }
-            }, function (err) {
-                if (err) {
-                    console.error(err);
-                    showToast('Error', 'Gagal mengakses kamera', 'danger');
-                    return;
-                }
-                scannerActive = true;
-                Quagga.start();
-            });
+                };
 
-            Quagga.onDetected(function (result) {
-                const code = result.codeResult.code;
-                stopScanner();
-                closeScanner();
-                processBarcode(code);
-            });
+                cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
+                const video = document.getElementById('cameraFeed');
+                video.srcObject = cameraStream;
+                video.style.display = 'block';
+
+                // Draw video to canvas
+                const canvas = document.getElementById('scannerCanvas');
+                const ctx = canvas.getContext('2d');
+
+                function drawVideo() {
+                    if (video.videoWidth > 0) {
+                        canvas.width = video.videoWidth;
+                        canvas.height = video.videoHeight;
+                        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    }
+                    requestAnimationFrame(drawVideo);
+                }
+
+                drawVideo();
+                document.getElementById('processBtn').disabled = false;
+
+            } catch (err) {
+                console.error('Error accessing camera:', err);
+                showToast('Error', 'Gagal mengakses kamera', 'danger');
+            }
         }
 
-        function stopScanner() {
-            if (scannerActive) {
-                Quagga.stop();
-                scannerActive = false;
+        function stopCamera() {
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => track.stop());
+                cameraStream = null;
             }
+            document.getElementById('cameraFeed').style.display = 'none';
         }
 
         function toggleCamera() {
             currentCamera = currentCamera === 'environment' ? 'user' : 'environment';
-            stopScanner();
-            initScanner();
+            stopCamera();
+            startCamera();
         }
 
-        function processBarcode(code) {
-            // Simulate barcode lookup (in real app, this would query a database)
-            const products = {
-                '8999999000000': { name: 'Indomie Goreng', price: 3000, category: 'food' },
-                '8999999000001': { name: 'Aqua 600ml', price: 4000, category: 'food' },
-                '8999999000002': { name: 'Pertamax', price: 10000, category: 'transport' },
-                '8999999000003': { name: 'Tol Jakarta-Bandung', price: 150000, category: 'transport' },
-                '8999999000004': { name: 'Kaos Polos', price: 50000, category: 'shopping' },
-                '8999999000005': { name: 'Tiket Bioskop', price: 45000, category: 'entertainment' }
-            };
-
-            const product = products[code] || {
-                name: `Produk ${code}`,
-                price: Math.floor(Math.random() * 100000) + 1000,
-                category: 'other'
-            };
-
-            document.getElementById('amountInput').value = product.price;
-            document.getElementById('categorySelect').value = product.category;
-            document.getElementById('descriptionInput').value = product.name;
-
-            showToast('Barcode Terdeteksi!', `Produk: ${product.name} - ${formatCurrency(product.price)}`, 'success');
+        function takePhoto() {
+            const canvas = document.getElementById('scannerCanvas');
+            scannedImage = canvas.toDataURL('image/jpeg');
+            showToast('Berhasil!', 'Foto struk berhasil diambil', 'success');
         }
 
-        // Export data
-        function exportData() {
-            const data = {
-                expenses: expenses,
-                budgets: budgets,
-                exportDate: new Date().toISOString()
-            };
+        function uploadReceipt(event) {
+            const file = event.target.files[0];
+            if (!file) return;
 
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `moneyscan-export-${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-
-            showToast('Berhasil!', 'Data berhasil diexport', 'success');
-        }
-
-        // Import data
-        function importData() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'application/json';
-
-            input.onchange = function (e) {
-                const file = e.target.files[0];
-                const reader = new FileReader();
-
-                reader.onload = function () {
-                    try {
-                        const data = JSON.parse(reader.result);
-                        expenses = data.expenses || [];
-                        budgets = data.budgets || budgets;
-                        saveToLocalStorage();
-                        updateUI();
-                        updateCharts();
-
-                        showToast('Berhasil!', 'Data berhasil diimport', 'success');
-                    } catch (err) {
-                        showToast('Error', 'Format file tidak valid', 'danger');
-                    }
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const img = new Image();
+                img.onload = function () {
+                    const canvas = document.getElementById('scannerCanvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+                    scannedImage = canvas.toDataURL('image/jpeg');
+                    document.getElementById('processBtn').disabled = false;
+                    showToast('Berhasil!', 'Gambar berhasil diupload', 'success');
                 };
-
-                reader.readAsText(file);
+                img.src = e.target.result;
             };
-
-            input.click();
+            reader.readAsDataURL(file);
         }
 
-        // Check if it's a new day
-        function checkNewDay() {
-            const lastAccess = localStorage.getItem('lastAccess');
-            const today = new Date().toDateString();
+        async function processOCR() {
+            if (!scannedImage) {
+                showToast('Error', 'Ambil atau upload gambar terlebih dahulu', 'warning');
+                return;
+            }
 
-            if (lastAccess !== today) {
-                // New day - show daily tip
-                showToast('Halo!', 'Selamat datang di MoneyScan. Catat pengeluaran hari ini ya!', 'info');
-                localStorage.setItem('lastAccess', today);
+            showToast('Memproses...', 'Sedang membaca teks dari struk', 'info');
+
+            try {
+                const worker = await Tesseract.createWorker('eng+ind');
+                const { data: { text } } = await worker.recognize(scannedImage);
+                await worker.terminate();
+
+                ocrResults = text;
+                document.getElementById('ocrResults').textContent = text;
+                document.getElementById('ocrResultsContainer').style.display = 'block';
+
+                showToast('Berhasil!', 'Teks berhasil diekstrak dari struk', 'success');
+
+            } catch (err) {
+                console.error('OCR Error:', err);
+                showToast('Error', 'Gagal membaca teks dari struk', 'danger');
             }
         }
 
-        // Initialize tooltips
-        function initializeTooltips() {
-            const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-            tooltips.forEach(el => new bootstrap.Tooltip(el));
+        function extractExpenseData() {
+            if (!ocrResults) {
+                showToast('Error', 'Belum ada hasil OCR', 'warning');
+                return;
+            }
+
+            // Extract data from OCR text
+            const text = ocrResults.toLowerCase();
+
+            // Extract total amount
+            let totalAmount = 0;
+            const amountMatches = text.match(/total\s*[:]?\s*[rp\.\s]*([\d.,]+)/i) ||
+                text.match(/jumlah\s*[:]?\s*[rp\.\s]*([\d.,]+)/i) ||
+                text.match(/[rp\.\s]*([\d.,]+)\s*(?=total)/i);
+
+            if (amountMatches) {
+                totalAmount = parseInt(amountMatches[1].replace(/[.,]/g, '')) || 0;
+            }
+
+            // Extract merchant name
+            let merchant = 'Toko';
+            const merchantPatterns = [
+                /alfamart/i, /indomaret/i, /hypermart/i, /supermarket/i,
+                /(?:pt|cv|ud|toko)\s+([a-z\s]+)/i, /([a-z\s]+)\s+(?:store|mart|market)/i
+            ];
+
+            for (const pattern of merchantPatterns) {
+                const match = text.match(pattern);
+                if (match) {
+                    merchant = match[1] || match[0];
+                    break;
+                }
+            }
+
+            // Detect category based on keywords
+            let category = 'other';
+            const categoryKeywords = {
+                food: [/makan|minum|resto|warung|kafe|cafe|kopi|nasi|ayam|burger/i],
+                transport: [/bensin|pertamina|shell|spbu|tol|parkir|ojek|taxi|gojek|grab/i],
+                shopping: [/belanja|supermarket|hypermart|indomaret|alfamart|minimarket|toko|mall/i],
+                entertainment: [/bioskop|cinema|film|nonton|game|hobi|hiburan/i],
+                bills: [/listrik|pln|pdam|air|internet|wifi|pulsa|telepon|tagihan/i],
+                health: [/apotik|apotek|kesehatan|rs |rumah sakit|dokter|obat/i],
+                education: [/buku|tulis|kampus|sekolah|kursus|belajar|pendidikan/i]
+            };
+
+            for (const [cat, patterns] of Object.entries(categoryKeywords)) {
+                if (patterns.some(pattern => pattern.test(text))) {
+                    category = cat;
+                    break;
+                }
+            }
+
+            // Auto-fill form
+            if (totalAmount > 0) {
+                document.getElementById('quickAmount').value = totalAmount;
+                document.getElementById('quickCategory').value = category;
+                document.getElementById('quickDescription').value = `Belanja di ${merchant}`;
+
+                showToast('Data Diekstrak!', `Total: ${formatCurrency(totalAmount)} dari ${merchant}`, 'success');
+
+                // Auto-save if amount is reasonable
+                if (totalAmount > 0 && totalAmount < 10000000) {
+                    setTimeout(() => {
+                        if (confirm(`Simpan pengeluaran ${formatCurrency(totalAmount)} dari ${merchant}?`)) {
+                            addQuickExpense();
+                            closeScanner();
+                        }
+                    }, 1000);
+                }
+            } else {
+                showToast('Info', 'Total tidak ditemukan, isi manual', 'info');
+            }
         }
 
-        // Theme toggle
-        document.getElementById('themeToggle').addEventListener('click', function () {
-            const html = document.documentElement;
-            const currentTheme = html.getAttribute('data-bs-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-
-            html.setAttribute('data-bs-theme', newTheme);
-            this.querySelector('i').className = newTheme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
-            localStorage.setItem('theme', newTheme);
-        });
-
-        // Update stats
-        function updateStats() {
-            // This function is already called in updateBalance
+        function scanFromCamera() {
+            openScanner();
+            setTimeout(() => {
+                startCamera();
+                showToast('Tips', 'Arahkan kamera ke struk belanja', 'info');
+            }, 500);
         }
 
         // Format currency
         function formatCurrency(amount, short = false) {
+            if (amount === 0) return 'Rp 0';
             if (amount >= 1000000 && short) {
                 return `Rp${(amount / 1000000).toFixed(1)}jt`;
+            }
+            if (amount >= 1000 && short) {
+                return `Rp${(amount / 1000).toFixed(0)}rb`;
             }
             return `Rp${amount.toLocaleString('id-ID')}`;
         }
@@ -1721,7 +1864,7 @@
             const toastId = 'toast-' + Date.now();
 
             const toast = document.createElement('div');
-            toast.className = `toast show border-0 shadow`;
+            toast.className = `toast show border-0 shadow slide-up`;
             toast.id = toastId;
             toast.innerHTML = `
                 <div class="toast-header bg-${type} text-white border-0">
@@ -1747,7 +1890,48 @@
         function playNotificationSound() {
             const sound = document.getElementById('notificationSound');
             sound.currentTime = 0;
-            sound.play();
+            sound.play().catch(e => console.log('Audio play failed:', e));
+        }
+
+        // Theme toggle
+        document.getElementById('themeToggle').addEventListener('click', function () {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-bs-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            html.setAttribute('data-bs-theme', newTheme);
+            this.querySelector('i').className = newTheme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
+            localStorage.setItem('theme', newTheme);
+        });
+
+        // Check if it's a new day
+        function checkNewDay() {
+            const lastAccess = localStorage.getItem('lastAccess');
+            const today = new Date().toDateString();
+
+            if (lastAccess !== today) {
+                showToast('Selamat Pagi!', 'Scan struk belanja hari ini untuk tracking yang akurat', 'info');
+            }
+        }
+
+        // Navigation functions
+        function showExpenseHistory() {
+            alert('Fitur Riwayat - Menampilkan semua transaksi');
+            // Implementation would show detailed history view
+        }
+
+        function showAnalytics() {
+            alert('Fitur Analisis - Menampilkan analisis mendalam');
+            // Implementation would show detailed analytics
+        }
+
+        function showBudget() {
+            manageBudgets();
+        }
+
+        function refreshExpenses() {
+            updateDashboard();
+            showToast('Diperbarui', 'Data transaksi diperbarui', 'success');
         }
 
         // Initialize app
@@ -1755,13 +1939,6 @@
 
         // Auto-save on beforeunload
         window.addEventListener('beforeunload', saveToLocalStorage);
-
-        // Handle Enter key in form
-        document.getElementById('descriptionInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                addExpense();
-            }
-        });
     </script>
 </body>
 
