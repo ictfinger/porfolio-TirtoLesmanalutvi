@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro Timer</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #dc3545;
+            --secondary-color: #198754;
+            --tertiary-color: #0d6efd;
+            --bg-light: #f8f9fa;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            min-height: 100vh;
+            padding-top: 20px;
+            padding-bottom: 40px;
+        }
+
+        .timer-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .timer-display {
+            font-size: 6rem;
+            font-weight: 700;
+            text-align: center;
+            color: var(--primary-color);
+            padding: 20px 0;
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .timer-display {
+                font-size: 4.5rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .timer-display {
+                font-size: 3.5rem;
+            }
+        }
+
+        .timer-mode {
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        .timer-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding: 20px 0;
+        }
+
+        .btn-timer {
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding: 10px 25px;
+            border-radius: 50px;
+            box-shadow: var(--shadow);
+            transition: all 0.2s ease;
+        }
+
+        .btn-timer:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-timer:active {
+            transform: translateY(0);
+        }
+
+        .btn-start {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+
+        .btn-pause {
+            background-color: #ffc107;
+            border-color: #ffc107;
+            color: #212529;
+        }
+
+        .btn-reset {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+
+        .settings-section {
+            background-color: var(--bg-light);
+            padding: 25px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .pomodoro-settings {
+            margin-bottom: 20px;
+        }
+
+        .time-setting {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .time-label {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .time-value {
+            font-weight: 600;
+            font-size: 1.2rem;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .session-counter {
+            font-size: 1.3rem;
+            font-weight: 600;
+            text-align: center;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .progress-container {
+            height: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary-color);
+            width: 0%;
+            transition: width 1s linear;
+        }
+
+        .timer-active {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 15px rgba(220, 53, 69, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+            }
+        }
+
+        .mode-work {
+            color: var(--primary-color);
+        }
+
+        .mode-break {
+            color: var(--secondary-color);
+        }
+
+        .mode-long-break {
+            color: var(--tertiary-color);
+        }
+
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header class="text-center mb-5">
+            <h1 class="display-4 fw-bold text-danger">Pomodoro Timer</h1>
+            <p class="lead">Teknik manajemen waktu untuk meningkatkan fokus dan produktivitas</p>
+        </header>
+
+        <div class="timer-container">
+            <div class="timer-display" id="timerDisplay">25:00</div>
+            <div class="timer-mode mode-work" id="timerMode">Waktu Fokus</div>
+
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+
+            <div class="timer-controls">
+                <button class="btn btn-start btn-timer" id="startBtn">
+                    <i class="bi bi-play-fill"></i> Mulai
+                </button>
+                <button class="btn btn-pause btn-timer" id="pauseBtn" disabled>
+                    <i class="bi bi-pause-fill"></i> Jeda
+                </button>
+                <button class="btn btn-reset btn-timer" id="resetBtn">
+                    <i class="bi bi-arrow-clockwise"></i> Reset
+                </button>
+            </div>
+
+            <div class="session-counter">
+                <span id="sessionCount">0</span> sesi selesai hari ini
+            </div>
+
+            <div class="settings-section">
+                <h5 class="mb-4"><i class="bi bi-gear-fill"></i> Pengaturan Timer</h5>
+
+                <div class="pomodoro-settings">
+                    <!-- Work Duration -->
+                    <div class="time-setting">
+                        <div class="time-label">Durasi Fokus (menit)</div>
+                        <div class="d-flex align-items-center">
+                            <button class="btn btn-outline-secondary btn-sm" id="decreaseWorkTime">
+                                <i class="bi bi-dash"></i>
+                            </button>
+                            <div class="time-value mx-2" id="workTime">25</div>
+                            <button class="btn btn-outline-secondary btn-sm" id="increaseWorkTime">
+                                <i class="bi bi-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Break Duration -->
+                    <div class="time-setting">
+                        <div class="time-label">Durasi Istirahat Pendek (menit)</div>
+                        <div class="d-flex align-items-center">
+                            <button class="btn btn-outline-secondary btn-sm" id="decreaseBreakTime">
+                                <i class="bi bi-dash"></i>
+                            </button>
+                            <div class="time-value mx-2" id="breakTime">5</div>
+                            <button class="btn btn-outline-secondary btn-sm" id="increaseBreakTime">
+                                <i class="bi bi-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Long Break Duration -->
+                    <div class="time-setting">
+                        <div class="time-label">Durasi Istirahat Panjang (menit)</div>
+                        <div class="d-flex align-items-center">
+                            <button class="btn btn-outline-secondary btn-sm" id="decreaseLongBreakTime">
+                                <i class="bi bi-dash"></i>
+                            </button>
+                            <div class="time-value mx-2" id="longBreakTime">15</div>
+                            <button class="btn btn-outline-secondary btn-sm" id="increaseLongBreakTime">
+                                <i class="bi bi-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Sessions before long break -->
+                    <div class="time-setting">
+                        <div class="time-label">Sesi sebelum istirahat panjang</div>
+                        <div class="d-flex align-items-center">
+                            <button class="btn btn-outline-secondary btn-sm" id="decreaseSessionsBeforeLongBreak">
+                                <i class="bi bi-dash"></i>
+                            </button>
+                            <div class="time-value mx-2" id="sessionsBeforeLongBreak">4</div>
+                            <button class="btn btn-outline-secondary btn-sm" id="increaseSessionsBeforeLongBreak">
+                                <i class="bi bi-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-info" role="alert">
+                    <i class="bi bi-info-circle-fill"></i> Teknik Pomodoro: 25 menit fokus, 5 menit istirahat, setelah 4
+                    sesi ambil istirahat panjang 15-30 menit.
+                </div>
+            </div>
+        </div>
+
+        <footer class="mt-5">
+            <p>Dibuat dengan <i class="bi bi-heart-fill text-danger"></i> menggunakan HTML, CSS, JavaScript, dan
+                Bootstrap</p>
+            <p class="mb-0">Teknik Pomodoro dikembangkan oleh Francesco Cirillo pada akhir 1980-an</p>
+        </footer>
+    </div>
+
+    <!-- Audio untuk notifikasi -->
+    <audio id="timerSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // Elemen DOM
+        const timerDisplay = document.getElementById('timerDisplay');
+        const timerMode = document.getElementById('timerMode');
+        const progressBar = document.getElementById('progressBar');
+        const startBtn = document.getElementById('startBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const sessionCount = document.getElementById('sessionCount');
+        const timerSound = document.getElementById('timerSound');
+
+        // Elemen pengaturan
+        const workTimeElement = document.getElementById('workTime');
+        const breakTimeElement = document.getElementById('breakTime');
+        const longBreakTimeElement = document.getElementById('longBreakTime');
+        const sessionsBeforeLongBreakElement = document.getElementById('sessionsBeforeLongBreak');
+
+        // Variabel timer
+        let timer;
+        let isRunning = false;
+        let isPaused = false;
+        let timeLeft = 25 * 60; // 25 menit dalam detik
+        let totalTime = 25 * 60;
+        let currentMode = 'work'; // 'work', 'break', 'longBreak'
+        let sessionsCompleted = 0;
+        let sessionsBeforeLongBreak = 4;
+
+        // Nilai default
+        let workDuration = 25;
+        let breakDuration = 5;
+        let longBreakDuration = 15;
+
+        // Fungsi untuk memperbarui tampilan timer
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+            // Update progress bar
+            const progressPercentage = 100 - (timeLeft / totalTime * 100);
+            progressBar.style.width = `${progressPercentage}%`;
+        }
+
+        // Fungsi untuk memulai timer
+        function startTimer() {
+            if (isRunning) return;
+
+            isRunning = true;
+            isPaused = false;
+            startBtn.disabled = true;
+            pauseBtn.disabled = false;
+
+            // Animasi pada timer container
+            document.querySelector('.timer-container').classList.add('timer-active');
+
+            timer = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    isRunning = false;
+                    timerSound.play();
+
+                    // Update sesi dan mode
+                    if (currentMode === 'work') {
+                        sessionsCompleted++;
+                        sessionCount.textContent = sessionsCompleted;
+
+                        // Cek apakah sudah waktunya istirahat panjang
+                        if (sessionsCompleted % sessionsBeforeLongBreak === 0) {
+                            currentMode = 'longBreak';
+                            timeLeft = longBreakDuration * 60;
+                            totalTime = longBreakDuration * 60;
+                            timerMode.textContent = 'Istirahat Panjang';
+                            timerMode.className = 'timer-mode mode-long-break';
+                            timerDisplay.style.color = 'var(--tertiary-color)';
+                            progressBar.style.backgroundColor = 'var(--tertiary-color)';
+                        } else {
+                            currentMode = 'break';
+                            timeLeft = breakDuration * 60;
+                            totalTime = breakDuration * 60;
+                            timerMode.textContent = 'Istirahat Pendek';
+                            timerMode.className = 'timer-mode mode-break';
+                            timerDisplay.style.color = 'var(--secondary-color)';
+                            progressBar.style.backgroundColor = 'var(--secondary-color)';
+                        }
+                    } else {
+                        currentMode = 'work';
+                        timeLeft = workDuration * 60;
+                        totalTime = workDuration * 60;
+                        timerMode.textContent = 'Waktu Fokus';
+                        timerMode.className = 'timer-mode mode-work';
+                        timerDisplay.style.color = 'var(--primary-color)';
+                        progressBar.style.backgroundColor = 'var(--primary-color)';
+                    }
+
+                    updateTimerDisplay();
+                    startBtn.disabled = false;
+                    pauseBtn.disabled = true;
+                    document.querySelector('.timer-container').classList.remove('timer-active');
+
+                    // Tampilkan notifikasi
+                    showNotification();
+                }
+            }, 1000);
+        }
+
+        // Fungsi untuk menjeda timer
+        function pauseTimer() {
+            if (!isRunning) return;
+
+            clearInterval(timer);
+            isRunning = false;
+            isPaused = true;
+            startBtn.disabled = false;
+            pauseBtn.disabled = true;
+            document.querySelector('.timer-container').classList.remove('timer-active');
+
+            // Ubah teks tombol mulai menjadi lanjutkan
+            startBtn.innerHTML = '<i class="bi bi-play-fill"></i> Lanjutkan';
+        }
+
+        // Fungsi untuk mereset timer
+        function resetTimer() {
+            clearInterval(timer);
+            isRunning = false;
+            isPaused = false;
+
+            // Reset ke mode kerja
+            currentMode = 'work';
+            timeLeft = workDuration * 60;
+            totalTime = workDuration * 60;
+
+            // Reset tampilan
+            timerMode.textContent = 'Waktu Fokus';
+            timerMode.className = 'timer-mode mode-work';
+            timerDisplay.style.color = 'var(--primary-color)';
+            progressBar.style.backgroundColor = 'var(--primary-color)';
+
+            updateTimerDisplay();
+
+            // Reset tombol
+            startBtn.disabled = false;
+            pauseBtn.disabled = true;
+            startBtn.innerHTML = '<i class="bi bi-play-fill"></i> Mulai';
+
+            document.querySelector('.timer-container').classList.remove('timer-active');
+        }
+
+        // Fungsi untuk menampilkan notifikasi
+        function showNotification() {
+            let notificationText = '';
+
+            if (currentMode === 'work') {
+                notificationText = 'Waktu fokus selesai! Saatnya istirahat.';
+            } else if (currentMode === 'break') {
+                notificationText = 'Istirahat pendek selesai! Saatnya fokus kembali.';
+            } else {
+                notificationText = 'Istirahat panjang selesai! Siap untuk sesi fokus berikutnya.';
+            }
+
+            // Cek apakah browser mendukung notifikasi
+            if ("Notification" in window && Notification.permission === "granted") {
+                new Notification("Pomodoro Timer", {
+                    body: notificationText,
+                    icon: "https://cdn-icons-png.flaticon.com/512/3208/3208720.png"
+                });
+            }
+
+            // Tampilkan alert sebagai fallback
+            alert(notificationText);
+        }
+
+        // Fungsi untuk meminta izin notifikasi
+        function requestNotificationPermission() {
+            if ("Notification" in window && Notification.permission === "default") {
+                Notification.requestPermission();
+            }
+        }
+
+        // Fungsi untuk memperbarui pengaturan
+        function updateSettings() {
+            workDuration = parseInt(workTimeElement.textContent);
+            breakDuration = parseInt(breakTimeElement.textContent);
+            longBreakDuration = parseInt(longBreakTimeElement.textContent);
+            sessionsBeforeLongBreak = parseInt(sessionsBeforeLongBreakElement.textContent);
+
+            // Jika timer tidak berjalan, update tampilan
+            if (!isRunning && !isPaused) {
+                if (currentMode === 'work') {
+                    timeLeft = workDuration * 60;
+                    totalTime = workDuration * 60;
+                } else if (currentMode === 'break') {
+                    timeLeft = breakDuration * 60;
+                    totalTime = breakDuration * 60;
+                } else {
+                    timeLeft = longBreakDuration * 60;
+                    totalTime = longBreakDuration * 60;
+                }
+
+                updateTimerDisplay();
+            }
+        }
+
+        // Event Listeners untuk tombol kontrol
+        startBtn.addEventListener('click', startTimer);
+        pauseBtn.addEventListener('click', pauseTimer);
+        resetBtn.addEventListener('click', resetTimer);
+
+        // Event Listeners untuk pengaturan waktu kerja
+        document.getElementById('increaseWorkTime').addEventListener('click', () => {
+            let value = parseInt(workTimeElement.textContent);
+            if (value < 60) {
+                workTimeElement.textContent = value + 1;
+                updateSettings();
+            }
+        });
+
+        document.getElementById('decreaseWorkTime').addEventListener('click', () => {
+            let value = parseInt(workTimeElement.textContent);
+            if (value > 1) {
+                workTimeElement.textContent = value - 1;
+                updateSettings();
+            }
+        });
+
+        // Event Listeners untuk pengaturan waktu istirahat pendek
+        document.getElementById('increaseBreakTime').addEventListener('click', () => {
+            let value = parseInt(breakTimeElement.textContent);
+            if (value < 30) {
+                breakTimeElement.textContent = value + 1;
+                updateSettings();
+            }
+        });
+
+        document.getElementById('decreaseBreakTime').addEventListener('click', () => {
+            let value = parseInt(breakTimeElement.textContent);
+            if (value > 1) {
+                breakTimeElement.textContent = value - 1;
+                updateSettings();
+            }
+        });
+
+        // Event Listeners untuk pengaturan waktu istirahat panjang
+        document.getElementById('increaseLongBreakTime').addEventListener('click', () => {
+            let value = parseInt(longBreakTimeElement.textContent);
+            if (value < 60) {
+                longBreakTimeElement.textContent = value + 1;
+                updateSettings();
+            }
+        });
+
+        document.getElementById('decreaseLongBreakTime').addEventListener('click', () => {
+            let value = parseInt(longBreakTimeElement.textContent);
+            if (value > 5) {
+                longBreakTimeElement.textContent = value - 1;
+                updateSettings();
+            }
+        });
+
+        // Event Listeners untuk pengaturan sesi sebelum istirahat panjang
+        document.getElementById('increaseSessionsBeforeLongBreak').addEventListener('click', () => {
+            let value = parseInt(sessionsBeforeLongBreakElement.textContent);
+            if (value < 10) {
+                sessionsBeforeLongBreakElement.textContent = value + 1;
+                updateSettings();
+            }
+        });
+
+        document.getElementById('decreaseSessionsBeforeLongBreak').addEventListener('click', () => {
+            let value = parseInt(sessionsBeforeLongBreakElement.textContent);
+            if (value > 1) {
+                sessionsBeforeLongBreakElement.textContent = value - 1;
+                updateSettings();
+            }
+        });
+
+        // Minta izin notifikasi saat halaman dimuat
+        window.addEventListener('load', () => {
+            requestNotificationPermission();
+            updateTimerDisplay();
+
+            // Coba muat sesi dari localStorage
+            const savedSessions = localStorage.getItem('pomodoroSessions');
+            if (savedSessions) {
+                sessionsCompleted = parseInt(savedSessions);
+                sessionCount.textContent = sessionsCompleted;
+            }
+        });
+
+        // Simpan sesi ke localStorage sebelum halaman ditutup
+        window.addEventListener('beforeunload', () => {
+            localStorage.setItem('pomodoroSessions', sessionsCompleted);
+        });
+    </script>
+</body>
+
+</html>
