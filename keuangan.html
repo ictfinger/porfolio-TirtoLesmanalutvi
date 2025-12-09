@@ -1,0 +1,1768 @@
+<!DOCTYPE html>
+<html lang="id" data-bs-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>MoneyScan - Aplikasi Keuangan & Scan Barcode</title>
+    <!-- Bootstrap 5.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- QuaggaJS for Barcode Scanner -->
+    <script src="https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js"></script>
+    <!-- Animate CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3a0ca3;
+            --success-color: #4cc9f0;
+            --danger-color: #f72585;
+            --warning-color: #f8961e;
+            --info-color: #7209b7;
+            --light-bg: #f8f9fa;
+            --dark-bg: #212529;
+            --card-radius: 15px;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-bs-theme="dark"] {
+            --light-bg: #1a1d28;
+            --dark-bg: #12141c;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        [data-bs-theme="dark"] body {
+            background: linear-gradient(135deg, #12141c 0%, #1a1d28 100%);
+        }
+
+        /* Header */
+        .app-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1.5rem 0;
+            border-radius: 0 0 var(--card-radius) var(--card-radius);
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .app-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+
+        /* Card Styles */
+        .finance-card {
+            background: var(--bs-body-bg);
+            border-radius: var(--card-radius);
+            box-shadow: var(--shadow);
+            border: none;
+            transition: var(--transition);
+            margin-bottom: 1.5rem;
+        }
+
+        .finance-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Scanner Modal */
+        .scanner-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1050;
+            display: none;
+        }
+
+        .scanner-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 2rem auto;
+        }
+
+        #scanner {
+            width: 100%;
+            height: 400px;
+            background: #000;
+            border-radius: var(--card-radius);
+            overflow: hidden;
+        }
+
+        .scanner-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 200px;
+            border: 2px solid var(--primary-color);
+            border-radius: 10px;
+            animation: scanner-pulse 2s infinite;
+        }
+
+        @keyframes scanner-pulse {
+            0% {
+                border-color: var(--primary-color);
+            }
+
+            50% {
+                border-color: var(--success-color);
+            }
+
+            100% {
+                border-color: var(--primary-color);
+            }
+        }
+
+        /* Expense List */
+        .expense-list {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .expense-item {
+            background: var(--bs-body-bg);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border-left: 4px solid;
+            transition: var(--transition);
+            border: 1px solid var(--bs-border-color);
+        }
+
+        .expense-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .expense-item.food {
+            border-left-color: #ff6b6b;
+        }
+
+        .expense-item.transport {
+            border-left-color: #4ecdc4;
+        }
+
+        .expense-item.shopping {
+            border-left-color: #ffd166;
+        }
+
+        .expense-item.entertainment {
+            border-left-color: #06d6a0;
+        }
+
+        .expense-item.bills {
+            border-left-color: #118ab2;
+        }
+
+        .expense-item.other {
+            border-left-color: #9d4edd;
+        }
+
+        /* Budget Progress */
+        .budget-progress {
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: var(--bs-secondary-bg);
+        }
+
+        .budget-progress-bar {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 1s ease;
+        }
+
+        /* Quick Actions */
+        .quick-action-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .quick-action-btn:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        /* AI Suggestion */
+        .ai-suggestion {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: var(--card-radius);
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-suggestion::before {
+            content: '🤖';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 2rem;
+            opacity: 0.2;
+        }
+
+        /* Dark Mode Toggle */
+        .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(30deg) scale(1.1);
+        }
+
+        /* Animations */
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .shake {
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            10%,
+            30%,
+            50%,
+            70%,
+            90% {
+                transform: translateX(-5px);
+            }
+
+            20%,
+            40%,
+            60%,
+            80% {
+                transform: translateX(5px);
+            }
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            .scanner-container {
+                margin: 1rem;
+            }
+
+            #scanner {
+                height: 300px;
+            }
+
+            .quick-action-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bs-secondary-bg);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 10px;
+        }
+
+        /* Category Badges */
+        .category-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Toast Notifications */
+        .custom-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            max-width: 300px;
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            display: inline-block;
+            width: 2rem;
+            height: 2rem;
+            border: 3px solid rgba(0, 0, 0, .1);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Theme Toggle -->
+    <div class="theme-toggle" id="themeToggle">
+        <i class="bi bi-moon-fill" id="themeIcon"></i>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="custom-toast"></div>
+
+    <!-- Scanner Modal -->
+    <div class="scanner-modal" id="scannerModal">
+        <div class="scanner-container">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="text-white mb-0">Scan Barcode Produk</h5>
+                <button class="btn btn-danger" onclick="closeScanner()">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div id="scanner"></div>
+            <div class="scanner-overlay"></div>
+            <div class="text-center mt-3">
+                <p class="text-white mb-2">Arahkan kamera ke barcode produk</p>
+                <button class="btn btn-outline-light" onclick="toggleCamera()">
+                    <i class="bi bi-camera-video"></i> Ganti Kamera
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid px-3 px-md-4 px-lg-5 pb-5">
+        <!-- Header -->
+        <header class="app-header mb-4">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h1 class="display-6 fw-bold mb-2">
+                            <i class="bi bi-cash-stack"></i> MoneyScan
+                        </h1>
+                        <p class="mb-0">Kelola keuangan, scan barcode, analisis pengeluaran secara real-time</p>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <div class="d-flex justify-content-end gap-3">
+                            <button class="btn btn-outline-light" onclick="exportData()">
+                                <i class="bi bi-download"></i> Export
+                            </button>
+                            <button class="btn btn-light" onclick="importData()">
+                                <i class="bi bi-upload"></i> Import
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Quick Stats -->
+        <div class="row mb-4">
+            <div class="col-md-3 col-sm-6">
+                <div class="finance-card p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-1">Saldo Hari Ini</h6>
+                            <h3 class="mb-0" id="todayBalance">Rp 0</h3>
+                        </div>
+                        <div class="fs-1 text-success">
+                            <i class="bi bi-wallet2"></i>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <small class="text-success">
+                            <i class="bi bi-arrow-up-right"></i> Dibandingkan kemarin
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="finance-card p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-1">Pengeluaran Bulan Ini</h6>
+                            <h3 class="mb-0" id="monthExpense">Rp 0</h3>
+                        </div>
+                        <div class="fs-1 text-danger">
+                            <i class="bi bi-arrow-down-left"></i>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <small class="text-danger" id="monthComparison">
+                            <i class="bi bi-arrow-down-right"></i> 0% vs bulan lalu
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="finance-card p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-1">Target Hemat</h6>
+                            <h3 class="mb-0" id="savingTarget">Rp 0</h3>
+                        </div>
+                        <div class="fs-1 text-warning">
+                            <i class="bi bi-piggy-bank"></i>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <small class="text-warning" id="savingProgress">
+                            <i class="bi bi-circle"></i> 0% tercapai
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="finance-card p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-1">Transaksi Hari Ini</h6>
+                            <h3 class="mb-0" id="todayTransactions">0</h3>
+                        </div>
+                        <div class="fs-1 text-info">
+                            <i class="bi bi-receipt"></i>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <small class="text-info">
+                            <i class="bi bi-clock-history"></i> Update real-time
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="row">
+            <!-- Left Column - Input & Scanner -->
+            <div class="col-lg-4">
+                <!-- Quick Add Expense -->
+                <div class="finance-card p-4 mb-4">
+                    <h5 class="mb-3">
+                        <i class="bi bi-plus-circle"></i> Tambah Pengeluaran
+                    </h5>
+                    <div class="mb-3">
+                        <label class="form-label">Jumlah (Rp)</label>
+                        <input type="number" class="form-control" id="amountInput" placeholder="Contoh: 50000" min="0">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Kategori</label>
+                        <select class="form-select" id="categorySelect">
+                            <option value="food">Makanan & Minuman</option>
+                            <option value="transport">Transportasi</option>
+                            <option value="shopping">Belanja</option>
+                            <option value="entertainment">Hiburan</option>
+                            <option value="bills">Tagihan & Utilitas</option>
+                            <option value="other">Lainnya</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Deskripsi</label>
+                        <input type="text" class="form-control" id="descriptionInput" placeholder="Contoh: Makan siang">
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" onclick="addExpense()">
+                            <i class="bi bi-check-lg"></i> Simpan Pengeluaran
+                        </button>
+                        <button class="btn btn-outline-primary" onclick="openScanner()">
+                            <i class="bi bi-upc-scan"></i> Scan Barcode
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="finance-card p-4 mb-4">
+                    <h5 class="mb-3">
+                        <i class="bi bi-lightning"></i> Aksi Cepat
+                    </h5>
+                    <div class="row g-2">
+                        <div class="col-4">
+                            <button class="quick-action-btn btn btn-success w-100"
+                                onclick="quickExpense(10000, 'food')">
+                                <i class="bi bi-cup-hot"></i>
+                            </button>
+                            <small class="d-block text-center mt-1">Kopi</small>
+                        </div>
+                        <div class="col-4">
+                            <button class="quick-action-btn btn btn-info w-100"
+                                onclick="quickExpense(5000, 'transport')">
+                                <i class="bi bi-bus-front"></i>
+                            </button>
+                            <small class="d-block text-center mt-1">Transport</small>
+                        </div>
+                        <div class="col-4">
+                            <button class="quick-action-btn btn btn-warning w-100"
+                                onclick="quickExpense(20000, 'food')">
+                                <i class="bi bi-egg-fried"></i>
+                            </button>
+                            <small class="d-block text-center mt-1">Makan</small>
+                        </div>
+                        <div class="col-4">
+                            <button class="quick-action-btn btn btn-danger w-100" onclick="setBudget()">
+                                <i class="bi bi-calculator"></i>
+                            </button>
+                            <small class="d-block text-center mt-1">Budget</small>
+                        </div>
+                        <div class="col-4">
+                            <button class="quick-action-btn btn btn-primary w-100" onclick="showInsights()">
+                                <i class="bi bi-graph-up"></i>
+                            </button>
+                            <small class="d-block text-center mt-1">Analisis</small>
+                        </div>
+                        <div class="col-4">
+                            <button class="quick-action-btn btn btn-secondary w-100" onclick="showReport()">
+                                <i class="bi bi-file-text"></i>
+                            </button>
+                            <small class="d-block text-center mt-1">Laporan</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Budget Progress -->
+                <div class="finance-card p-4">
+                    <h5 class="mb-3">
+                        <i class="bi bi-speedometer2"></i> Progress Budget
+                    </h5>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>Makanan</span>
+                            <span id="foodProgress">Rp 0/500k</span>
+                        </div>
+                        <div class="budget-progress">
+                            <div class="budget-progress-bar bg-danger" id="foodBar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>Transportasi</span>
+                            <span id="transportProgress">Rp 0/300k</span>
+                        </div>
+                        <div class="budget-progress">
+                            <div class="budget-progress-bar bg-info" id="transportBar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>Belanja</span>
+                            <span id="shoppingProgress">Rp 0/1jt</span>
+                        </div>
+                        <div class="budget-progress">
+                            <div class="budget-progress-bar bg-warning" id="shoppingBar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline-primary w-100" onclick="setBudget()">
+                        <i class="bi bi-pencil"></i> Atur Budget
+                    </button>
+                </div>
+            </div>
+
+            <!-- Middle Column - Recent Expenses & AI Suggestions -->
+            <div class="col-lg-5">
+                <!-- Recent Expenses -->
+                <div class="finance-card p-4 mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">
+                            <i class="bi bi-clock-history"></i> Pengeluaran Terbaru
+                        </h5>
+                        <button class="btn btn-sm btn-outline-secondary" onclick="clearAllExpenses()">
+                            <i class="bi bi-trash"></i> Hapus Semua
+                        </button>
+                    </div>
+                    <div class="expense-list" id="expenseList">
+                        <!-- Expenses will be loaded here -->
+                        <div class="text-center py-5">
+                            <i class="bi bi-receipt fs-1 text-muted"></i>
+                            <p class="text-muted mt-2">Belum ada pengeluaran hari ini</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Suggestions -->
+                <div class="ai-suggestion mb-4">
+                    <h5 class="mb-2">
+                        <i class="bi bi-robot"></i> Saran Keuangan AI
+                    </h5>
+                    <p id="aiSuggestionText">
+                        Mulai catat pengeluaran Anda untuk mendapatkan saran personal!
+                    </p>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-light btn-sm" onclick="getAISuggestion()">
+                            <i class="bi bi-arrow-clockwise"></i> Saran Baru
+                        </button>
+                        <button class="btn btn-outline-light btn-sm" onclick="showDetailedAnalysis()">
+                            <i class="bi bi-bar-chart"></i> Analisis Detail
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Monthly Analysis -->
+                <div class="finance-card p-4">
+                    <h5 class="mb-3">
+                        <i class="bi bi-calendar-month"></i> Analisis Bulanan
+                    </h5>
+                    <div class="chart-container">
+                        <canvas id="monthlyChart" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Charts & Analysis -->
+            <div class="col-lg-3">
+                <!-- Expense Distribution -->
+                <div class="finance-card p-4 mb-4">
+                    <h5 class="mb-3">
+                        <i class="bi bi-pie-chart"></i> Distribusi Pengeluaran
+                    </h5>
+                    <div class="chart-container">
+                        <canvas id="categoryChart" height="250"></canvas>
+                    </div>
+                </div>
+
+                <!-- Daily Trend -->
+                <div class="finance-card p-4">
+                    <h5 class="mb-3">
+                        <i class="bi bi-graph-up-arrow"></i> Tren Harian
+                    </h5>
+                    <div class="chart-container">
+                        <canvas id="dailyChart" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Analysis Modal (Hidden) -->
+        <div class="finance-card p-4 mt-4 d-none" id="detailedAnalysis">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">
+                    <i class="bi bi-bar-chart-fill"></i> Analisis Detail Pengeluaran
+                </h5>
+                <button class="btn btn-sm btn-outline-secondary" onclick="hideDetailedAnalysis()">
+                    <i class="bi bi-x"></i> Tutup
+                </button>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <h6>Pengeluaran Tertinggi</h6>
+                        <div id="topExpenses">
+                            <!-- Top expenses will be loaded here -->
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <h6>Kebiasaan Pengeluaran</h6>
+                        <div id="spendingHabits">
+                            <!-- Spending habits will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <h6>Rekomendasi Penghematan</h6>
+                        <div id="savingRecommendations">
+                            <!-- Saving recommendations will be loaded here -->
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <h6>Prediksi Bulan Depan</h6>
+                        <div id="monthPrediction">
+                            <!-- Month prediction will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio for notifications -->
+    <audio id="notificationSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Data Storage
+        let expenses = [];
+        let budgets = {
+            food: 500000,
+            transport: 300000,
+            shopping: 1000000,
+            entertainment: 200000,
+            bills: 1500000,
+            other: 500000
+        };
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+
+        // Charts
+        let categoryChart = null;
+        let monthlyChart = null;
+        let dailyChart = null;
+
+        // Scanner
+        let scannerActive = false;
+        let currentCamera = 'environment';
+
+        // Initialize the app
+        function initApp() {
+            loadFromLocalStorage();
+            updateUI();
+            updateCharts();
+            updateAISuggestion();
+            initializeTooltips();
+
+            // Set theme from localStorage
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-bs-theme', savedTheme);
+            document.getElementById('themeIcon').className = savedTheme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
+
+            // Check if it's a new day
+            checkNewDay();
+        }
+
+        // Load data from localStorage
+        function loadFromLocalStorage() {
+            const savedExpenses = localStorage.getItem('moneyScanExpenses');
+            const savedBudgets = localStorage.getItem('moneyScanBudgets');
+
+            if (savedExpenses) {
+                expenses = JSON.parse(savedExpenses);
+            }
+
+            if (savedBudgets) {
+                budgets = JSON.parse(savedBudgets);
+            }
+        }
+
+        // Save data to localStorage
+        function saveToLocalStorage() {
+            localStorage.setItem('moneyScanExpenses', JSON.stringify(expenses));
+            localStorage.setItem('moneyScanBudgets', JSON.stringify(budgets));
+        }
+
+        // Update all UI elements
+        function updateUI() {
+            updateBalance();
+            updateExpenseList();
+            updateBudgetProgress();
+            updateStats();
+        }
+
+        // Update balance and stats
+        function updateBalance() {
+            const today = new Date().toDateString();
+            const todayExpenses = expenses.filter(exp => exp.date === today);
+            const monthExpenses = expenses.filter(exp => {
+                const expDate = new Date(exp.date);
+                return expDate.getMonth() === currentMonth && expDate.getFullYear() === currentYear;
+            });
+
+            // Calculate totals
+            const todayTotal = todayExpenses.reduce((sum, exp) => sum + exp.amount, 0);
+            const monthTotal = monthExpenses.reduce((sum, exp) => sum + exp.amount, 0);
+
+            // Update UI
+            document.getElementById('todayBalance').textContent = formatCurrency(todayTotal);
+            document.getElementById('monthExpense').textContent = formatCurrency(monthTotal);
+            document.getElementById('todayTransactions').textContent = todayExpenses.length;
+
+            // Calculate month comparison
+            const lastMonthTotal = calculateLastMonthTotal();
+            const comparison = lastMonthTotal > 0 ? ((monthTotal - lastMonthTotal) / lastMonthTotal * 100).toFixed(1) : 0;
+            document.getElementById('monthComparison').innerHTML = `
+                <i class="bi bi-arrow-${comparison > 0 ? 'up' : 'down'}-right"></i> 
+                ${Math.abs(comparison)}% ${comparison > 0 ? 'naik' : 'turun'} vs bulan lalu
+            `;
+
+            // Update saving target
+            updateSavingTarget();
+        }
+
+        // Calculate last month's total
+        function calculateLastMonthTotal() {
+            const lastMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+            const year = currentMonth === 0 ? currentYear - 1 : currentYear;
+
+            return expenses.filter(exp => {
+                const expDate = new Date(exp.date);
+                return expDate.getMonth() === lastMonth && expDate.getFullYear() === year;
+            }).reduce((sum, exp) => sum + exp.amount, 0);
+        }
+
+        // Update saving target
+        function updateSavingTarget() {
+            const monthlyIncome = 5000000; // Default monthly income
+            const monthExpenses = expenses.filter(exp => {
+                const expDate = new Date(exp.date);
+                return expDate.getMonth() === currentMonth && expDate.getFullYear() === currentYear;
+            }).reduce((sum, exp) => sum + exp.amount, 0);
+
+            const targetSaving = monthlyIncome * 0.2; // 20% of income
+            const currentSaving = monthlyIncome - monthExpenses;
+            const progress = Math.min(100, Math.max(0, (currentSaving / targetSaving) * 100));
+
+            document.getElementById('savingTarget').textContent = formatCurrency(targetSaving);
+            document.getElementById('savingProgress').innerHTML = `
+                <i class="bi bi-${progress >= 100 ? 'check-circle' : 'circle'}"></i> 
+                ${progress.toFixed(1)}% tercapai
+            `;
+        }
+
+        // Update expense list
+        function updateExpenseList() {
+            const expenseList = document.getElementById('expenseList');
+            const today = new Date().toDateString();
+            const todayExpenses = expenses.filter(exp => exp.date === today).reverse();
+
+            if (todayExpenses.length === 0) {
+                expenseList.innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="bi bi-receipt fs-1 text-muted"></i>
+                        <p class="text-muted mt-2">Belum ada pengeluaran hari ini</p>
+                    </div>`;
+                return;
+            }
+
+            expenseList.innerHTML = todayExpenses.map(exp => `
+                <div class="expense-item ${exp.category}">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="d-flex align-items-center mb-1">
+                                <span class="fw-bold">${exp.description}</span>
+                                <span class="category-badge ms-2 ${getCategoryColor(exp.category)}">
+                                    ${getCategoryName(exp.category)}
+                                </span>
+                            </div>
+                            <small class="text-muted">${exp.time}</small>
+                        </div>
+                        <div>
+                            <span class="fw-bold fs-5">${formatCurrency(exp.amount)}</span>
+                            <button class="btn btn-sm btn-outline-danger ms-2" onclick="deleteExpense('${exp.id}')">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Get category name
+        function getCategoryName(category) {
+            const categories = {
+                food: 'Makanan',
+                transport: 'Transport',
+                shopping: 'Belanja',
+                entertainment: 'Hiburan',
+                bills: 'Tagihan',
+                other: 'Lainnya'
+            };
+            return categories[category] || 'Lainnya';
+        }
+
+        // Get category color
+        function getCategoryColor(category) {
+            const colors = {
+                food: 'bg-danger',
+                transport: 'bg-info',
+                shopping: 'bg-warning',
+                entertainment: 'bg-success',
+                bills: 'bg-primary',
+                other: 'bg-secondary'
+            };
+            return colors[category] || 'bg-secondary';
+        }
+
+        // Add new expense
+        function addExpense() {
+            const amountInput = document.getElementById('amountInput');
+            const categorySelect = document.getElementById('categorySelect');
+            const descriptionInput = document.getElementById('descriptionInput');
+
+            const amount = parseInt(amountInput.value);
+            const category = categorySelect.value;
+            const description = descriptionInput.value.trim();
+
+            if (!amount || amount <= 0) {
+                showToast('Error', 'Masukkan jumlah yang valid', 'danger');
+                amountInput.classList.add('shake');
+                setTimeout(() => amountInput.classList.remove('shake'), 500);
+                return;
+            }
+
+            if (!description) {
+                showToast('Error', 'Masukkan deskripsi pengeluaran', 'danger');
+                descriptionInput.classList.add('shake');
+                setTimeout(() => descriptionInput.classList.remove('shake'), 500);
+                return;
+            }
+
+            const now = new Date();
+            const expense = {
+                id: Date.now().toString(),
+                amount: amount,
+                category: category,
+                description: description,
+                date: now.toDateString(),
+                time: now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+                timestamp: now.getTime()
+            };
+
+            expenses.push(expense);
+            saveToLocalStorage();
+            updateUI();
+            updateCharts();
+            updateAISuggestion();
+
+            // Reset form
+            amountInput.value = '';
+            descriptionInput.value = '';
+
+            // Show success message
+            showToast('Berhasil!', 'Pengeluaran berhasil dicatat', 'success');
+            playNotificationSound();
+
+            // Check budget warning
+            checkBudgetWarning(category, amount);
+        }
+
+        // Quick expense
+        function quickExpense(amount, category) {
+            const descriptions = {
+                food: ['Makan siang', 'Makan malam', 'Cemilan', 'Minuman'],
+                transport: ['Gojek', 'Bensin', 'Parkir', 'Tol'],
+                shopping: ['Belanja bulanan', 'Pakaian', 'Elektronik'],
+                entertainment: ['Nonton bioskop', 'Karaoke', 'Game']
+            };
+
+            const descList = descriptions[category] || ['Pengeluaran lainnya'];
+            const randomDesc = descList[Math.floor(Math.random() * descList.length)];
+
+            document.getElementById('amountInput').value = amount;
+            document.getElementById('categorySelect').value = category;
+            document.getElementById('descriptionInput').value = randomDesc;
+
+            addExpense();
+        }
+
+        // Delete expense
+        function deleteExpense(id) {
+            if (!confirm('Hapus pengeluaran ini?')) return;
+
+            expenses = expenses.filter(exp => exp.id !== id);
+            saveToLocalStorage();
+            updateUI();
+            updateCharts();
+
+            showToast('Dihapus', 'Pengeluaran berhasil dihapus', 'warning');
+        }
+
+        // Clear all expenses
+        function clearAllExpenses() {
+            if (!confirm('Hapus SEMUA pengeluaran? Tindakan ini tidak dapat dibatalkan!')) return;
+
+            const today = new Date().toDateString();
+            expenses = expenses.filter(exp => exp.date !== today);
+            saveToLocalStorage();
+            updateUI();
+            updateCharts();
+
+            showToast('Dihapus', 'Semua pengeluaran hari ini dihapus', 'warning');
+        }
+
+        // Update budget progress
+        function updateBudgetProgress() {
+            const today = new Date();
+            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+            const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            const daysPassed = today.getDate();
+
+            Object.keys(budgets).forEach(category => {
+                const monthExpenses = expenses.filter(exp => {
+                    const expDate = new Date(exp.date);
+                    return expDate >= firstDay && expDate <= lastDay && exp.category === category;
+                });
+
+                const total = monthExpenses.reduce((sum, exp) => sum + exp.amount, 0);
+                const budget = budgets[category];
+                const progress = Math.min(100, (total / budget) * 100);
+                const dailyBudget = budget / daysInMonth;
+                const expected = dailyBudget * daysPassed;
+
+                // Update progress bars
+                document.getElementById(`${category}Bar`).style.width = `${progress}%`;
+                document.getElementById(`${category}Progress`).textContent =
+                    `${formatCurrency(total)}/${formatCurrency(budget)}`;
+
+                // Add warning class if over budget
+                const bar = document.getElementById(`${category}Bar`);
+                bar.className = `budget-progress-bar ${progress >= 100 ? 'bg-danger' : getCategoryColor(category).replace('bg-', 'bg-')}`;
+
+                // Add pulse animation if close to budget
+                if (progress >= 80) {
+                    bar.classList.add('pulse');
+                } else {
+                    bar.classList.remove('pulse');
+                }
+            });
+        }
+
+        // Check budget warning
+        function checkBudgetWarning(category, amount) {
+            const monthExpenses = expenses.filter(exp => {
+                const expDate = new Date(exp.date);
+                return expDate.getMonth() === currentMonth && expDate.getFullYear() === currentYear && exp.category === category;
+            });
+
+            const total = monthExpenses.reduce((sum, exp) => sum + exp.amount, 0);
+            const budget = budgets[category];
+            const remaining = budget - total;
+
+            if (remaining < 0) {
+                showToast(
+                    '⚠️ Budget Terlampaui!',
+                    `Budget ${getCategoryName(category)} sudah terlampaui ${formatCurrency(Math.abs(remaining))}`,
+                    'danger'
+                );
+            } else if (remaining < amount) {
+                showToast(
+                    '⚠️ Hampir Habis!',
+                    `Budget ${getCategoryName(category)} hampir habis. Sisa: ${formatCurrency(remaining)}`,
+                    'warning'
+                );
+            } else if (remaining < budget * 0.2) {
+                showToast(
+                    'ℹ️ Budget Menipis',
+                    `Budget ${getCategoryName(category)} tinggal ${formatCurrency(remaining)}`,
+                    'info'
+                );
+            }
+        }
+
+        // Set budget
+        function setBudget() {
+            const newBudgets = {};
+            Object.keys(budgets).forEach(category => {
+                const current = budgets[category];
+                const newAmount = prompt(`Budget ${getCategoryName(category)} (Rp):`, current);
+                if (newAmount && !isNaN(newAmount)) {
+                    newBudgets[category] = parseInt(newAmount);
+                } else {
+                    newBudgets[category] = current;
+                }
+            });
+
+            budgets = newBudgets;
+            saveToLocalStorage();
+            updateBudgetProgress();
+            showToast('Berhasil!', 'Budget berhasil diupdate', 'success');
+        }
+
+        // Update charts
+        function updateCharts() {
+            updateCategoryChart();
+            updateMonthlyChart();
+            updateDailyChart();
+        }
+
+        // Update category chart
+        function updateCategoryChart() {
+            const ctx = document.getElementById('categoryChart').getContext('2d');
+            const categories = ['food', 'transport', 'shopping', 'entertainment', 'bills', 'other'];
+            const colors = ['#ff6b6b', '#4ecdc4', '#ffd166', '#06d6a0', '#118ab2', '#9d4edd'];
+
+            const data = categories.map(category => {
+                return expenses.filter(exp => exp.category === category)
+                    .reduce((sum, exp) => sum + exp.amount, 0);
+            });
+
+            if (categoryChart) {
+                categoryChart.destroy();
+            }
+
+            categoryChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: categories.map(getCategoryName),
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update monthly chart
+        function updateMonthlyChart() {
+            const ctx = document.getElementById('monthlyChart').getContext('2d');
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+            const currentYear = new Date().getFullYear();
+
+            const data = months.map((_, index) => {
+                return expenses.filter(exp => {
+                    const expDate = new Date(exp.date);
+                    return expDate.getMonth() === index && expDate.getFullYear() === currentYear;
+                }).reduce((sum, exp) => sum + exp.amount, 0);
+            });
+
+            if (monthlyChart) {
+                monthlyChart.destroy();
+            }
+
+            monthlyChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: 'Pengeluaran',
+                        data: data,
+                        backgroundColor: '#4361ee',
+                        borderColor: '#3a0ca3',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: value => formatCurrency(value, true)
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update daily chart
+        function updateDailyChart() {
+            const ctx = document.getElementById('dailyChart').getContext('2d');
+            const today = new Date();
+            const weekDays = [];
+            const weekData = [];
+
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(today.getDate() - i);
+                weekDays.push(date.toLocaleDateString('id-ID', { weekday: 'short' }));
+
+                const dayExpenses = expenses.filter(exp => exp.date === date.toDateString());
+                weekData.push(dayExpenses.reduce((sum, exp) => sum + exp.amount, 0));
+            }
+
+            if (dailyChart) {
+                dailyChart.destroy();
+            }
+
+            dailyChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: weekDays,
+                    datasets: [{
+                        label: 'Pengeluaran Harian',
+                        data: weekData,
+                        borderColor: '#f72585',
+                        backgroundColor: 'rgba(247, 37, 133, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: value => formatCurrency(value, true)
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update AI suggestion
+        function updateAISuggestion() {
+            const suggestionText = document.getElementById('aiSuggestionText');
+            const todayExpenses = expenses.filter(exp => exp.date === new Date().toDateString());
+            const monthExpenses = expenses.filter(exp => {
+                const expDate = new Date(exp.date);
+                return expDate.getMonth() === currentMonth && expDate.getFullYear() === currentYear;
+            });
+
+            if (todayExpenses.length === 0) {
+                suggestionText.textContent = 'Mulai catat pengeluaran Anda untuk mendapatkan saran personal!';
+                return;
+            }
+
+            const todayTotal = todayExpenses.reduce((sum, exp) => sum + exp.amount, 0);
+            const monthTotal = monthExpenses.reduce((sum, exp) => sum + exp.amount, 0);
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const today = new Date().getDate();
+            const avgDaily = monthTotal / today;
+            const projected = avgDaily * daysInMonth;
+
+            let suggestion = '';
+
+            if (todayTotal > avgDaily * 1.5) {
+                suggestion = `⚠️ Hari ini Anda boros! Pengeluaran ${formatCurrency(todayTotal)} melebihi rata-rata harian.`;
+                if (todayTotal > avgDaily * 2) {
+                    suggestion += ' Coba kurangi pengeluaran esok hari.';
+                }
+            } else if (todayTotal < avgDaily * 0.5) {
+                suggestion = `👍 Bagus! Anda hemat hari ini. Pengeluaran ${formatCurrency(todayTotal)} di bawah rata-rata.`;
+            } else {
+                suggestion = `📊 Pengeluaran hari ini ${formatCurrency(todayTotal)}. Rata-rata harian: ${formatCurrency(avgDaily)}.`;
+            }
+
+            if (projected > 5000000) {
+                suggestion += ` Proyeksi bulan ini: ${formatCurrency(projected)}. Perlu penghematan!`;
+            }
+
+            // Check category spending
+            const categoryTotals = {};
+            todayExpenses.forEach(exp => {
+                categoryTotals[exp.category] = (categoryTotals[exp.category] || 0) + exp.amount;
+            });
+
+            const highestCategory = Object.keys(categoryTotals).reduce((a, b) =>
+                categoryTotals[a] > categoryTotals[b] ? a : b
+            );
+
+            if (categoryTotals[highestCategory] > todayTotal * 0.5) {
+                suggestion += ` Perhatikan pengeluaran ${getCategoryName(highestCategory)} yang mencapai ${Math.round(categoryTotals[highestCategory] / todayTotal * 100)}% dari total hari ini.`;
+            }
+
+            suggestionText.textContent = suggestion;
+        }
+
+        // Get new AI suggestion
+        function getAISuggestion() {
+            const tips = [
+                "💡 Coba alokasikan 50-30-20: 50% kebutuhan, 30% keinginan, 20% tabungan.",
+                "📱 Gunakan fitur scan barcode untuk mencatat pengeluaran dengan cepat.",
+                "📊 Review pengeluaran mingguan untuk menemukan pola boros.",
+                "💰 Setiap kali dapat bonus, alokasikan 30% untuk tabungan darurat.",
+                "🛒 Buat daftar belanja dan patuhi untuk hindari impulse buying.",
+                "☕ Kurangi jajan di luar, masak sendiri bisa hemat hingga 70%.",
+                "🚲 Pertimbangkan transportasi umum untuk hemat biaya transport.",
+                "📅 Bayar tagihan tepat waktu untuk hindari denda.",
+                "🎯 Set target tabungan bulanan dan pantau progress-nya.",
+                "🧾 Simpan semua struk untuk tracking pengeluaran yang akurat."
+            ];
+
+            const randomTip = tips[Math.floor(Math.random() * tips.length)];
+            document.getElementById('aiSuggestionText').textContent = randomTip;
+        }
+
+        // Show detailed analysis
+        function showDetailedAnalysis() {
+            const analysisDiv = document.getElementById('detailedAnalysis');
+            analysisDiv.classList.remove('d-none');
+
+            // Scroll to analysis
+            analysisDiv.scrollIntoView({ behavior: 'smooth' });
+
+            // Populate analysis
+            populateTopExpenses();
+            populateSpendingHabits();
+            populateSavingRecommendations();
+            populateMonthPrediction();
+        }
+
+        // Hide detailed analysis
+        function hideDetailedAnalysis() {
+            document.getElementById('detailedAnalysis').classList.add('d-none');
+        }
+
+        // Populate top expenses
+        function populateTopExpenses() {
+            const monthExpenses = expenses.filter(exp => {
+                const expDate = new Date(exp.date);
+                return expDate.getMonth() === currentMonth && expDate.getFullYear() === currentYear;
+            });
+
+            // Group by description
+            const expenseMap = {};
+            monthExpenses.forEach(exp => {
+                expenseMap[exp.description] = (expenseMap[exp.description] || 0) + exp.amount;
+            });
+
+            // Get top 5
+            const top5 = Object.entries(expenseMap)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+
+            document.getElementById('topExpenses').innerHTML = top5.map(([desc, amount]) => `
+                <div class="d-flex justify-content-between mb-2">
+                    <span>${desc}</span>
+                    <span class="fw-bold">${formatCurrency(amount)}</span>
+                </div>
+            `).join('');
+        }
+
+        // Populate spending habits
+        function populateSpendingHabits() {
+            const monthExpenses = expenses.filter(exp => {
+                const expDate = new Date(exp.date);
+                return expDate.getMonth() === currentMonth && expDate.getFullYear() === currentYear;
+            });
+
+            // Calculate average per category
+            const categoryAverages = {};
+            const categories = ['food', 'transport', 'shopping', 'entertainment', 'bills', 'other'];
+
+            categories.forEach(category => {
+                const catExpenses = monthExpenses.filter(exp => exp.category === category);
+                if (catExpenses.length > 0) {
+                    const total = catExpenses.reduce((sum, exp) => sum + exp.amount, 0);
+                    categoryAverages[category] = total / catExpenses.length;
+                }
+            });
+
+            // Find highest average
+            const highestCat = Object.keys(categoryAverages).reduce((a, b) =>
+                categoryAverages[a] > categoryAverages[b] ? a : b, 'food'
+            );
+
+            document.getElementById('spendingHabits').innerHTML = `
+                <div class="mb-2">
+                    <small>Rata-rata per transaksi tertinggi:</small>
+                    <div class="fw-bold">${getCategoryName(highestCat)} - ${formatCurrency(categoryAverages[highestCat])}</div>
+                </div>
+                <div>
+                    <small>Frekuensi belanja terbanyak:</small>
+                    <div class="fw-bold">Hari ${getMostFrequentDay(monthExpenses)}</div>
+                </div>
+            `;
+        }
+
+        // Get most frequent day
+        function getMostFrequentDay(expenses) {
+            const dayCount = {};
+            expenses.forEach(exp => {
+                const day = new Date(exp.date).getDay();
+                dayCount[day] = (dayCount[day] || 0) + 1;
+            });
+
+            const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+            const mostDay = Object.keys(dayCount).reduce((a, b) =>
+                dayCount[a] > dayCount[b] ? a : b, 0
+            );
+
+            return days[mostDay];
+        }
+
+        // Populate saving recommendations
+        function populateSavingRecommendations() {
+            const monthExpenses = expenses.filter(exp => {
+                const expDate = new Date(exp.date);
+                return expDate.getMonth() === currentMonth && expDate.getFullYear() === currentYear;
+            });
+
+            const categoryTotals = {};
+            monthExpenses.forEach(exp => {
+                categoryTotals[exp.category] = (categoryTotals[exp.category] || 0) + exp.amount;
+            });
+
+            // Find category with highest spending
+            let highestCat = 'food';
+            let highestAmount = 0;
+            Object.entries(categoryTotals).forEach(([cat, amount]) => {
+                if (amount > highestAmount) {
+                    highestAmount = amount;
+                    highestCat = cat;
+                }
+            });
+
+            const recommendations = {
+                food: 'Kurangi makan di luar, masak sendiri bisa hemat hingga 500rb/bulan.',
+                transport: 'Gunakan transportasi umum atau carpool untuk hemat bensin.',
+                shopping: 'Beli hanya yang diperlukan, hindari diskon yang tidak perlu.',
+                entertainment: 'Kurangi hiburan mahal, cari alternatif gratis.',
+                bills: 'Cek penggunaan listrik/air, matikan alat elektronik tidak terpakai.',
+                other: 'Review pengeluaran lainnya, mungkin ada yang bisa dipotong.'
+            };
+
+            document.getElementById('savingRecommendations').innerHTML = `
+                <div class="alert alert-info">
+                    <i class="bi bi-lightbulb"></i> 
+                    ${recommendations[highestCat]}
+                </div>
+                <small>Potensi hemat: ${formatCurrency(highestAmount * 0.3)}/bulan</small>
+            `;
+        }
+
+        // Populate month prediction
+        function populateMonthPrediction() {
+            const monthExpenses = expenses.filter(exp => {
+                const expDate = new Date(exp.date);
+                return expDate.getMonth() === currentMonth && expDate.getFullYear() === currentYear;
+            });
+
+            const today = new Date();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const daysPassed = today.getDate();
+
+            const currentTotal = monthExpenses.reduce((sum, exp) => sum + exp.amount, 0);
+            const avgDaily = currentTotal / daysPassed;
+            const projected = avgDaily * daysInMonth;
+
+            const status = projected > 5000000 ? 'danger' : projected > 4000000 ? 'warning' : 'success';
+            const icon = projected > 5000000 ? '⚠️' : projected > 4000000 ? 'ℹ️' : '✅';
+            const message = projected > 5000000 ? 'Perlu penghematan ketat!' :
+                projected > 4000000 ? 'Tetap waspada dengan pengeluaran' : 'Keuangan Anda sehat!';
+
+            document.getElementById('monthPrediction').innerHTML = `
+                <div class="alert alert-${status}">
+                    ${icon} <strong>Proyeksi akhir bulan:</strong> ${formatCurrency(projected)}
+                    <div class="small mt-1">${message}</div>
+                </div>
+                <small>Rata-rata harian: ${formatCurrency(avgDaily)}</small>
+            `;
+        }
+
+        // Show insights
+        function showInsights() {
+            showDetailedAnalysis();
+        }
+
+        // Show report
+        function showReport() {
+            const monthExpenses = expenses.filter(exp => {
+                const expDate = new Date(exp.date);
+                return expDate.getMonth() === currentMonth && expDate.getFullYear() === currentYear;
+            });
+
+            const total = monthExpenses.reduce((sum, exp) => sum + exp.amount, 0);
+            const categoryBreakdown = {};
+            monthExpenses.forEach(exp => {
+                categoryBreakdown[exp.category] = (categoryBreakdown[exp.category] || 0) + exp.amount;
+            });
+
+            let report = `LAPORAN KEUANGAN ${new Date().toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}\n\n`;
+            report += `Total Pengeluaran: ${formatCurrency(total)}\n`;
+            report += `Jumlah Transaksi: ${monthExpenses.length}\n\n`;
+            report += `Rincian per Kategori:\n`;
+
+            Object.entries(categoryBreakdown).forEach(([cat, amount]) => {
+                const percentage = ((amount / total) * 100).toFixed(1);
+                report += `- ${getCategoryName(cat)}: ${formatCurrency(amount)} (${percentage}%)\n`;
+            });
+
+            alert(report);
+        }
+
+        // Scanner functions
+        function openScanner() {
+            document.getElementById('scannerModal').style.display = 'block';
+            initScanner();
+        }
+
+        function closeScanner() {
+            document.getElementById('scannerModal').style.display = 'none';
+            stopScanner();
+        }
+
+        function initScanner() {
+            if (scannerActive) return;
+
+            Quagga.init({
+                inputStream: {
+                    name: "Live",
+                    type: "LiveStream",
+                    target: document.querySelector('#scanner'),
+                    constraints: {
+                        facingMode: currentCamera
+                    }
+                },
+                decoder: {
+                    readers: [
+                        "ean_reader",
+                        "ean_8_reader",
+                        "code_128_reader",
+                        "upc_reader",
+                        "upc_e_reader"
+                    ]
+                }
+            }, function (err) {
+                if (err) {
+                    console.error(err);
+                    showToast('Error', 'Gagal mengakses kamera', 'danger');
+                    return;
+                }
+                scannerActive = true;
+                Quagga.start();
+            });
+
+            Quagga.onDetected(function (result) {
+                const code = result.codeResult.code;
+                stopScanner();
+                closeScanner();
+                processBarcode(code);
+            });
+        }
+
+        function stopScanner() {
+            if (scannerActive) {
+                Quagga.stop();
+                scannerActive = false;
+            }
+        }
+
+        function toggleCamera() {
+            currentCamera = currentCamera === 'environment' ? 'user' : 'environment';
+            stopScanner();
+            initScanner();
+        }
+
+        function processBarcode(code) {
+            // Simulate barcode lookup (in real app, this would query a database)
+            const products = {
+                '8999999000000': { name: 'Indomie Goreng', price: 3000, category: 'food' },
+                '8999999000001': { name: 'Aqua 600ml', price: 4000, category: 'food' },
+                '8999999000002': { name: 'Pertamax', price: 10000, category: 'transport' },
+                '8999999000003': { name: 'Tol Jakarta-Bandung', price: 150000, category: 'transport' },
+                '8999999000004': { name: 'Kaos Polos', price: 50000, category: 'shopping' },
+                '8999999000005': { name: 'Tiket Bioskop', price: 45000, category: 'entertainment' }
+            };
+
+            const product = products[code] || {
+                name: `Produk ${code}`,
+                price: Math.floor(Math.random() * 100000) + 1000,
+                category: 'other'
+            };
+
+            document.getElementById('amountInput').value = product.price;
+            document.getElementById('categorySelect').value = product.category;
+            document.getElementById('descriptionInput').value = product.name;
+
+            showToast('Barcode Terdeteksi!', `Produk: ${product.name} - ${formatCurrency(product.price)}`, 'success');
+        }
+
+        // Export data
+        function exportData() {
+            const data = {
+                expenses: expenses,
+                budgets: budgets,
+                exportDate: new Date().toISOString()
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `moneyscan-export-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showToast('Berhasil!', 'Data berhasil diexport', 'success');
+        }
+
+        // Import data
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'application/json';
+
+            input.onchange = function (e) {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+
+                reader.onload = function () {
+                    try {
+                        const data = JSON.parse(reader.result);
+                        expenses = data.expenses || [];
+                        budgets = data.budgets || budgets;
+                        saveToLocalStorage();
+                        updateUI();
+                        updateCharts();
+
+                        showToast('Berhasil!', 'Data berhasil diimport', 'success');
+                    } catch (err) {
+                        showToast('Error', 'Format file tidak valid', 'danger');
+                    }
+                };
+
+                reader.readAsText(file);
+            };
+
+            input.click();
+        }
+
+        // Check if it's a new day
+        function checkNewDay() {
+            const lastAccess = localStorage.getItem('lastAccess');
+            const today = new Date().toDateString();
+
+            if (lastAccess !== today) {
+                // New day - show daily tip
+                showToast('Halo!', 'Selamat datang di MoneyScan. Catat pengeluaran hari ini ya!', 'info');
+                localStorage.setItem('lastAccess', today);
+            }
+        }
+
+        // Initialize tooltips
+        function initializeTooltips() {
+            const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            tooltips.forEach(el => new bootstrap.Tooltip(el));
+        }
+
+        // Theme toggle
+        document.getElementById('themeToggle').addEventListener('click', function () {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-bs-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            html.setAttribute('data-bs-theme', newTheme);
+            this.querySelector('i').className = newTheme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
+            localStorage.setItem('theme', newTheme);
+        });
+
+        // Update stats
+        function updateStats() {
+            // This function is already called in updateBalance
+        }
+
+        // Format currency
+        function formatCurrency(amount, short = false) {
+            if (amount >= 1000000 && short) {
+                return `Rp${(amount / 1000000).toFixed(1)}jt`;
+            }
+            return `Rp${amount.toLocaleString('id-ID')}`;
+        }
+
+        // Show toast notification
+        function showToast(title, message, type = 'info') {
+            const toastContainer = document.getElementById('toastContainer');
+            const toastId = 'toast-' + Date.now();
+
+            const toast = document.createElement('div');
+            toast.className = `toast show border-0 shadow`;
+            toast.id = toastId;
+            toast.innerHTML = `
+                <div class="toast-header bg-${type} text-white border-0">
+                    <strong class="me-auto">${title}</strong>
+                    <button type="button" class="btn-close btn-close-white" onclick="this.closest('.toast').remove()"></button>
+                </div>
+                <div class="toast-body">
+                    ${message}
+                </div>`;
+
+            toastContainer.appendChild(toast);
+
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                const toastElement = document.getElementById(toastId);
+                if (toastElement) {
+                    toastElement.remove();
+                }
+            }, 5000);
+        }
+
+        // Play notification sound
+        function playNotificationSound() {
+            const sound = document.getElementById('notificationSound');
+            sound.currentTime = 0;
+            sound.play();
+        }
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', initApp);
+
+        // Auto-save on beforeunload
+        window.addEventListener('beforeunload', saveToLocalStorage);
+
+        // Handle Enter key in form
+        document.getElementById('descriptionInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                addExpense();
+            }
+        });
+    </script>
+</body>
+
+</html>
